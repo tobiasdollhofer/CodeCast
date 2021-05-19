@@ -18,6 +18,13 @@ dependencies {
 // See https://github.com/JetBrains/gradle-intellij-plugin/
 intellij {
     version '2021.1'
+    updateSinceUntilBuild false
+    sameSinceUntilBuild false
+    plugins = ['android','com.intellij.java']
+    compileJava {
+        sourceCompatibility = '1.8'
+        targetCompatibility = '1.8'
+    }
 }
 patchPluginXml {
     changeNotes """
