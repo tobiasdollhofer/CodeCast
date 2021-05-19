@@ -42,11 +42,3 @@ jobs:
         with:
           name: jar
           path: build/libs/*.jar   
-      - name: Copy single file to remote
-        uses: garygrossgarten/github-action-scp@release
-        with:
-          local: build/libs/CodeCast.jar
-          remote: ftp://tobiasdollhofer.de
-          username: ${{ secrets.SSH_USER }}
-          password: ${{ secrets.PASSWORD }}
-      
