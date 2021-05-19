@@ -21,6 +21,8 @@ intellij {
     updateSinceUntilBuild false
     sameSinceUntilBuild false
     plugins = ['android','com.intellij.java']
+    pluginName 'CodeCast'
+
     compileJava {
         sourceCompatibility = '1.8'
         targetCompatibility = '1.8'
