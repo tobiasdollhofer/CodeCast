@@ -31,6 +31,7 @@ jobs:
           java-version: 1.8
       - name: Build .jar
         run: |
+          cd /
           sudo chmod +x gradlew
           sudo gradlew wrapper
           sudo gradlew tasks
