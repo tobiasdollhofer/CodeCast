@@ -17,6 +17,10 @@
     </extensions>
 
     <actions>
+        <action id="org.intellij.sdk.action.GroupPopupDialogAction" class="Test"
+                text="Test Action" description="Simple action to test action-functionallity">
+            <add-to-group group-id="ToolsMenu" />
+        </action>
         <!-- Add your actions here -->
     </actions>
 </idea-plugin>

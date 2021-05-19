@@ -1,6 +1,13 @@
-public class Test {
+import com.intellij.openapi.actionSystem.AnAction;
+import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.openapi.ui.Messages;
+import org.jetbrains.annotations.NotNull;
 
-    public static void main(String[] args) {
-        System.out.println("Hello World");
+public class Test extends AnAction {
+
+
+    @Override
+    public void actionPerformed(@NotNull AnActionEvent e) {
+        Messages.showMessageDialog(e.getProject(),"Hello","Hello World", Messages.getInformationIcon());
     }
 }
