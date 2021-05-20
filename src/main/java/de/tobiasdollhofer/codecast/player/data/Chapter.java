@@ -1,11 +1,17 @@
 package de.tobiasdollhofer.codecast.player.data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Chapter {
 
     private String title;
     private List<AudioComment> comments;
+
+    public Chapter() {
+        this.title = "";
+        this.comments = new ArrayList<>();
+    }
 
     public Chapter(String title, List<AudioComment> comments) {
         this.title = title;
@@ -51,7 +57,7 @@ public class Chapter {
             sb.append(", ");
         }
 
-        sb.append("}}, ");
+        sb.append("}}");
         return sb.toString();
     }
 }
