@@ -11,6 +11,8 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <toolWindow factoryClass="de.tobiasdollhofer.codecast.ui.CodeCastPlayerFactory" id="CodeCast" anchor="right" />
+        <projectService serviceImplementation="de.tobiasdollhofer.codecast.player.service.PlaylistServiceImpl"
+                        serviceInterface="de.tobiasdollhofer.codecast.player.service.PlaylistService" />
     </extensions>
 
     <actions>
@@ -19,4 +21,8 @@
             <add-to-group group-id="ToolsMenu" />
         </action>
     </actions>
+
+    <applicationListeners>
+        <listener class="de.tobiasdollhofer.codecast.player.service.ProjectOpenCloseListener" topic="com.intellij.openapi.project.ProjectManagerListener" />
+    </applicationListeners>
 </idea-plugin>

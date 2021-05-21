@@ -21,7 +21,7 @@ public class CodeCastPlayerFactory implements ToolWindowFactory {
         ContentFactory contentFactory = ContentFactory.SERVICE.getInstance();
         Content content = contentFactory.createContent(codeCastPlayer.getContent(), "CodeCast", false);
         toolWindow.getContentManager().addContent(content);
-        String path = FilePathUtil.getCodeCastMetaPath(project);
-        PlaylistLoader.loadFromMetaFile(path);
+        /*String path = FilePathUtil.getCodeCastMetaPath(project);
+        PlaylistLoader.loadFromMetaFile(path);*/
     }
 }
