@@ -4,11 +4,11 @@
         <title>Aufgabe 1</title>
         <comment type="INTRO" id="123456">
             <title>Einführung</title>
-            <url>./audio/introduction.mp3</url>
+            <url>introduction.mp3</url>
         </comment>
         <comment type="DEFAULT" id="456789">
             <title>onCreateView()-Methode</title>
-            <url>./audio/oncreate.mp3</url>
+            <url>oncreate.mp3</url>
         </comment>
     </chapter>
 </playlist>
