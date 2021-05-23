@@ -17,7 +17,7 @@ public class CodeCastPlayerFactory implements ToolWindowFactory {
 
     @Override
     public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
-        CodeCastPlayer codeCastPlayer = new CodeCastPlayer();
+        CodeCastPlayer codeCastPlayer = new CodeCastPlayer(project);
         ContentFactory contentFactory = ContentFactory.SERVICE.getInstance();
         Content content = contentFactory.createContent(codeCastPlayer.getContent(), "CodeCast", false);
         toolWindow.getContentManager().addContent(content);
