@@ -6,6 +6,7 @@ import com.intellij.openapi.project.ProjectManager;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.ui.ClickListener;
 import com.intellij.ui.components.JBList;
+import de.tobiasdollhofer.codecast.player.data.AudioComment;
 import de.tobiasdollhofer.codecast.player.data.Chapter;
 import de.tobiasdollhofer.codecast.player.data.Playlist;
 import de.tobiasdollhofer.codecast.player.service.PlaylistService;
@@ -33,15 +34,24 @@ public class CodeCastPlayer {
     private JLabel volumeIcon;
 
     private boolean playing = false;
+    private Playlist playlist;
+    private AudioComment comment;
 
-    private Project project;
+    private final Project project;
 
     public CodeCastPlayer(Project project){
         this.project = project;
+        this.playlist = project.getService(PlaylistService.class).getPlaylist();
+        if(this.playlist != null){
+            setComment(this.playlist.getFirstComment());
+        }else{
+            enablePlayer(false);
+            // TODO: ALERT NO XML!!
+        }
+
         initList();
         initToolbarListener();
         initPlayerControls();
-
     }
 
     private void initPlayerControls() {
@@ -78,10 +88,18 @@ public class CodeCastPlayer {
 
     private void playLastClicked() {
         System.out.println("Play Last clicked!");
+        AudioComment comment = playlist.getLastComment();
+
+        if(comment != null)
+            setComment(comment);
     }
 
     private void playNextClicked() {
         System.out.println("Play Next clicked!");
+        AudioComment comment = playlist.getNextComment(this.comment);
+
+        if(comment != null)
+            setComment(comment);
     }
 
     private void playPauseClicked() {
@@ -92,15 +110,23 @@ public class CodeCastPlayer {
             playPause.setIcon(PluginIcons.pause);
         }
         playing = !playing;
-
     }
 
     private void playPreviousClicked() {
         System.out.println("Play Previous clicked!");
+        //TODO: add some cooldown to restart current comment
+        AudioComment comment = playlist.getPreviousComment(this.comment);
+
+        if(comment != null)
+            setComment(comment);
     }
 
     private void playFirstClicked() {
         System.out.println("Play First clicked!");
+        AudioComment comment = playlist.getFirstComment();
+
+        if(comment != null)
+            setComment(comment);
     }
 
     private void initToolbarListener() {
@@ -108,13 +134,41 @@ public class CodeCastPlayer {
     }
 
     private void reloadPlayer() {
-        //TODO: implement
         System.out.println("Reload Player");
+        project.getService(PlaylistService.class).loadPlaylist();
+        this.playlist = project.getService(PlaylistService.class).getPlaylist();
+        if(this.playlist != null){
+            setComment(this.playlist.getFirstComment());
+        }
     }
 
     private void initList(){
-        Playlist playlist = project.getService(PlaylistService.class).getPlaylist();
+    }
 
+    private void setComment(AudioComment comment){
+        if(comment != null){
+            this.comment = comment;
+            currentTitleLabel.setText(comment.getTitle());
+            playerProgressBar.setValue(0);
+            enablePlayer(true);
+        }else {
+            enablePlayer(false);
+            currentTitleLabel.setText("No comment available.");
+            playerProgressBar.setValue(0);
+            playing = false;
+            playPause.setIcon(PluginIcons.play);
+        }
+    }
+
+    public void enablePlayer(boolean enabled){
+        this.playFirst.setEnabled(enabled);
+        this.playPrevious.setEnabled(enabled);
+        this.playPause.setIcon(PluginIcons.play);
+        this.playPause.setEnabled(enabled);
+        this.playNext.setEnabled(enabled);
+        this.playLast.setEnabled(enabled);
+        this.volumeSlider.setEnabled(enabled);
+        this.playerProgressBar.setEnabled(enabled);
     }
 
     public JPanel getContent(){

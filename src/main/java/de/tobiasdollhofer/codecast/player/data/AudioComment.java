@@ -1,6 +1,7 @@
 package de.tobiasdollhofer.codecast.player.data;
 
 import java.io.File;
+import java.util.Objects;
 
 public class AudioComment {
 
@@ -56,5 +57,18 @@ public class AudioComment {
                 ", id=" + id +
                 ", type=" + type +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AudioComment comment = (AudioComment) o;
+        return id == comment.id && title.equals(comment.title) && Objects.equals(path, comment.path) && type == comment.type;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(title, path, id, type);
     }
 }
