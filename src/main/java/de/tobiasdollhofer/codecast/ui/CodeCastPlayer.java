@@ -1,11 +1,13 @@
 package de.tobiasdollhofer.codecast.ui;
 
 import com.android.tools.r8.graph.J;
+import com.android.tools.r8.graph.S;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.ui.ClickListener;
 import com.intellij.ui.components.JBList;
+import de.tobiasdollhofer.codecast.player.CommentPlayer;
 import de.tobiasdollhofer.codecast.player.data.AudioComment;
 import de.tobiasdollhofer.codecast.player.data.Chapter;
 import de.tobiasdollhofer.codecast.player.data.Playlist;
@@ -36,12 +38,14 @@ public class CodeCastPlayer {
     private boolean playing = false;
     private Playlist playlist;
     private AudioComment comment;
+    private CommentPlayer player;
 
     private final Project project;
 
     public CodeCastPlayer(Project project){
         this.project = project;
         this.playlist = project.getService(PlaylistService.class).getPlaylist();
+        this.player = new CommentPlayer();
         if(this.playlist != null){
             setComment(this.playlist.getFirstComment());
         }else{
@@ -106,10 +110,13 @@ public class CodeCastPlayer {
         System.out.println("Play Pause clicked!");
         if(playing){
             playPause.setIcon(PluginIcons.play);
+            player.pause();
         }else{
             playPause.setIcon(PluginIcons.pause);
+            player.run();
         }
         playing = !playing;
+        System.out.println("CodeCast-Player State: " + this.playing);
     }
 
     private void playPreviousClicked() {
@@ -149,15 +156,16 @@ public class CodeCastPlayer {
         if(comment != null){
             this.comment = comment;
             currentTitleLabel.setText(comment.getTitle());
-            playerProgressBar.setValue(0);
             enablePlayer(true);
         }else {
-            enablePlayer(false);
             currentTitleLabel.setText("No comment available.");
-            playerProgressBar.setValue(0);
-            playing = false;
-            playPause.setIcon(PluginIcons.play);
+            enablePlayer(false);
         }
+        playerProgressBar.setValue(0);
+        playing = false;
+        playPause.setIcon(PluginIcons.play);
+        player.pause();
+
     }
 
     public void enablePlayer(boolean enabled){
