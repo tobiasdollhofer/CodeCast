@@ -13,14 +13,14 @@ public class FilePathUtil {
     }
 
     public static String getCodeCastRootPath(Project project){
-        return getAbsoluteRootFilePath(project) + "/.codecast";
+        return getAbsoluteRootFilePath(project) + "/.codecast/";
     }
 
     public static String getCodeCastMetaPath(Project project){
-        return getCodeCastRootPath(project) + "/meta.codecast";
+        return getCodeCastRootPath(project) + "meta.codecast";
     }
 
     public static String getCodeCastAudioDirectory(Project project){
-        return getCodeCastRootPath(project) + "/audio";
+        return getCodeCastRootPath(project) + "audio/";
     }
 }

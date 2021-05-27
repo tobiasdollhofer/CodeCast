@@ -1,5 +1,7 @@
 package de.tobiasdollhofer.codecast.player.data;
 
+import de.tobiasdollhofer.codecast.player.util.FilePathUtil;
+
 import java.io.File;
 import java.util.Objects;
 

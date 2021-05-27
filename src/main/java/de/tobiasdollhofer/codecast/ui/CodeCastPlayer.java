@@ -7,11 +7,13 @@ import com.intellij.openapi.project.ProjectManager;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.ui.ClickListener;
 import com.intellij.ui.components.JBList;
+import com.sun.javafx.application.PlatformImpl;
 import de.tobiasdollhofer.codecast.player.CommentPlayer;
 import de.tobiasdollhofer.codecast.player.data.AudioComment;
 import de.tobiasdollhofer.codecast.player.data.Chapter;
 import de.tobiasdollhofer.codecast.player.data.Playlist;
 import de.tobiasdollhofer.codecast.player.service.PlaylistService;
+import de.tobiasdollhofer.codecast.player.util.FilePathUtil;
 import de.tobiasdollhofer.codecast.player.util.PluginIcons;
 
 import javax.swing.*;
@@ -43,6 +45,7 @@ public class CodeCastPlayer {
     private final Project project;
 
     public CodeCastPlayer(Project project){
+
         this.project = project;
         this.playlist = project.getService(PlaylistService.class).getPlaylist();
         this.player = new CommentPlayer();
@@ -83,15 +86,20 @@ public class CodeCastPlayer {
 
     private void volumeSliderChange() {
         System.out.println("New Volume: " + volumeSlider.getValue());
+        double volume = volumeSlider.getValue();
+
         if(volumeSlider.getValue() == 0){
             volumeIcon.setIcon(PluginIcons.volumeOff);
         }else{
             volumeIcon.setIcon(PluginIcons.volume);
+            volume = volume / 100;
         }
+        player.setVolume(volume);
     }
 
     private void playLastClicked() {
         System.out.println("Play Last clicked!");
+        pausePlayer();
         AudioComment comment = playlist.getLastComment();
 
         if(comment != null)
@@ -100,6 +108,7 @@ public class CodeCastPlayer {
 
     private void playNextClicked() {
         System.out.println("Play Next clicked!");
+        pausePlayer();
         AudioComment comment = playlist.getNextComment(this.comment);
 
         if(comment != null)
@@ -109,16 +118,24 @@ public class CodeCastPlayer {
     private void playPauseClicked() {
         System.out.println("Play Pause clicked!");
         if(playing){
-            playPause.setIcon(PluginIcons.play);
-            player.pause();
+            pausePlayer();
         }else{
-            playPause.setIcon(PluginIcons.pause);
-            player.run();
+            playPlayer();
         }
-        playing = !playing;
         System.out.println("CodeCast-Player State: " + this.playing);
     }
 
+    private void pausePlayer(){
+        playPause.setIcon(PluginIcons.play);
+        player.pause();
+        playing = false;
+    }
+
+    private void playPlayer(){
+        playPause.setIcon(PluginIcons.pause);
+        player.run();
+        playing = true;
+    }
     private void playPreviousClicked() {
         System.out.println("Play Previous clicked!");
         //TODO: add some cooldown to restart current comment
@@ -130,6 +147,7 @@ public class CodeCastPlayer {
 
     private void playFirstClicked() {
         System.out.println("Play First clicked!");
+        pausePlayer();
         AudioComment comment = playlist.getFirstComment();
 
         if(comment != null)
@@ -142,6 +160,7 @@ public class CodeCastPlayer {
 
     private void reloadPlayer() {
         System.out.println("Reload Player");
+        pausePlayer();
         project.getService(PlaylistService.class).loadPlaylist();
         this.playlist = project.getService(PlaylistService.class).getPlaylist();
         if(this.playlist != null){
@@ -153,6 +172,8 @@ public class CodeCastPlayer {
     }
 
     private void setComment(AudioComment comment){
+        pausePlayer();
+        playerProgressBar.setValue(0);
         if(comment != null){
             this.comment = comment;
             currentTitleLabel.setText(comment.getTitle());
@@ -161,11 +182,9 @@ public class CodeCastPlayer {
             currentTitleLabel.setText("No comment available.");
             enablePlayer(false);
         }
-        playerProgressBar.setValue(0);
-        playing = false;
-        playPause.setIcon(PluginIcons.play);
-        player.pause();
-
+        // reinitialize player with stored comment as the resetting of a comment should also reset the player
+        player.setPath("file:///" + FilePathUtil.getCodeCastAudioDirectory(this.project) + this.comment.getPath());
+        System.out.println("Length: " + String.valueOf(player.getLength()));
     }
 
     public void enablePlayer(boolean enabled){
