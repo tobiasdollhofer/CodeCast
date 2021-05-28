@@ -1,24 +1,21 @@
-package de.tobiasdollhofer.codecast.ui;
+package de.tobiasdollhofer.codecast.player.ui;
 
-import com.android.tools.r8.graph.J;
-import com.android.tools.r8.graph.S;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.project.ProjectManager;
-import com.intellij.openapi.wm.ToolWindow;
-import com.intellij.ui.ClickListener;
-import com.intellij.ui.components.JBList;
-import com.sun.javafx.application.PlatformImpl;
 import de.tobiasdollhofer.codecast.player.CommentPlayer;
 import de.tobiasdollhofer.codecast.player.data.AudioComment;
-import de.tobiasdollhofer.codecast.player.data.Chapter;
 import de.tobiasdollhofer.codecast.player.data.Playlist;
 import de.tobiasdollhofer.codecast.player.service.PlaylistService;
 import de.tobiasdollhofer.codecast.player.util.FilePathUtil;
 import de.tobiasdollhofer.codecast.player.util.PluginIcons;
+import de.tobiasdollhofer.codecast.player.util.event.Observable;
+import de.tobiasdollhofer.codecast.player.util.event.ui.UIEvent;
+import de.tobiasdollhofer.codecast.player.util.event.ui.UIEventType;
 
 import javax.swing.*;
 
-public class CodeCastPlayer {
+import static de.tobiasdollhofer.codecast.player.util.event.ui.UIEventType.*;
+
+public class PlayerUI extends Observable{
 
     private JPanel playerWindowContent;
     private JScrollPane playlistPane;
@@ -41,11 +38,12 @@ public class CodeCastPlayer {
     private Playlist playlist;
     private AudioComment comment;
     private CommentPlayer player;
+    public String playerTest;
 
     private final Project project;
 
-    public CodeCastPlayer(Project project){
-
+    public PlayerUI(Project project){
+        super();
         this.project = project;
         this.playlist = project.getService(PlaylistService.class).getPlaylist();
         this.player = new CommentPlayer();
@@ -95,10 +93,12 @@ public class CodeCastPlayer {
             volume = volume / 100;
         }
         player.setVolume(volume);
+        notifyAll(new UIEvent(VOLUME_CHANGE, String.valueOf(volume)));
     }
 
     private void playLastClicked() {
         System.out.println("Play Last clicked!");
+        notifyAll(new UIEvent(PLAY_LAST_CLICKED, ""));
         pausePlayer();
         AudioComment comment = playlist.getLastComment();
 
@@ -108,6 +108,7 @@ public class CodeCastPlayer {
 
     private void playNextClicked() {
         System.out.println("Play Next clicked!");
+        notifyAll(new UIEvent(PLAY_NEXT_CLICKED, ""));
         pausePlayer();
         AudioComment comment = playlist.getNextComment(this.comment);
 
@@ -117,6 +118,7 @@ public class CodeCastPlayer {
 
     private void playPauseClicked() {
         System.out.println("Play Pause clicked!");
+        notifyAll(new UIEvent(PLAY_PAUSE_CLICKED, ""));
         if(playing){
             pausePlayer();
         }else{
@@ -138,6 +140,7 @@ public class CodeCastPlayer {
     }
     private void playPreviousClicked() {
         System.out.println("Play Previous clicked!");
+        notifyAll(new UIEvent(PLAY_PREVIOUS_CLICKED, ""));
         //TODO: add some cooldown to restart current comment
         AudioComment comment = playlist.getPreviousComment(this.comment);
 
@@ -147,6 +150,7 @@ public class CodeCastPlayer {
 
     private void playFirstClicked() {
         System.out.println("Play First clicked!");
+        notifyAll(new UIEvent(PLAY_FIRST_CLICKED, ""));
         pausePlayer();
         AudioComment comment = playlist.getFirstComment();
 
@@ -160,18 +164,20 @@ public class CodeCastPlayer {
 
     private void reloadPlayer() {
         System.out.println("Reload Player");
+        notifyAll(new UIEvent(UIEventType.RESET_PLAYER, "Reloaded player"));
         pausePlayer();
         project.getService(PlaylistService.class).loadPlaylist();
         this.playlist = project.getService(PlaylistService.class).getPlaylist();
         if(this.playlist != null){
             setComment(this.playlist.getFirstComment());
         }
+
     }
 
     private void initList(){
     }
 
-    private void setComment(AudioComment comment){
+    public void setComment(AudioComment comment){
         pausePlayer();
         playerProgressBar.setValue(0);
         if(comment != null){
@@ -201,6 +207,5 @@ public class CodeCastPlayer {
     public JPanel getContent(){
         return playerWindowContent;
     }
-
 
 }

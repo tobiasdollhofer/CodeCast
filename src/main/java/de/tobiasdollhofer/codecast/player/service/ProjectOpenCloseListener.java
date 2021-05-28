@@ -20,6 +20,7 @@ public class ProjectOpenCloseListener implements ProjectManagerListener {
         }
 
         PlaylistService playlistService = project.getService(PlaylistService.class);
+        PlayerManagerService playerManagerService = project.getService(PlayerManagerService.class);
     }
 
 

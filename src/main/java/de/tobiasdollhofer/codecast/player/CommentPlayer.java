@@ -2,11 +2,12 @@ package de.tobiasdollhofer.codecast.player;
 
 
 import com.sun.javafx.application.PlatformImpl;
+import de.tobiasdollhofer.codecast.player.util.event.Observable;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
 
-public class CommentPlayer {
+public class CommentPlayer extends Observable {
 
     private String path;
     private double volume;
@@ -16,6 +17,7 @@ public class CommentPlayer {
     private boolean ready = false;
 
     public CommentPlayer() {
+        super();
         // necessary to initialize javafx components
         PlatformImpl.startup(() -> {});
     }

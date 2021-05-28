@@ -10,9 +10,11 @@
     <depends>com.intellij.modules.platform</depends>
 
     <extensions defaultExtensionNs="com.intellij">
-        <toolWindow factoryClass="de.tobiasdollhofer.codecast.ui.CodeCastPlayerFactory" id="CodeCast" anchor="right" />
+        <toolWindow factoryClass="de.tobiasdollhofer.codecast.player.ui.PlayerUIFactory" id="CodeCast" anchor="right" />
         <projectService serviceImplementation="de.tobiasdollhofer.codecast.player.service.PlaylistServiceImpl"
                         serviceInterface="de.tobiasdollhofer.codecast.player.service.PlaylistService" />
+        <projectService serviceImplementation="de.tobiasdollhofer.codecast.player.service.PlayerManagerServiceImpl"
+                        serviceInterface="de.tobiasdollhofer.codecast.player.service.PlayerManagerService" />
     </extensions>
 
     <actions>
