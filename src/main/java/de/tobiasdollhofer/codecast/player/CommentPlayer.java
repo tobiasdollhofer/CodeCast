@@ -9,6 +9,7 @@ import javafx.util.Duration;
 public class CommentPlayer {
 
     private String path;
+    private double volume;
 
     private Media media;
     private MediaPlayer mediaPlayer;
@@ -35,6 +36,7 @@ public class CommentPlayer {
     }
 
     public void setVolume(double volume){
+        this.volume = volume;
         if(this.mediaPlayer != null && ready){
             mediaPlayer.setVolume(volume);
         }
@@ -53,6 +55,7 @@ public class CommentPlayer {
                 @Override
                 public void run() {
                     ready = true;
+                    setVolume(volume);
                     System.out.println(getLength());
                     System.out.println(getFormattedProgress());
                 }
