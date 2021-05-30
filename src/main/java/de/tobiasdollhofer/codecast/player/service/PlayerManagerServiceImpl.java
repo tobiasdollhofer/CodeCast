@@ -5,6 +5,7 @@ import com.intellij.openapi.project.Project;
 import de.tobiasdollhofer.codecast.player.CommentPlayer;
 import de.tobiasdollhofer.codecast.player.data.AudioComment;
 import de.tobiasdollhofer.codecast.player.data.Playlist;
+import de.tobiasdollhofer.codecast.player.util.FilePathUtil;
 import de.tobiasdollhofer.codecast.player.util.event.*;
 import de.tobiasdollhofer.codecast.player.util.event.player.PlayerEvent;
 import de.tobiasdollhofer.codecast.player.util.event.ui.UIEvent;
@@ -13,21 +14,29 @@ import de.tobiasdollhofer.codecast.player.ui.PlayerUI;
 @Service
 public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiable {
 
+    /**
+     * TODO:
+     * BUG: Play-Pause-Icon is wrong
+     * BUG: Player won't be paused when next comment is selected
+     * BUG: Player will be disabled if comment after last comment is selected
+     * FEATURE: Progress displaying
+     */
     private Playlist playlist;
     private final Project project;
     private AudioComment comment;
     private CommentPlayer player;
     private PlayerUI ui;
+    private boolean playing;
 
     public PlayerManagerServiceImpl(Project project) {
         this.project = project;
         this.playlist = project.getService(PlaylistService.class).getPlaylist();
         this.player = new CommentPlayer();
         this.ui = new PlayerUI(project);
+        this.playing = false;
         if(playlist != null){
             this.comment = playlist.getFirstComment();
-            this.player.setPath(this.comment.getPath());
-            this.ui.setComment(this.comment);
+            setComment(this.comment);
         }
         addListeners();
     }
@@ -36,7 +45,6 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
         player.addListener(this);
         ui.addListener(this);
     }
-
 
     @Override
     public void notify(Event e) {
@@ -51,27 +59,27 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
     private void notifyUIEvent(UIEvent e) {
         switch(e.getType()){
             case PLAY_FIRST_CLICKED:
-
+                playFirstClicked();
                 break;
 
             case PLAY_PREVIOUS_CLICKED:
-
+                playPreviousClicked();
                 break;
 
             case PLAY_PAUSE_CLICKED:
-                player.run();
+                playPauseClicked();
                 break;
 
             case PLAY_NEXT_CLICKED:
-
+                playNextClicked();
                 break;
 
             case PLAY_LAST_CLICKED:
-
+                playLastClicked();
                 break;
 
             case VOLUME_CHANGE:
-
+                volumeChanged(Double.parseDouble(e.getData()));
                 break;
 
             case LIST_CLICKED:
@@ -79,7 +87,7 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
                 break;
 
             case RESET_PLAYER:
-
+                resetPlayer();
                 break;
 
             default:
@@ -88,27 +96,73 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
 
 
     }
+
+    private void playFirstClicked() {
+        AudioComment comment = playlist.getFirstComment();
+        setComment(comment);
+    }
+
+    private void playPreviousClicked() {
+        AudioComment comment = playlist.getPreviousComment(this.comment);
+        setComment(comment);
+    }
+
+    private void playPauseClicked() {
+        if(playing){
+            player.pause();
+        }else{
+            player.play();
+        }
+        playing = !playing;
+    }
+
+    private void playNextClicked() {
+        AudioComment comment = playlist.getNextComment(this.comment);
+        setComment(comment);
+    }
+
+    private void playLastClicked() {
+        AudioComment comment = playlist.getLastComment();
+        setComment(comment);
+    }
+
+    private void volumeChanged(double val) {
+        player.setVolume(val);
+    }
+
+    private void resetPlayer() {
+        player.pause();
+        this.project.getService(PlaylistService.class).loadPlaylist();
+        this.playlist = project.getService(PlaylistService.class).getPlaylist();
+        if(this.playlist != null){
+            ui.enablePlayer(true);
+            setComment(this.playlist.getFirstComment());
+        }else{
+            ui.enablePlayer(false);
+        }
+    }
+
 
     private void notifyPlayerEvent(PlayerEvent e) {
         switch (e.getType()){
             case INITIALIZED:
-
+                onPlayerInitialized();
                 break;
 
             case STARTED:
-
+                onPlayerStarted();
                 break;
 
             case STOPPED:
-
+                onPlayerStopped();
                 break;
 
             case ENDED:
-
+                onPlayerEnded();
                 break;
 
             case PROGRESS_CHANGED:
-
+                onProgressChanged();
                 break;
 
             default:
@@ -116,6 +170,39 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
         }
     }
 
+    private void onPlayerInitialized() {
+        this.playing = false;
+    }
+
+    private void onPlayerStarted() {
+        this.playing = true;
+        this.ui.playPlayer();
+    }
+
+    private void onPlayerStopped() {
+        this.playing = false;
+        this.ui.pausePlayer();
+    }
+
+    private void onPlayerEnded() {
+        this.playing = false;
+        this.ui.pausePlayer();
+    }
+
+    private void onProgressChanged() {
+        this.ui.setProgress(this.player.getProgressPercentage());
+        this.ui.setProgressTime(this.player.getFormattedProgress());
+    }
+
+    private void setComment(AudioComment comment){
+        this.comment = comment;
+        ui.setComment(this.comment);
+        if(comment != null){
+            player.setPath("file:///" + FilePathUtil.getCodeCastAudioDirectory(project) + this.comment.getPath(), playing);
+        }else{
+            player.pause();
+        }
+    }
     @Override
     public PlayerUI getPlayerUI() {
         return ui;

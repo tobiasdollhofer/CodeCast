@@ -45,7 +45,7 @@ public class PlaylistLoader {
        }catch(ParserConfigurationException | SAXException | IOException e){
             e.printStackTrace();
        }
-
+       System.out.println(playlist.toString());
        return playlist;
     }
 

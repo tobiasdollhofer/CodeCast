@@ -24,7 +24,7 @@ public class CommentPlayer extends Observable {
         PlatformImpl.startup(() -> {});
     }
 
-    public void run(){
+    public void play(){
         System.out.println("Listener: " + listener.size());
         notifyAll(new PlayerEvent(PlayerEventType.STARTED, ""));
         System.out.println("Player started");
@@ -51,7 +51,7 @@ public class CommentPlayer extends Observable {
         return path;
     }
 
-    public void setPath(String path) {
+    public void setPath(String path, boolean playing) {
         this.ready = false;
         this.path = path;
         try{
@@ -61,7 +61,11 @@ public class CommentPlayer extends Observable {
                 @Override
                 public void run() {
                     ready = true;
+                    CommentPlayer.this.notifyAll(new PlayerEvent(PlayerEventType.INITIALIZED, ""));
                     setVolume(volume);
+                    if(playing){
+                        play();
+                    }
                     System.out.println(getLength());
                     System.out.println(getFormattedProgress());
                 }
@@ -114,4 +118,7 @@ public class CommentPlayer extends Observable {
         return sb.toString();
     }
 
+    public int getProgressPercentage(){
+        return (int) (mediaPlayer.getCurrentTime().toSeconds() / mediaPlayer.getMedia().getDuration().toSeconds());
+    }
 }

@@ -45,14 +45,14 @@ public class PlayerUI extends Observable{
     public PlayerUI(Project project){
         super();
         this.project = project;
-        this.playlist = project.getService(PlaylistService.class).getPlaylist();
+        //this.playlist = project.getService(PlaylistService.class).getPlaylist();
      //   this.player = new CommentPlayer();
-        if(this.playlist != null){
-            setComment(this.playlist.getFirstComment());
-        }else{
-            enablePlayer(false);
+        //if(this.playlist != null){
+        //    setComment(this.playlist.getFirstComment());
+        //}else{
+        //    enablePlayer(false);
             // TODO: ALERT NO XML!!
-        }
+        //}
 
         initList();
         initToolbarListener();
@@ -99,63 +99,73 @@ public class PlayerUI extends Observable{
     private void playLastClicked() {
         System.out.println("Play Last clicked!");
         notifyAll(new UIEvent(PLAY_LAST_CLICKED, ""));
-        pausePlayer();
-        AudioComment comment = playlist.getLastComment();
+        //pausePlayer();
+        //AudioComment comment = playlist.getLastComment();
 
-        if(comment != null)
-            setComment(comment);
+       // if(comment != null)
+        //    setComment(comment);
     }
 
     private void playNextClicked() {
         System.out.println("Play Next clicked!");
         notifyAll(new UIEvent(PLAY_NEXT_CLICKED, ""));
-        pausePlayer();
-        AudioComment comment = playlist.getNextComment(this.comment);
+        //pausePlayer();
+        //AudioComment comment = playlist.getNextComment(this.comment);
 
-        if(comment != null)
-            setComment(comment);
+        //if(comment != null)
+          //  setComment(comment);
     }
 
     private void playPauseClicked() {
         System.out.println("Play Pause clicked!");
         notifyAll(new UIEvent(PLAY_PAUSE_CLICKED, ""));
-        if(playing){
-            pausePlayer();
-        }else{
-            playPlayer();
-        }
-        System.out.println("CodeCast-Player State: " + this.playing);
+        //if(playing){
+          //  pausePlayer();
+        //}else{
+          //  playPlayer();
+        //}
+        //System.out.println("CodeCast-Player State: " + this.playing);
     }
 
-    private void pausePlayer(){
+    //TODO: rename
+    public void pausePlayer(){
         playPause.setIcon(PluginIcons.play);
         //player.pause();
-        playing = false;
+        //playing = false;
     }
 
-    private void playPlayer(){
+    public void playPlayer(){
         playPause.setIcon(PluginIcons.pause);
         //player.run();
-        playing = true;
+        //playing = true;
     }
+
+    public void setProgressTime(String time){
+        progressTime.setText(time);
+    }
+
+    public void setProgress(int progress){
+        playerProgressBar.setValue(progress);
+    }
+
     private void playPreviousClicked() {
         System.out.println("Play Previous clicked!");
         notifyAll(new UIEvent(PLAY_PREVIOUS_CLICKED, ""));
         //TODO: add some cooldown to restart current comment
-        AudioComment comment = playlist.getPreviousComment(this.comment);
+        //AudioComment comment = playlist.getPreviousComment(this.comment);
 
-        if(comment != null)
-            setComment(comment);
+        //if(comment != null)
+          //  setComment(comment);
     }
 
     private void playFirstClicked() {
         System.out.println("Play First clicked!");
         notifyAll(new UIEvent(PLAY_FIRST_CLICKED, ""));
-        pausePlayer();
-        AudioComment comment = playlist.getFirstComment();
+        //pausePlayer();
+        //AudioComment comment = playlist.getFirstComment();
 
-        if(comment != null)
-            setComment(comment);
+        //if(comment != null)
+          //  setComment(comment);
     }
 
     private void initToolbarListener() {
@@ -165,12 +175,12 @@ public class PlayerUI extends Observable{
     private void reloadPlayer() {
         System.out.println("Reload Player");
         notifyAll(new UIEvent(UIEventType.RESET_PLAYER, "Reloaded player"));
-        pausePlayer();
-        project.getService(PlaylistService.class).loadPlaylist();
-        this.playlist = project.getService(PlaylistService.class).getPlaylist();
-        if(this.playlist != null){
-            setComment(this.playlist.getFirstComment());
-        }
+       // pausePlayer();
+        //project.getService(PlaylistService.class).loadPlaylist();
+        //this.playlist = project.getService(PlaylistService.class).getPlaylist();
+        //if(this.playlist != null){
+          //  setComment(this.playlist.getFirstComment());
+        //}
 
     }
 
@@ -178,7 +188,7 @@ public class PlayerUI extends Observable{
     }
 
     public void setComment(AudioComment comment){
-        pausePlayer();
+        //pausePlayer();
         playerProgressBar.setValue(0);
         if(comment != null){
             this.comment = comment;
