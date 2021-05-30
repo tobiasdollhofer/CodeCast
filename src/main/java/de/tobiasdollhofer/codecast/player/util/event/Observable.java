@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Observable {
 
-    private List<Notifiable> listener;
+    protected List<Notifiable> listener;
 
     public Observable(){
         this.listener = new ArrayList<>();

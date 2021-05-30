@@ -37,7 +37,7 @@ public class PlayerUI extends Observable{
     private boolean playing = false;
     private Playlist playlist;
     private AudioComment comment;
-    private CommentPlayer player;
+   // private CommentPlayer player;
     public String playerTest;
 
     private final Project project;
@@ -46,7 +46,7 @@ public class PlayerUI extends Observable{
         super();
         this.project = project;
         this.playlist = project.getService(PlaylistService.class).getPlaylist();
-        this.player = new CommentPlayer();
+     //   this.player = new CommentPlayer();
         if(this.playlist != null){
             setComment(this.playlist.getFirstComment());
         }else{
@@ -92,7 +92,7 @@ public class PlayerUI extends Observable{
             volumeIcon.setIcon(PluginIcons.volume);
             volume = volume / 100;
         }
-        player.setVolume(volume);
+       // player.setVolume(volume);
         notifyAll(new UIEvent(VOLUME_CHANGE, String.valueOf(volume)));
     }
 
@@ -129,13 +129,13 @@ public class PlayerUI extends Observable{
 
     private void pausePlayer(){
         playPause.setIcon(PluginIcons.play);
-        player.pause();
+        //player.pause();
         playing = false;
     }
 
     private void playPlayer(){
         playPause.setIcon(PluginIcons.pause);
-        player.run();
+        //player.run();
         playing = true;
     }
     private void playPreviousClicked() {
@@ -189,8 +189,8 @@ public class PlayerUI extends Observable{
             enablePlayer(false);
         }
         // reinitialize player with stored comment as the resetting of a comment should also reset the player
-        player.setPath("file:///" + FilePathUtil.getCodeCastAudioDirectory(this.project) + this.comment.getPath());
-        System.out.println("Length: " + String.valueOf(player.getLength()));
+        //player.setPath("file:///" + FilePathUtil.getCodeCastAudioDirectory(this.project) + this.comment.getPath());
+        //System.out.println("Length: " + String.valueOf(player.getLength()));
     }
 
     public void enablePlayer(boolean enabled){

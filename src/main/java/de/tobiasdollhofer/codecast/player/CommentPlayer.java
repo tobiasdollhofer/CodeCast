@@ -3,6 +3,8 @@ package de.tobiasdollhofer.codecast.player;
 
 import com.sun.javafx.application.PlatformImpl;
 import de.tobiasdollhofer.codecast.player.util.event.Observable;
+import de.tobiasdollhofer.codecast.player.util.event.player.PlayerEvent;
+import de.tobiasdollhofer.codecast.player.util.event.player.PlayerEventType;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
@@ -23,6 +25,8 @@ public class CommentPlayer extends Observable {
     }
 
     public void run(){
+        System.out.println("Listener: " + listener.size());
+        notifyAll(new PlayerEvent(PlayerEventType.STARTED, ""));
         System.out.println("Player started");
         if(this.mediaPlayer != null && ready){
             mediaPlayer.play();

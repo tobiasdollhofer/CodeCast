@@ -59,7 +59,7 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
                 break;
 
             case PLAY_PAUSE_CLICKED:
-
+                player.run();
                 break;
 
             case PLAY_NEXT_CLICKED:

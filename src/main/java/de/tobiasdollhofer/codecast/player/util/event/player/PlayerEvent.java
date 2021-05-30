@@ -21,7 +21,7 @@ public class PlayerEvent extends Event {
 
     @Override
     public String toString() {
-        return "PlayerUIEvent{" +
+        return "PlayerEvent{" +
                 "type=" + type +
                 ", data=" + data +
                 '}';
