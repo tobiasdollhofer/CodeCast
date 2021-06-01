@@ -33,6 +33,7 @@ public class PlayerUI extends Observable{
     private JButton playLast;
     private JSlider volumeSlider;
     private JLabel volumeIcon;
+    private JToggleButton autoplayButton;
 
     private boolean playing = false;
     private Playlist playlist;
@@ -141,7 +142,8 @@ public class PlayerUI extends Observable{
     }
 
     public void setProgressTime(String time){
-        progressTime.setText(time);
+        if(!time.equals(progressTime.getText()))
+            progressTime.setText(time);
     }
 
     public void setProgress(int progress){
@@ -169,7 +171,17 @@ public class PlayerUI extends Observable{
     }
 
     private void initToolbarListener() {
+        autoplayButton.setIcon(PluginIcons.autoPlay);
+        autoplayButton.addActionListener(e -> autoplayButtonClicked());
         reloadButton.addActionListener(e -> reloadPlayer());
+    }
+
+    private void autoplayButtonClicked() {
+        notifyAll(new UIEvent(AUTOPLAY_CLICKED, String.valueOf(autoplayButton.isSelected())));
+    }
+
+    public boolean getAutoplayStatus(){
+        return autoplayButton.isSelected();
     }
 
     private void reloadPlayer() {

@@ -18,7 +18,6 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
      * TODO:
      * BUG: Play-Pause-Icon is wrong
      * BUG: Player won't be paused when next comment is selected
-     * BUG: Player will be disabled if comment after last comment is selected
      * FEATURE: Progress displaying
      */
     private Playlist playlist;
@@ -27,6 +26,7 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
     private CommentPlayer player;
     private PlayerUI ui;
     private boolean playing;
+    private boolean autoPlayback = false;
 
     public PlayerManagerServiceImpl(Project project) {
         this.project = project;
@@ -90,12 +90,17 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
                 resetPlayer();
                 break;
 
+            case AUTOPLAY_CLICKED:
+                autoplayClicked();
+                break;
+
             default:
                 throw new IllegalStateException("Unexpected value: " + e.getType());
         }
 
 
     }
+
 
     private void playFirstClicked() {
         AudioComment comment = playlist.getFirstComment();
@@ -104,7 +109,9 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
 
     private void playPreviousClicked() {
         AudioComment comment = playlist.getPreviousComment(this.comment);
-        setComment(comment);
+
+        if(comment != null)
+            setComment(comment);
     }
 
     private void playPauseClicked() {
@@ -113,12 +120,15 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
         }else{
             player.play();
         }
-        playing = !playing;
+        //playing = !playing;
+        System.out.println(playing);
     }
 
     private void playNextClicked() {
         AudioComment comment = playlist.getNextComment(this.comment);
-        setComment(comment);
+
+        if(comment != null)
+            setComment(comment);
     }
 
     private void playLastClicked() {
@@ -140,6 +150,10 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
         }else{
             ui.enablePlayer(false);
         }
+    }
+
+    private void autoplayClicked() {
+        autoPlayback = ui.getAutoplayStatus();
     }
 
 
@@ -171,7 +185,7 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
     }
 
     private void onPlayerInitialized() {
-        this.playing = false;
+        onProgressChanged();
     }
 
     private void onPlayerStarted() {
@@ -185,8 +199,15 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
     }
 
     private void onPlayerEnded() {
-        this.playing = false;
         this.ui.pausePlayer();
+        if(this.autoPlayback){
+            AudioComment comment = playlist.getNextComment(this.comment);
+            if(comment != null)
+                setComment(comment);
+        }else{
+            this.playing = false;
+        }
+        onProgressChanged();
     }
 
     private void onProgressChanged() {
@@ -195,14 +216,26 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
     }
 
     private void setComment(AudioComment comment){
+        // store current play state temporarily, because play state will be set to false when player will be paused
+        // playingTemp is used for restart playback some lines below
+        boolean playingTemp = this.playing;
+        player.pause();
         this.comment = comment;
         ui.setComment(this.comment);
         if(comment != null){
-            player.setPath("file:///" + FilePathUtil.getCodeCastAudioDirectory(project) + this.comment.getPath(), playing);
-        }else{
-            player.pause();
+            player.setPath("file:///" + FilePathUtil.getCodeCastAudioDirectory(project) + this.comment.getPath(), playingTemp);
         }
     }
+
+
+    public boolean isAutoPlayback() {
+        return autoPlayback;
+    }
+
+    public void setAutoPlayback(boolean autoPlayback) {
+        this.autoPlayback = autoPlayback;
+    }
+
     @Override
     public PlayerUI getPlayerUI() {
         return ui;

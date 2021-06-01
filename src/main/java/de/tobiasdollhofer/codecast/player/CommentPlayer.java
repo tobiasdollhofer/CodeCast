@@ -9,6 +9,8 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
 
+import java.util.concurrent.TimeUnit;
+
 public class CommentPlayer extends Observable {
 
     private String path;
@@ -17,28 +19,46 @@ public class CommentPlayer extends Observable {
     private Media media;
     private MediaPlayer mediaPlayer;
     private boolean ready = false;
+    // duplicate to mediaplayer.getStatus() -> used because player needs some time to start and stop asynchronously
+    private boolean playing = false;
 
     public CommentPlayer() {
         super();
+
+        this.volume = 1;
         // necessary to initialize javafx components
         PlatformImpl.startup(() -> {});
     }
 
     public void play(){
-        System.out.println("Listener: " + listener.size());
-        notifyAll(new PlayerEvent(PlayerEventType.STARTED, ""));
-        System.out.println("Player started");
         if(this.mediaPlayer != null && ready){
-            mediaPlayer.play();
+            this.playing = true;
+
+
+            Thread updateProgressThread = new Thread(() -> {
+                while (playing) {
+                    notifyAll(new PlayerEvent(PlayerEventType.PROGRESS_CHANGED, ""));
+                    try {
+                        TimeUnit.MILLISECONDS.sleep(100);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+
+
+            updateProgressThread.start();
+            this.mediaPlayer.play();
+            notifyAll(new PlayerEvent(PlayerEventType.STARTED, ""));
         }
     }
 
     public void pause(){
-        System.out.println("Player stopped");
         if(this.mediaPlayer != null && ready){
-            mediaPlayer.pause();
+            this.mediaPlayer.pause();
+            this.playing = false;
+            notifyAll(new PlayerEvent(PlayerEventType.STOPPED, ""));
         }
-        System.out.println(getFormattedProgress());
     }
 
     public void setVolume(double volume){
@@ -51,7 +71,7 @@ public class CommentPlayer extends Observable {
         return path;
     }
 
-    public void setPath(String path, boolean playing) {
+    public void setPath(String path, boolean playAlong) {
         this.ready = false;
         this.path = path;
         try{
@@ -60,14 +80,23 @@ public class CommentPlayer extends Observable {
             this.mediaPlayer.setOnReady(new Runnable() {
                 @Override
                 public void run() {
-                    ready = true;
+
                     CommentPlayer.this.notifyAll(new PlayerEvent(PlayerEventType.INITIALIZED, ""));
+                    ready = true;
                     setVolume(volume);
-                    if(playing){
+                    if(playAlong){
                         play();
                     }
-                    System.out.println(getLength());
-                    System.out.println(getFormattedProgress());
+                }
+            });
+
+            this.mediaPlayer.setOnEndOfMedia(new Runnable() {
+                @Override
+                public void run() {
+                    mediaPlayer.seek(Duration.ZERO);
+                    mediaPlayer.pause();
+                    playing = false;
+                    CommentPlayer.this.notifyAll(new PlayerEvent(PlayerEventType.ENDED, ""));
                 }
             });
 
@@ -119,6 +148,12 @@ public class CommentPlayer extends Observable {
     }
 
     public int getProgressPercentage(){
-        return (int) (mediaPlayer.getCurrentTime().toSeconds() / mediaPlayer.getMedia().getDuration().toSeconds());
+        double current = mediaPlayer.getCurrentTime().toSeconds();
+        double complete = mediaPlayer.getMedia().getDuration().toSeconds();
+        double percentage = (current / complete) * 100;
+        if (percentage > 99) {
+            return 100;
+        }
+        return (int) percentage;
     }
 }
