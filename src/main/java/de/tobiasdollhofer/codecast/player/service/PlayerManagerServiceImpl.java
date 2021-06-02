@@ -5,6 +5,7 @@ import com.intellij.openapi.project.Project;
 import de.tobiasdollhofer.codecast.player.CommentPlayer;
 import de.tobiasdollhofer.codecast.player.data.AudioComment;
 import de.tobiasdollhofer.codecast.player.data.Playlist;
+import de.tobiasdollhofer.codecast.player.util.BalloonNotifier;
 import de.tobiasdollhofer.codecast.player.util.FilePathUtil;
 import de.tobiasdollhofer.codecast.player.util.event.*;
 import de.tobiasdollhofer.codecast.player.util.event.player.PlayerEvent;
@@ -179,6 +180,10 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
                 onProgressChanged();
                 break;
 
+            case MEDIA_UNAVAILABLE:
+                onMediaUnavailable();
+                break;
+
             default:
                 throw new IllegalStateException("Unexpected value: " + e.getType());
         }
@@ -214,6 +219,11 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
         this.ui.setProgress(this.player.getProgressPercentage());
         this.ui.setProgressTime(this.player.getFormattedProgress());
     }
+
+    private void onMediaUnavailable() {
+        BalloonNotifier.notifyError(this.project, "Current file with path " + comment.getPath() + " not available!");
+    }
+
 
     private void setComment(AudioComment comment){
         // store current play state temporarily, because play state will be set to false when player will be paused

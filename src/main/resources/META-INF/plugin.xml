@@ -11,6 +11,7 @@
     <depends>com.intellij.javafx</depends>
 
     <extensions defaultExtensionNs="com.intellij">
+        <notificationGroup id="CodeCastNotifier" displayType="BALLOON"/>
         <toolWindow factoryClass="de.tobiasdollhofer.codecast.player.ui.PlayerUIFactory" id="CodeCast" anchor="right" />
         <projectService serviceImplementation="de.tobiasdollhofer.codecast.player.service.PlaylistServiceImpl"
                         serviceInterface="de.tobiasdollhofer.codecast.player.service.PlaylistService" />

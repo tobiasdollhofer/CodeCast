@@ -6,6 +6,7 @@ import de.tobiasdollhofer.codecast.player.util.event.Observable;
 import de.tobiasdollhofer.codecast.player.util.event.player.PlayerEvent;
 import de.tobiasdollhofer.codecast.player.util.event.player.PlayerEventType;
 import javafx.scene.media.Media;
+import javafx.scene.media.MediaException;
 import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
 
@@ -101,9 +102,9 @@ public class CommentPlayer extends Observable {
             });
 
 
-        }catch (IllegalArgumentException e){
+        }catch (IllegalArgumentException | MediaException e){
             e.printStackTrace();
-            //TODO: Message Alert - MP3 not available
+            notifyAll(new PlayerEvent(PlayerEventType.MEDIA_UNAVAILABLE, ""));
         }
     }
 
