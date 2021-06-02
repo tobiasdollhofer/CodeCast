@@ -1,19 +1,20 @@
 <idea-plugin>
     <id>de.tobiasdollhofer.CodeCast</id>
-    <name>Plugin display name here</name>
-    <vendor email="support@yourcompany.com" url="http://www.yourcompany.com">YourCompany</vendor>
+    <name>CodeCast</name>
+    <vendor email="tobias.dollhofer@stud.uni-regensburg.de" url="https://www.uni-regensburg.de">University of Regensburg</vendor>
 
-    <description><![CDATA[
-    Enter short description for your plugin here.<br>
-    <em>most HTML tags may be used</em>
-    ]]></description>
+    <description>CodeCast is a plugin for programming novices. It provides a player for audio comments to improve code comprehention.</description>
 
     <!-- please see https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html
          on how to target different products -->
     <depends>com.intellij.modules.platform</depends>
 
     <extensions defaultExtensionNs="com.intellij">
-        <!-- Add your extensions here -->
+        <toolWindow factoryClass="de.tobiasdollhofer.codecast.player.ui.PlayerUIFactory" id="CodeCast" anchor="right" />
+        <projectService serviceImplementation="de.tobiasdollhofer.codecast.player.service.PlaylistServiceImpl"
+                        serviceInterface="de.tobiasdollhofer.codecast.player.service.PlaylistService" />
+        <projectService serviceImplementation="de.tobiasdollhofer.codecast.player.service.PlayerManagerServiceImpl"
+                        serviceInterface="de.tobiasdollhofer.codecast.player.service.PlayerManagerService" />
     </extensions>
 
     <actions>
@@ -21,6 +22,9 @@
                 text="Test Action" description="Simple action to test action-functionallity">
             <add-to-group group-id="ToolsMenu" />
         </action>
-        <!-- Add your actions here -->
     </actions>
+
+    <applicationListeners>
+        <listener class="de.tobiasdollhofer.codecast.player.service.ProjectOpenCloseListener" topic="com.intellij.openapi.project.ProjectManagerListener" />
+    </applicationListeners>
 </idea-plugin>

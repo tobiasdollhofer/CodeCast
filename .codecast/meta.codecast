@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<playlist>
+    <chapter>
+        <title>Aufgabe 1</title>
+        <comment type="INTRO" id="123456">
+            <title>Einführung</title>
+            <url>introduction.mp3</url>
+        </comment>
+        <comment type="DEFAULT" id="456789">
+            <title>onCreateView()-Methode</title>
+            <url>oncreate.mp3</url>
+        </comment>
+    </chapter>
+</playlist>
