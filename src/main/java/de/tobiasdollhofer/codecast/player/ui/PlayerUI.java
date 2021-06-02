@@ -84,7 +84,6 @@ public class PlayerUI extends Observable{
     }
 
     private void volumeSliderChange() {
-        System.out.println("New Volume: " + volumeSlider.getValue());
         double volume = volumeSlider.getValue();
 
         if(volumeSlider.getValue() == 0){
@@ -93,52 +92,28 @@ public class PlayerUI extends Observable{
             volumeIcon.setIcon(PluginIcons.volume);
             volume = volume / 100;
         }
-       // player.setVolume(volume);
         notifyAll(new UIEvent(VOLUME_CHANGE, String.valueOf(volume)));
     }
 
     private void playLastClicked() {
-        System.out.println("Play Last clicked!");
         notifyAll(new UIEvent(PLAY_LAST_CLICKED, ""));
-        //pausePlayer();
-        //AudioComment comment = playlist.getLastComment();
-
-       // if(comment != null)
-        //    setComment(comment);
     }
 
     private void playNextClicked() {
-        System.out.println("Play Next clicked!");
         notifyAll(new UIEvent(PLAY_NEXT_CLICKED, ""));
-        //pausePlayer();
-        //AudioComment comment = playlist.getNextComment(this.comment);
-
-        //if(comment != null)
-          //  setComment(comment);
     }
 
     private void playPauseClicked() {
-        System.out.println("Play Pause clicked!");
         notifyAll(new UIEvent(PLAY_PAUSE_CLICKED, ""));
-        //if(playing){
-          //  pausePlayer();
-        //}else{
-          //  playPlayer();
-        //}
-        //System.out.println("CodeCast-Player State: " + this.playing);
     }
 
     //TODO: rename
     public void pausePlayer(){
         playPause.setIcon(PluginIcons.play);
-        //player.pause();
-        //playing = false;
     }
 
     public void playPlayer(){
         playPause.setIcon(PluginIcons.pause);
-        //player.run();
-        //playing = true;
     }
 
     public void setProgressTime(String time){
@@ -151,23 +126,12 @@ public class PlayerUI extends Observable{
     }
 
     private void playPreviousClicked() {
-        System.out.println("Play Previous clicked!");
         notifyAll(new UIEvent(PLAY_PREVIOUS_CLICKED, ""));
         //TODO: add some cooldown to restart current comment
-        //AudioComment comment = playlist.getPreviousComment(this.comment);
-
-        //if(comment != null)
-          //  setComment(comment);
     }
 
     private void playFirstClicked() {
-        System.out.println("Play First clicked!");
         notifyAll(new UIEvent(PLAY_FIRST_CLICKED, ""));
-        //pausePlayer();
-        //AudioComment comment = playlist.getFirstComment();
-
-        //if(comment != null)
-          //  setComment(comment);
     }
 
     private void initToolbarListener() {
@@ -177,6 +141,11 @@ public class PlayerUI extends Observable{
     }
 
     private void autoplayButtonClicked() {
+        if(autoplayButton.isSelected()){
+            autoplayButton.setText("Autoplay ON");
+        }else{
+            autoplayButton.setText("Autoplay OFF");
+        }
         notifyAll(new UIEvent(AUTOPLAY_CLICKED, String.valueOf(autoplayButton.isSelected())));
     }
 
@@ -185,15 +154,7 @@ public class PlayerUI extends Observable{
     }
 
     private void reloadPlayer() {
-        System.out.println("Reload Player");
         notifyAll(new UIEvent(UIEventType.RESET_PLAYER, "Reloaded player"));
-       // pausePlayer();
-        //project.getService(PlaylistService.class).loadPlaylist();
-        //this.playlist = project.getService(PlaylistService.class).getPlaylist();
-        //if(this.playlist != null){
-          //  setComment(this.playlist.getFirstComment());
-        //}
-
     }
 
     private void initList(){
@@ -210,9 +171,6 @@ public class PlayerUI extends Observable{
             currentTitleLabel.setText("No comment available.");
             enablePlayer(false);
         }
-        // reinitialize player with stored comment as the resetting of a comment should also reset the player
-        //player.setPath("file:///" + FilePathUtil.getCodeCastAudioDirectory(this.project) + this.comment.getPath());
-        //System.out.println("Length: " + String.valueOf(player.getLength()));
     }
 
     public void enablePlayer(boolean enabled){
