@@ -16,6 +16,11 @@ dependencies {
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
 }
 
+javafx {
+    version = "11.0.2"
+    modules = [ 'javafx.media']
+}
+
 // See https://github.com/JetBrains/gradle-intellij-plugin/
 intellij {
     version '2021.1'
@@ -30,10 +35,6 @@ intellij {
     }
 }
 
-javafx {
-    version = "11.0.2"
-    modules = [ 'javafx.media']
-}
 
 patchPluginXml {
     changeNotes """
