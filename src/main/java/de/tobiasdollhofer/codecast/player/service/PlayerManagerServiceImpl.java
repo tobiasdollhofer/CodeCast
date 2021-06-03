@@ -38,6 +38,7 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
         if(playlist != null){
             this.comment = playlist.getFirstComment();
             setComment(this.comment);
+            this.ui.setPlaylist(this.playlist);
         }
         addListeners();
     }
@@ -148,6 +149,7 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
         if(this.playlist != null){
             ui.enablePlayer(true);
             setComment(this.playlist.getFirstComment());
+            ui.setPlaylist(this.playlist);
         }else{
             ui.enablePlayer(false);
         }

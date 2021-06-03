@@ -23,14 +23,7 @@
           <component id="5a63b" class="javax.swing.JList" binding="playlistList">
             <constraints/>
             <properties>
-              <model>
-                <item value="1. Blabla"/>
-                <item value="2. Blabla"/>
-                <item value="3. Blabla"/>
-                <item value="4. Blabla"/>
-                <item value="5. Blabla"/>
-                <item value="6. Blabla"/>
-              </model>
+              <model/>
             </properties>
           </component>
         </children>

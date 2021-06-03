@@ -1,8 +1,12 @@
 package de.tobiasdollhofer.codecast.player.ui;
 
 import com.intellij.openapi.project.Project;
+import com.intellij.ui.components.JBLabel;
+import com.intellij.ui.components.JBList;
+import com.intellij.ui.components.JBScrollPane;
 import de.tobiasdollhofer.codecast.player.CommentPlayer;
 import de.tobiasdollhofer.codecast.player.data.AudioComment;
+import de.tobiasdollhofer.codecast.player.data.Chapter;
 import de.tobiasdollhofer.codecast.player.data.Playlist;
 import de.tobiasdollhofer.codecast.player.service.PlaylistService;
 import de.tobiasdollhofer.codecast.player.util.FilePathUtil;
@@ -12,6 +16,8 @@ import de.tobiasdollhofer.codecast.player.util.event.ui.UIEvent;
 import de.tobiasdollhofer.codecast.player.util.event.ui.UIEventType;
 
 import javax.swing.*;
+
+import java.awt.*;
 
 import static de.tobiasdollhofer.codecast.player.util.event.ui.UIEventType.*;
 
@@ -46,16 +52,6 @@ public class PlayerUI extends Observable{
     public PlayerUI(Project project){
         super();
         this.project = project;
-        //this.playlist = project.getService(PlaylistService.class).getPlaylist();
-     //   this.player = new CommentPlayer();
-        //if(this.playlist != null){
-        //    setComment(this.playlist.getFirstComment());
-        //}else{
-        //    enablePlayer(false);
-            // TODO: ALERT NO XML!!
-        //}
-
-        initList();
         initToolbarListener();
         initPlayerControls();
     }
@@ -157,7 +153,8 @@ public class PlayerUI extends Observable{
         notifyAll(new UIEvent(UIEventType.RESET_PLAYER, "Reloaded player"));
     }
 
-    private void initList(){
+    public void setPlaylist(Playlist playlist) {
+        System.out.println("SET PLAYLIST");
     }
 
     public void setComment(AudioComment comment){

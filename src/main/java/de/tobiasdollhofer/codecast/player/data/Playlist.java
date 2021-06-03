@@ -1,5 +1,6 @@
 package de.tobiasdollhofer.codecast.player.data;
 
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -123,6 +124,18 @@ public class Playlist {
         }
 
         return null;
+    }
+
+    public ListModel toListModel(){
+
+        DefaultListModel model = new DefaultListModel();
+        for(Chapter c : chapters){
+            model.addElement(c.getTitle());
+            for(AudioComment comment : c.getComments()){
+                model.addElement(comment.getTitle());
+            }
+        }
+        return model;
     }
 
     @Override
