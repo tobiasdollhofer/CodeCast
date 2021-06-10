@@ -223,7 +223,7 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
     }
 
     private void onMediaUnavailable() {
-        BalloonNotifier.notifyError(this.project, "Current file with path " + comment.getPath() + " not available!");
+        BalloonNotifier.notifyError(this.project, "Current file with path " + FilePathUtil.getFilePathForComment(this.project, comment) + " not available!");
     }
 
 
@@ -234,8 +234,8 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
         player.pause();
         this.comment = comment;
         ui.setComment(this.comment);
-        if(comment != null){
-            player.setPath("file:///" + FilePathUtil.getCodeCastAudioDirectory(project) + this.comment.getPath(), playingTemp);
+        if(comment != null && FilePathUtil.checkCommentDownloaded(project, comment)){
+            player.setPath(FilePathUtil.getFilePathForCommentWithPrefix(project, comment), playingTemp);
         }
     }
 
