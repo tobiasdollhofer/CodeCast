@@ -4,8 +4,8 @@ import com.intellij.openapi.components.Service;
 import com.intellij.openapi.project.DumbService;
 import com.intellij.openapi.project.Project;
 import de.tobiasdollhofer.codecast.player.data.Playlist;
+import de.tobiasdollhofer.codecast.player.util.PlaylistLoader;
 
-import static de.tobiasdollhofer.codecast.player.util.PlaylistLoader.loadPlaylistFromComments;
 
 @Service
 public class PlaylistServiceImpl implements PlaylistService{
@@ -25,11 +25,10 @@ public class PlaylistServiceImpl implements PlaylistService{
 
     @Override
     public void loadPlaylist() {
-        //playlist = PlaylistLoader.loadFromMetaFile(FilePathUtil.getCodeCastMetaPath(project));
         DumbService.getInstance(project).runWhenSmart(new Runnable() {
             @Override
             public void run() {
-                loadPlaylistFromComments(project);
+                playlist = PlaylistLoader.loadPlaylistFromComments(project);
             }
         });
 

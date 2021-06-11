@@ -1,6 +1,7 @@
 package de.tobiasdollhofer.codecast.player.service;
 
 import com.intellij.openapi.components.Service;
+import com.intellij.openapi.project.DumbService;
 import com.intellij.openapi.project.Project;
 import de.tobiasdollhofer.codecast.player.CommentPlayer;
 import de.tobiasdollhofer.codecast.player.data.AudioComment;
@@ -31,16 +32,27 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
 
     public PlayerManagerServiceImpl(Project project) {
         this.project = project;
-        this.playlist = project.getService(PlaylistService.class).getPlaylist();
         this.player = new CommentPlayer();
         this.ui = new PlayerUI(project);
         this.playing = false;
-        if(playlist != null){
-            this.comment = playlist.getFirstComment();
-            setComment(this.comment);
-            this.ui.setPlaylist(this.playlist);
-        }
+
+        initPlaylist();
         addListeners();
+    }
+
+    private void initPlaylist() {
+        DumbService.getInstance(this.project).runWhenSmart(new Runnable() {
+            @Override
+            public void run() {
+                playlist = project.getService(PlaylistService.class).getPlaylist();
+                System.out.println(playlist);
+                if(playlist != null){
+                    comment = playlist.getFirstComment();
+                    setComment(comment);
+                    ui.setPlaylist(playlist);
+                }
+            }
+        });
     }
 
     private void addListeners() {
