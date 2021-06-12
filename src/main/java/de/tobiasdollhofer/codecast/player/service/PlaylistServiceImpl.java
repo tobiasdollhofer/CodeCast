@@ -25,13 +25,7 @@ public class PlaylistServiceImpl implements PlaylistService{
 
     @Override
     public void loadPlaylist() {
-        DumbService.getInstance(project).runWhenSmart(new Runnable() {
-            @Override
-            public void run() {
-                playlist = PlaylistLoader.loadPlaylistFromComments(project);
-            }
-        });
-
+        playlist = PlaylistLoader.loadPlaylistFromComments(project);
     }
 
 

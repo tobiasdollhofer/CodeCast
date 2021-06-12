@@ -2,6 +2,8 @@ package de.tobiasdollhofer.codecast.player.service;
 
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.ServiceManager;
+import com.intellij.openapi.project.DumbService;
+import com.intellij.openapi.project.DumbServiceSyncTaskQueue;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManagerListener;
 import org.jetbrains.annotations.NotNull;
@@ -19,8 +21,15 @@ public class ProjectOpenCloseListener implements ProjectManagerListener {
             return;
         }
 
-        PlaylistService playlistService = project.getService(PlaylistService.class);
-        PlayerManagerService playerManagerService = project.getService(PlayerManagerService.class);
+        // init services when index is built up
+        DumbService.getInstance(project).runWhenSmart(new Runnable() {
+            @Override
+            public void run() {
+                PlaylistService playlistService = project.getService(PlaylistService.class);
+                PlayerManagerService playerManagerService = project.getService(PlayerManagerService.class);
+            }
+        });
+
     }
 
 

@@ -41,18 +41,12 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
     }
 
     private void initPlaylist() {
-        DumbService.getInstance(this.project).runWhenSmart(new Runnable() {
-            @Override
-            public void run() {
-                playlist = project.getService(PlaylistService.class).getPlaylist();
-                System.out.println(playlist);
-                if(playlist != null){
-                    comment = playlist.getFirstComment();
-                    setComment(comment);
-                    ui.setPlaylist(playlist);
-                }
-            }
-        });
+        playlist = project.getService(PlaylistService.class).getPlaylist();
+        if(playlist != null){
+            comment = playlist.getFirstComment();
+            setComment(comment);
+            ui.setPlaylist(playlist);
+        }
     }
 
     private void addListeners() {
