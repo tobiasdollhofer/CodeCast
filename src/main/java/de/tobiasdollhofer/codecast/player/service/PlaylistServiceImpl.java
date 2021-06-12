@@ -3,8 +3,8 @@ package de.tobiasdollhofer.codecast.player.service;
 import com.intellij.openapi.components.Service;
 import com.intellij.openapi.project.Project;
 import de.tobiasdollhofer.codecast.player.data.Playlist;
-import de.tobiasdollhofer.codecast.player.util.FilePathUtil;
 import de.tobiasdollhofer.codecast.player.util.PlaylistLoader;
+
 
 @Service
 public class PlaylistServiceImpl implements PlaylistService{
@@ -15,19 +15,29 @@ public class PlaylistServiceImpl implements PlaylistService{
     public PlaylistServiceImpl(Project project) {
         this.project = project;
         loadPlaylist();
-        System.out.println(playlist.toString());
     }
 
+    /**
+     *
+     * @return playlist or null
+     */
     @Override
     public Playlist getPlaylist() {
         return playlist;
     }
 
+    /**
+     * loads playlist from codecast comments using PlaylistLoader
+     */
     @Override
     public void loadPlaylist() {
-        playlist = PlaylistLoader.loadFromMetaFile(FilePathUtil.getCodeCastMetaPath(project));
+        playlist = PlaylistLoader.loadPlaylistFromComments(project);
     }
 
+
+    /**
+     * sets playlist as null
+     */
     @Override
     public void emptyPlaylist() {
         playlist = null;

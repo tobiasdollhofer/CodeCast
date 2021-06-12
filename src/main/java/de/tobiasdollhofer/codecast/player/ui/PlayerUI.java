@@ -1,17 +1,15 @@
 package de.tobiasdollhofer.codecast.player.ui;
 
 import com.intellij.openapi.project.Project;
-import de.tobiasdollhofer.codecast.player.CommentPlayer;
 import de.tobiasdollhofer.codecast.player.data.AudioComment;
 import de.tobiasdollhofer.codecast.player.data.Playlist;
-import de.tobiasdollhofer.codecast.player.service.PlaylistService;
-import de.tobiasdollhofer.codecast.player.util.FilePathUtil;
 import de.tobiasdollhofer.codecast.player.util.PluginIcons;
 import de.tobiasdollhofer.codecast.player.util.event.Observable;
 import de.tobiasdollhofer.codecast.player.util.event.ui.UIEvent;
 import de.tobiasdollhofer.codecast.player.util.event.ui.UIEventType;
 
 import javax.swing.*;
+
 
 import static de.tobiasdollhofer.codecast.player.util.event.ui.UIEventType.*;
 
@@ -38,7 +36,6 @@ public class PlayerUI extends Observable{
     private boolean playing = false;
     private Playlist playlist;
     private AudioComment comment;
-   // private CommentPlayer player;
     public String playerTest;
 
     private final Project project;
@@ -46,16 +43,6 @@ public class PlayerUI extends Observable{
     public PlayerUI(Project project){
         super();
         this.project = project;
-        //this.playlist = project.getService(PlaylistService.class).getPlaylist();
-     //   this.player = new CommentPlayer();
-        //if(this.playlist != null){
-        //    setComment(this.playlist.getFirstComment());
-        //}else{
-        //    enablePlayer(false);
-            // TODO: ALERT NO XML!!
-        //}
-
-        initList();
         initToolbarListener();
         initPlayerControls();
     }
@@ -83,8 +70,10 @@ public class PlayerUI extends Observable{
         volumeSlider.addChangeListener(e -> volumeSliderChange());
     }
 
+    /**
+     * notifies all observer about volume change
+     */
     private void volumeSliderChange() {
-        System.out.println("New Volume: " + volumeSlider.getValue());
         double volume = volumeSlider.getValue();
 
         if(volumeSlider.getValue() == 0){
@@ -93,114 +82,125 @@ public class PlayerUI extends Observable{
             volumeIcon.setIcon(PluginIcons.volume);
             volume = volume / 100;
         }
-       // player.setVolume(volume);
         notifyAll(new UIEvent(VOLUME_CHANGE, String.valueOf(volume)));
     }
 
+    /**
+     * notifies all observer about click event
+     */
     private void playLastClicked() {
-        System.out.println("Play Last clicked!");
         notifyAll(new UIEvent(PLAY_LAST_CLICKED, ""));
-        //pausePlayer();
-        //AudioComment comment = playlist.getLastComment();
-
-       // if(comment != null)
-        //    setComment(comment);
     }
 
+    /**
+     * notifies all observer about click event
+     */
     private void playNextClicked() {
-        System.out.println("Play Next clicked!");
         notifyAll(new UIEvent(PLAY_NEXT_CLICKED, ""));
-        //pausePlayer();
-        //AudioComment comment = playlist.getNextComment(this.comment);
-
-        //if(comment != null)
-          //  setComment(comment);
     }
 
+    /**
+     * notifies all observer about click event
+     */
     private void playPauseClicked() {
-        System.out.println("Play Pause clicked!");
         notifyAll(new UIEvent(PLAY_PAUSE_CLICKED, ""));
-        //if(playing){
-          //  pausePlayer();
-        //}else{
-          //  playPlayer();
-        //}
-        //System.out.println("CodeCast-Player State: " + this.playing);
     }
 
-    //TODO: rename
+    /**
+     * sets play icon to button
+     */
     public void pausePlayer(){
         playPause.setIcon(PluginIcons.play);
-        //player.pause();
-        //playing = false;
     }
 
+    /**
+     * sets pause icon to button
+     */
     public void playPlayer(){
         playPause.setIcon(PluginIcons.pause);
-        //player.run();
-        //playing = true;
     }
 
+    /**
+     * display current time progress
+     * @param time string value of time ( x:xx/x:xx)
+     */
     public void setProgressTime(String time){
         if(!time.equals(progressTime.getText()))
             progressTime.setText(time);
     }
 
+    /**
+     * sets progressbar progress
+     * @param progress int value between 0 and 100
+     */
     public void setProgress(int progress){
         playerProgressBar.setValue(progress);
     }
 
+    /**
+     * notifies all observer about click event
+     */
     private void playPreviousClicked() {
-        System.out.println("Play Previous clicked!");
         notifyAll(new UIEvent(PLAY_PREVIOUS_CLICKED, ""));
         //TODO: add some cooldown to restart current comment
-        //AudioComment comment = playlist.getPreviousComment(this.comment);
-
-        //if(comment != null)
-          //  setComment(comment);
     }
 
+    /**
+     * notifies all observer about click event
+     */
     private void playFirstClicked() {
-        System.out.println("Play First clicked!");
         notifyAll(new UIEvent(PLAY_FIRST_CLICKED, ""));
-        //pausePlayer();
-        //AudioComment comment = playlist.getFirstComment();
-
-        //if(comment != null)
-          //  setComment(comment);
     }
 
+    /**
+     * inits toolbar buttons
+     */
     private void initToolbarListener() {
         autoplayButton.setIcon(PluginIcons.autoPlay);
         autoplayButton.addActionListener(e -> autoplayButtonClicked());
         reloadButton.addActionListener(e -> reloadPlayer());
     }
 
+    /**
+     * notifies all observer about click event and sets text to ON/OFF
+     */
     private void autoplayButtonClicked() {
+        if(autoplayButton.isSelected()){
+            autoplayButton.setText("Autoplay ON");
+        }else{
+            autoplayButton.setText("Autoplay OFF");
+        }
         notifyAll(new UIEvent(AUTOPLAY_CLICKED, String.valueOf(autoplayButton.isSelected())));
     }
 
+    /**
+     *
+     * @return if autoplaybutton is selected
+     */
     public boolean getAutoplayStatus(){
         return autoplayButton.isSelected();
     }
 
+    /**
+     * notifies all observer about click event
+     */
     private void reloadPlayer() {
-        System.out.println("Reload Player");
         notifyAll(new UIEvent(UIEventType.RESET_PLAYER, "Reloaded player"));
-       // pausePlayer();
-        //project.getService(PlaylistService.class).loadPlaylist();
-        //this.playlist = project.getService(PlaylistService.class).getPlaylist();
-        //if(this.playlist != null){
-          //  setComment(this.playlist.getFirstComment());
-        //}
-
     }
 
-    private void initList(){
+    /**
+     * TODO
+     * @param playlist
+     */
+    public void setPlaylist(Playlist playlist) {
+        System.out.println("SET PLAYLIST");
     }
 
+    /**
+     * sets progress value and title depending on comment
+     * @param comment comment to be setted
+     */
     public void setComment(AudioComment comment){
-        //pausePlayer();
         playerProgressBar.setValue(0);
         if(comment != null){
             this.comment = comment;
@@ -210,11 +210,12 @@ public class PlayerUI extends Observable{
             currentTitleLabel.setText("No comment available.");
             enablePlayer(false);
         }
-        // reinitialize player with stored comment as the resetting of a comment should also reset the player
-        //player.setPath("file:///" + FilePathUtil.getCodeCastAudioDirectory(this.project) + this.comment.getPath());
-        //System.out.println("Length: " + String.valueOf(player.getLength()));
     }
 
+    /**
+     * enable/disable player buttons
+     * @param enabled true/false
+     */
     public void enablePlayer(boolean enabled){
         this.playFirst.setEnabled(enabled);
         this.playPrevious.setEnabled(enabled);
@@ -226,6 +227,10 @@ public class PlayerUI extends Observable{
         this.playerProgressBar.setEnabled(enabled);
     }
 
+    /**
+     *
+     * @return JPanel with UI
+     */
     public JPanel getContent(){
         return playerWindowContent;
     }

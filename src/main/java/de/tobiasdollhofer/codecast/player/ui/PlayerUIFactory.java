@@ -12,14 +12,16 @@ import org.jetbrains.annotations.NotNull;
 
 public class PlayerUIFactory implements ToolWindowFactory {
 
+    /**
+     * creates ui on project startup
+     * @param project current project
+     * @param toolWindow window where content will be added
+     */
     @Override
     public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
-        //CodeCastPlayer codeCastPlayer = new CodeCastPlayer(project);
         PlayerUI ui = project.getService(PlayerManagerService.class).getPlayerUI();
         ContentFactory contentFactory = ContentFactory.SERVICE.getInstance();
         Content content = contentFactory.createContent(ui.getContent(), "CodeCast", false);
         toolWindow.getContentManager().addContent(content);
-        /*String path = FilePathUtil.getCodeCastMetaPath(project);
-        PlaylistLoader.loadFromMetaFile(path);*/
     }
 }

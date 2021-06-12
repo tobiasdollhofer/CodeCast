@@ -5,7 +5,7 @@ plugins {
 }
 
 group 'de.tobiasdollhofer'
-version '0.0.1'
+version '0.0.2'
 
 repositories {
     mavenCentral()
@@ -14,6 +14,7 @@ repositories {
 dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+    implementation group: 'commons-io', name: 'commons-io', version: '2.6'
 }
 
 javafx {
@@ -38,8 +39,7 @@ intellij {
 
 patchPluginXml {
     changeNotes """
-      Add change notes here.<br>
-      <em>most HTML tags may be used</em>"""
+      Automatic playlist generation from comments with automatic download from remote url"""
 }
 test {
     useJUnitPlatform()

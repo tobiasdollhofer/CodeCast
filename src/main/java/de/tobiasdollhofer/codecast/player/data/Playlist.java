@@ -1,8 +1,15 @@
 package de.tobiasdollhofer.codecast.player.data;
 
+
+
+import javax.swing.*;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
+/**
+ * Playlist entity to store chapters
+ */
 public class Playlist {
 
     private List<Chapter> chapters;
@@ -19,20 +26,26 @@ public class Playlist {
         return chapters;
     }
 
+    /**
+     *
+     * @return first chapter of list or null if list is empty
+     */
     public Chapter getFirstChapter(){
-        if(chapters.size() > 0){
-            return chapters.get(0);
-        }
-        return null;
+        return getChapter(0);
     }
 
+    /**
+     *
+     * @return last chapter of list or null if list is empty
+     */
     public Chapter getLastChapter(){
-        if(chapters.size() > 0){
-            return chapters.get(chapters.size() - 1);
-        }
-        return null;
+        return getChapter(chapters.size() - 1);
     }
 
+    /**
+     *
+     * @return first comment of first chapter or null if there are no comments
+     */
     public AudioComment getFirstComment(){
         Chapter chapter = getFirstChapter();
         if(chapter != null){
@@ -41,6 +54,10 @@ public class Playlist {
         return null;
     }
 
+    /**
+     *
+     * @return last comment of last chapter or null if there are no comments
+     */
     public  AudioComment getLastComment(){
         Chapter chapter = getLastChapter();
         if(chapter != null){
@@ -49,6 +66,11 @@ public class Playlist {
         return null;
     }
 
+    /**
+     *
+     * @param chapter chapter to search for
+     * @return index of chapter or -1 if chapter won't be found
+     */
     public int indexOfChapter(Chapter chapter){
         for(int i = 0; i < chapters.size(); i++){
             if(chapters.get(i).equals(chapter)){
@@ -58,16 +80,31 @@ public class Playlist {
         return -1;
     }
 
+    /**
+     *
+     * @param chapter current chapter
+     * @return next chapter or null if current is last chapter
+     */
     public Chapter getNextChapter(Chapter chapter){
         int index = indexOfChapter(chapter);
         return getChapter(index + 1);
     }
 
+    /**
+     *
+     * @param chapter current chapter
+     * @return chapter before current chapter or null if current is first chapter
+     */
     public Chapter getPreviousChapter(Chapter chapter){
         int index = indexOfChapter(chapter);
         return getChapter(index - 1);
     }
 
+    /**
+     *
+     * @param comment current comment
+     * @return next comment of current chapter OR first comment of next chapter OR null if current is the last comment of last chapter
+     */
     public AudioComment getNextComment(AudioComment comment){
         Chapter chapter = findChapterForComment(comment);
         if(chapter != null){
@@ -84,6 +121,11 @@ public class Playlist {
         return null;
     }
 
+    /**
+     *
+     * @param comment current comment
+     * @return previous comment of current chapter OR last comment of previous chapter OR null if current is the first comment of first chapter
+     */
     public AudioComment getPreviousComment(AudioComment comment){
         Chapter chapter = findChapterForComment(comment);
         if(chapter != null){
@@ -100,6 +142,11 @@ public class Playlist {
         return null;
     }
 
+    /**
+     *
+     * @param comment comment to search for
+     * @return chapter in which the current comment is stored or null if no chapter can be found
+     */
     public Chapter findChapterForComment(AudioComment comment){
         for(int i = 0; i < chapters.size(); i++){
             if(chapters.get(i).indexOfComment(comment) != -1){
@@ -113,16 +160,64 @@ public class Playlist {
         this.chapters = chapters;
     }
 
+    /**
+     * adds a chapter to the playlist and rearranges the order of the chapters
+     * @param chapter chapter to add
+     */
     public void addChapter(Chapter chapter){
         chapters.add(chapter);
+        // rearrange order depending on title of the chapter
+        chapters.sort(new Comparator<Chapter>() {
+            @Override
+            public int compare(Chapter c1, Chapter c2) {
+                return c1.getTitle().compareTo(c2.getTitle());
+            }
+        });
     }
 
+    /**
+     *
+     * @param position position of the chapter
+     * @return chapter on position or null of position is out of bounds
+     */
     public Chapter getChapter(int position){
         if(position >= 0 && position < chapters.size()){
             return chapters.get(position);
         }
 
         return null;
+    }
+
+    /**
+     * adds comment to existing chapter if its chapter title exists or creates a new chapter and adds it to playlist
+     * @param comment comment to add
+     */
+    public void addComment(AudioComment comment){
+        // add comment to chapter if fitting chapter already exists
+        for(Chapter c : chapters){
+            if(c.getTitle().equals(comment.getChapter())){
+                c.addComment(comment);
+                return;
+            }
+        }
+
+        // otherwise create new chapter and add it to playlist
+        Chapter chapter = new Chapter();
+        chapter.setTitle(comment.getChapter());
+        chapter.addComment(comment);
+        addChapter(chapter);
+    }
+
+    public ListModel toListModel(){
+
+        DefaultListModel model = new DefaultListModel();
+        for(Chapter c : chapters){
+            model.addElement(c.getTitle());
+            for(AudioComment comment : c.getComments()){
+                model.addElement(comment.getTitle());
+            }
+        }
+        return model;
     }
 
     @Override
@@ -135,5 +230,18 @@ public class Playlist {
         }
         sb.append("}}");
         return sb.toString();
+    }
+
+    /**
+     *
+     * @return all comments of all chapters
+     */
+    public ArrayList<AudioComment> getAllComments() {
+        ArrayList<AudioComment> comments = new ArrayList<>();
+
+        for(Chapter chapter : chapters){
+            comments.addAll(chapter.getComments());
+        }
+        return comments;
     }
 }

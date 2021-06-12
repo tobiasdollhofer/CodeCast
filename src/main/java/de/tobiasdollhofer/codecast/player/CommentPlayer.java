@@ -12,6 +12,10 @@ import javafx.util.Duration;
 
 import java.util.concurrent.TimeUnit;
 
+/**
+ * media player for playback
+ * notifies all events to its listener
+ */
 public class CommentPlayer extends Observable {
 
     private String path;
@@ -31,11 +35,15 @@ public class CommentPlayer extends Observable {
         PlatformImpl.startup(() -> {});
     }
 
+    /**
+     * starts playback if player is ready
+     */
     public void play(){
         if(this.mediaPlayer != null && ready){
             this.playing = true;
 
 
+            // starts new thread for progress updates
             Thread updateProgressThread = new Thread(() -> {
                 while (playing) {
                     notifyAll(new PlayerEvent(PlayerEventType.PROGRESS_CHANGED, ""));
@@ -54,6 +62,9 @@ public class CommentPlayer extends Observable {
         }
     }
 
+    /**
+     * pauses playback
+     */
     public void pause(){
         if(this.mediaPlayer != null && ready){
             this.mediaPlayer.pause();
@@ -62,26 +73,37 @@ public class CommentPlayer extends Observable {
         }
     }
 
+    /**
+     * sets player volume
+     * @param volume double value between 0 and 1 for volume
+     */
     public void setVolume(double volume){
         this.volume = volume;
         if(this.mediaPlayer != null && ready){
             mediaPlayer.setVolume(volume);
         }
     }
+
     public String getPath() {
         return path;
     }
 
+    /**
+     * sets comment path to mediaplayer
+     * @param path path to set
+     * @param playAlong boolean value if player was paused or played before
+     */
     public void setPath(String path, boolean playAlong) {
         this.ready = false;
         this.path = path;
         try{
             this.media = new Media(path);
             this.mediaPlayer = new MediaPlayer(this.media);
+
+            // mark player es ready and play if player was played before
             this.mediaPlayer.setOnReady(new Runnable() {
                 @Override
                 public void run() {
-
                     CommentPlayer.this.notifyAll(new PlayerEvent(PlayerEventType.INITIALIZED, ""));
                     ready = true;
                     setVolume(volume);
@@ -91,6 +113,9 @@ public class CommentPlayer extends Observable {
                 }
             });
 
+            /**
+             * notify listener that comment has finished
+             */
             this.mediaPlayer.setOnEndOfMedia(new Runnable() {
                 @Override
                 public void run() {
@@ -108,6 +133,9 @@ public class CommentPlayer extends Observable {
         }
     }
 
+    /**
+     * @return length in seconds
+     */
     public double getLength(){
         if(ready){
             return this.mediaPlayer.getMedia().getDuration().toSeconds();
@@ -115,6 +143,10 @@ public class CommentPlayer extends Observable {
         return 0;
     }
 
+    /**
+     *
+     * @return progress of player in pattern x:xx/x:xx
+     */
     public String getFormattedProgress(){
         StringBuilder sb = new StringBuilder();
         if(ready){
@@ -127,6 +159,11 @@ public class CommentPlayer extends Observable {
         return sb.toString();
     }
 
+    /**
+     *
+     * @param duration time to represent
+     * @return string representation of time in pattern x:xx
+     */
     private String getFormattedTime(Duration duration){
         double durationSeconds = duration.toSeconds();
         int hours = (int) (durationSeconds / 3600);
@@ -148,6 +185,10 @@ public class CommentPlayer extends Observable {
         return sb.toString();
     }
 
+    /**
+     *
+     * @return value between 0 and 100 of playback progress
+     */
     public int getProgressPercentage(){
         double current = mediaPlayer.getCurrentTime().toSeconds();
         double complete = mediaPlayer.getMedia().getDuration().toSeconds();
