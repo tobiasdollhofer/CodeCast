@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Locale;
 
 public class PlaylistLoader {
@@ -131,29 +132,60 @@ public class PlaylistLoader {
 
     }
 
+    /**
+     * Method generates Playlist from project comment annotations
+     * @param project current project
+     * @return Playlist
+     */
     public static Playlist loadPlaylistFromComments(Project project) {
         System.out.println("Load Playlist From Comments");
+
+        // find all java project files
         Collection<VirtualFile> files = FilenameIndex.getAllFilesByExt(project, "java", GlobalSearchScope.projectScope(project));
+
+        // find all files with @codecast annotation
         ArrayList<VirtualFile> codecastFiles = getAllCodecastFiles(files);
+
+        // extract all comments from codecast files
         ArrayList<AudioComment> comments = new ArrayList<>();
         for(VirtualFile file : codecastFiles){
             comments.addAll(getCommetsFromFile(file));
         }
-        Playlist playlist = createPlaylistFromComments(comments);
-        System.out.println(playlist.toString());
+
+        // build playlist on using all comments
+        return createPlaylistFromComments(comments);
+    }
+
+    /**
+     * Method generates playlist from provided comments list
+     * @param comments extracted comments list
+     * @return playlist
+     */
+    private static Playlist createPlaylistFromComments(ArrayList<AudioComment> comments) {
+        Playlist playlist = new Playlist();
+
+        // add all comments to playlist (sorting will be handled by playlist and their chapters)
+        for(AudioComment comment : comments){
+            playlist.addComment(comment);
+        }
+        System.out.println(playlist);
         return playlist;
     }
 
-    private static Playlist createPlaylistFromComments(ArrayList<AudioComment> comments) {
-        return new Playlist();
-    }
-
-    private  static ArrayList<AudioComment> getCommetsFromFile(VirtualFile file) {
+    /**
+     * Method creates list with all comments found in this file
+     * @param file virtual file to look at
+     * @return arraylist with comments
+     */
+    private static ArrayList<AudioComment> getCommetsFromFile(VirtualFile file) {
         ArrayList<AudioComment> comments = new ArrayList<>();
         String text = LoadTextUtil.loadText(file).toString();
+
+        // split text comment of file on every @codecast-annotation
         String[] commentSplit = text.split("@codecast");
         for(String comment : commentSplit){
             String commentLower = comment.toLowerCase(Locale.ROOT);
+            // check if comment is complete
             if(commentLower.contains("@chapter") && commentLower.contains("@title") && commentLower.contains("@position")
                     && commentLower.contains("@url") && commentLower.contains("@type")){
                 comments.add(getCommentFromTextBlock(comment));
@@ -162,7 +194,13 @@ public class PlaylistLoader {
         return comments;
     }
 
+    /**
+     * Method creates single content from a textblock which codecast-comment completeness was already checked
+     * @param text textblock which codecast-comment completeness was already checked
+     * @return single audio comment
+     */
     private static AudioComment getCommentFromTextBlock(String text){
+        // extract each annotation value from comment
         String chapter = getValueAfterAnnotation("@chapter", text);
         String title = getValueAfterAnnotation("@title", text);
         String position = getValueAfterAnnotation("@position", text);
@@ -179,25 +217,42 @@ public class PlaylistLoader {
         comment.setUrl(url);
         comment.setPosition(position);
         comment.setChapter(chapter);
-        System.out.println(comment);
+
         return comment;
     }
 
+    /**
+     * Method extracts value after annotation in a string
+     * @param annotation Annotation which value has to be extracted
+     * @param text text to search for value of annotation
+     * @return string value
+     */
     private static String getValueAfterAnnotation(String annotation, String text){
         String value = "";
 
+        // cut off whole text before the actual value of the annotation
         String rawValue = text.substring(text.indexOf(annotation) + annotation.length());
+
+        // cut off whole text after linebreak
         rawValue = rawValue.split("\\r?\\n")[0];
+
+        // remove leading whitespaces
         value = rawValue.trim();
-        //System.out.println("annotation: " + annotation + ", value: " + value);
         return value;
     }
 
+    /**
+     * Method searches for files with codecast annotations
+     * @param javaFiles collection of virtual javafiles
+     * @return arraylist with virtualfiles with codecast annotations
+     */
     private static ArrayList<VirtualFile> getAllCodecastFiles(Collection<VirtualFile> javaFiles){
         ArrayList<VirtualFile> codecastFiles = new ArrayList<>();
+
+        // check for each file if there is a codecast annotation in there
         for(VirtualFile file : javaFiles){
             CharSequence text = LoadTextUtil.loadText(file);
-            String textString = new String(text.toString());
+            String textString = text.toString();
 
             if(textString.contains("@codecast")){
                 codecastFiles.add(file);

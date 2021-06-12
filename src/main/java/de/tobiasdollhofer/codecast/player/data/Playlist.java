@@ -2,6 +2,7 @@ package de.tobiasdollhofer.codecast.player.data;
 
 import javax.swing.*;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class Playlist {
@@ -116,6 +117,13 @@ public class Playlist {
 
     public void addChapter(Chapter chapter){
         chapters.add(chapter);
+        // rearrange order depending on title of the chapter
+        chapters.sort(new Comparator<Chapter>() {
+            @Override
+            public int compare(Chapter c1, Chapter c2) {
+                return c1.getTitle().compareTo(c2.getTitle());
+            }
+        });
     }
 
     public Chapter getChapter(int position){
@@ -124,6 +132,22 @@ public class Playlist {
         }
 
         return null;
+    }
+
+    public void addComment(AudioComment comment){
+        // add comment to chapter if fitting chapter already exists
+        for(Chapter c : chapters){
+            if(c.getTitle().equals(comment.getChapter())){
+                c.addComment(comment);
+                return;
+            }
+        }
+
+        // otherwise create new chapter and add it to playlist
+        Chapter chapter = new Chapter();
+        chapter.setTitle(comment.getChapter());
+        chapter.addComment(comment);
+        addChapter(chapter);
     }
 
     public ListModel toListModel(){

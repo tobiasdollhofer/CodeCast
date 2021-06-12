@@ -4,6 +4,7 @@ import com.intellij.ui.components.JBLabel;
 
 import javax.swing.*;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -70,6 +71,13 @@ public class Chapter {
 
     public void addComment(AudioComment comment){
         this.comments.add(comment);
+        // rearrange order depending on position of comment
+        this.comments.sort(new Comparator<AudioComment>() {
+            @Override
+            public int compare(AudioComment c1, AudioComment c2) {
+                return c1.getPosition().compareTo(c2.getPosition());
+            }
+        });
     }
 
     public AudioComment getComment(int position){
