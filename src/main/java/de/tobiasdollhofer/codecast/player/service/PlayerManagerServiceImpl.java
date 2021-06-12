@@ -8,7 +8,9 @@ import de.tobiasdollhofer.codecast.player.data.AudioComment;
 import de.tobiasdollhofer.codecast.player.data.Playlist;
 import de.tobiasdollhofer.codecast.player.util.BalloonNotifier;
 import de.tobiasdollhofer.codecast.player.util.FilePathUtil;
+import de.tobiasdollhofer.codecast.player.util.NoFileUrlException;
 import de.tobiasdollhofer.codecast.player.util.event.*;
+import de.tobiasdollhofer.codecast.player.util.event.downloader.DownloadEvent;
 import de.tobiasdollhofer.codecast.player.util.event.player.PlayerEvent;
 import de.tobiasdollhofer.codecast.player.util.event.ui.UIEvent;
 import de.tobiasdollhofer.codecast.player.ui.PlayerUI;
@@ -32,21 +34,12 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
 
     public PlayerManagerServiceImpl(Project project) {
         this.project = project;
+        playlist = project.getService(PlaylistService.class).getPlaylist();
         this.player = new CommentPlayer();
         this.ui = new PlayerUI(project);
         this.playing = false;
 
-        initPlaylist();
         addListeners();
-    }
-
-    private void initPlaylist() {
-        playlist = project.getService(PlaylistService.class).getPlaylist();
-        if(playlist != null){
-            comment = playlist.getFirstComment();
-            setComment(comment);
-            ui.setPlaylist(playlist);
-        }
     }
 
     private void addListeners() {
@@ -61,8 +54,11 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
             notifyPlayerEvent((PlayerEvent) e);
         }else if(e.getClass().equals(UIEvent.class)){
             notifyUIEvent((UIEvent) e);
+        }else if(e.getClass().equals(DownloadEvent.class)){
+            notifyDownloadEvent((DownloadEvent) e);
         }
     }
+
 
     private void notifyUIEvent(UIEvent e) {
         switch(e.getType()){
@@ -232,16 +228,48 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
         BalloonNotifier.notifyError(this.project, "Current file with path " + FilePathUtil.getFilePathForComment(this.project, comment) + " not available!");
     }
 
+    private void notifyDownloadEvent(DownloadEvent e) {
+        switch(e.getType()){
+            case FINISHED:
+                onDownloadFinished();
+                break;
+
+            case CANCELED:
+                onDownloadCanceled();
+                break;
+
+            default:
+                throw new IllegalStateException("Unexpected value: " + e.getType());
+        }
+    }
+
+
+
+    private void onDownloadFinished() {
+        if(playlist != null){
+            comment = playlist.getFirstComment();
+            setComment(comment);
+            ui.setPlaylist(playlist);
+        }
+    }
+
+    private void onDownloadCanceled() {
+        BalloonNotifier.notifyError(project, "Download was canceled. Please reset player.");
+    }
 
     private void setComment(AudioComment comment){
         // store current play state temporarily, because play state will be set to false when player will be paused
         // playingTemp is used for restart playback some lines below
         boolean playingTemp = this.playing;
         player.pause();
-        this.comment = comment;
-        ui.setComment(this.comment);
-        if(comment != null && FilePathUtil.checkCommentDownloaded(project, comment)){
-            player.setPath(FilePathUtil.getFilePathForCommentWithPrefix(project, comment), playingTemp);
+        try {
+            if(comment != null && FilePathUtil.checkCommentDownloaded(project, comment)){
+                this.comment = comment;
+                ui.setComment(this.comment);
+                player.setPath(FilePathUtil.getFilePathForCommentWithPrefix(project, comment), playingTemp);
+            }
+        } catch (NoFileUrlException e) {
+            BalloonNotifier.notifyError(project, e.getMessage());
         }
     }
 

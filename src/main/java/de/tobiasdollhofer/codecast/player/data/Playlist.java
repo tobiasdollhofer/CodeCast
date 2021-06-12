@@ -1,5 +1,7 @@
 package de.tobiasdollhofer.codecast.player.data;
 
+import de.tobiasdollhofer.codecast.player.util.FilePathUtil;
+
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -172,5 +174,14 @@ public class Playlist {
         }
         sb.append("}}");
         return sb.toString();
+    }
+
+    public ArrayList<AudioComment> getAllComments() {
+        ArrayList<AudioComment> comments = new ArrayList<>();
+
+        for(Chapter chapter : chapters){
+            comments.addAll(chapter.getComments());
+        }
+        return comments;
     }
 }

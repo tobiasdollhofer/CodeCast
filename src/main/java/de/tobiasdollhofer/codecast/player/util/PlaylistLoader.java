@@ -153,7 +153,7 @@ public class PlaylistLoader {
         }
 
         // build playlist on using all comments
-        return createPlaylistFromComments(comments);
+        return createPlaylistFromComments(project, comments);
     }
 
     /**
@@ -161,13 +161,15 @@ public class PlaylistLoader {
      * @param comments extracted comments list
      * @return playlist
      */
-    private static Playlist createPlaylistFromComments(ArrayList<AudioComment> comments) {
+    private static Playlist createPlaylistFromComments(Project project, ArrayList<AudioComment> comments) {
         Playlist playlist = new Playlist();
 
         // add all comments to playlist (sorting will be handled by playlist and their chapters)
         for(AudioComment comment : comments){
             playlist.addComment(comment);
         }
+
+        DownloadUtil.downloadComments(project, playlist);
         System.out.println(playlist);
         return playlist;
     }

@@ -38,11 +38,11 @@ public class FilePathUtil {
         return "file:///" + getFilePathForComment(project, comment);
     }
 
-    public static boolean checkCommentDownloaded(Project project, AudioComment comment){
+    public static boolean checkCommentDownloaded(Project project, AudioComment comment) throws NoFileUrlException {
         if(getFilePathForComment(project, comment) != null){
             File temp = new File(getFilePathForComment(project, comment));
             return temp.exists();
         }
-        return false;
+        throw new NoFileUrlException(comment);
     }
 }
