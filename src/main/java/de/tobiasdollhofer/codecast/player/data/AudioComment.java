@@ -4,6 +4,9 @@ import org.apache.commons.io.FilenameUtils;
 
 import java.util.Objects;
 
+/**
+ * Single audio comment entity
+ */
 public class AudioComment {
 
     private String title;
@@ -70,6 +73,10 @@ public class AudioComment {
         this.position = position;
     }
 
+    /**
+     * Extracts the filename from a path
+     * @return filename for the path
+     */
     public String getFileName(){
         if(!url.equals("")){
             return FilenameUtils.getName(url);

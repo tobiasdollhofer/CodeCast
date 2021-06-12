@@ -1,9 +1,7 @@
 package de.tobiasdollhofer.codecast.player.service;
 
 import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.DumbService;
-import com.intellij.openapi.project.DumbServiceSyncTaskQueue;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManagerListener;
 import org.jetbrains.annotations.NotNull;
@@ -13,6 +11,10 @@ import org.jetbrains.annotations.NotNull;
  */
 public class ProjectOpenCloseListener implements ProjectManagerListener {
 
+    /**
+     * initializes services on project startup after index is built up
+     * @param project current project
+     */
     @Override
     public void projectOpened(@NotNull Project project) {
         ProjectManagerListener.super.projectOpened(project);
@@ -32,7 +34,10 @@ public class ProjectOpenCloseListener implements ProjectManagerListener {
 
     }
 
-
+    /**
+     * clears playlist on project close
+     * @param project current project
+     */
     @Override
     public void projectClosed(@NotNull Project project) {
         ProjectManagerListener.super.projectClosed(project);

@@ -7,13 +7,11 @@ import com.intellij.openapi.project.Project;
 import de.tobiasdollhofer.codecast.player.data.AudioComment;
 import de.tobiasdollhofer.codecast.player.data.Playlist;
 import de.tobiasdollhofer.codecast.player.service.PlayerManagerService;
-import de.tobiasdollhofer.codecast.player.service.PlayerManagerServiceImpl;
 import de.tobiasdollhofer.codecast.player.util.event.downloader.DownloadEvent;
 import de.tobiasdollhofer.codecast.player.util.event.downloader.DownloadEventType;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
@@ -22,16 +20,25 @@ import java.util.ArrayList;
 
 public class DownloadUtil {
 
+    /**
+     * Downloads all comment files of playlist which aren't downloaded yet
+     * notifies PlayerManagerService if job was finished or canceled
+     * @param project current project
+     * @param playlist playlist with comments to download
+     */
     public static void downloadComments(Project project, Playlist playlist){
         ArrayList<AudioComment> comments = getCommentsToDownload(project, playlist.getAllComments());
 
+        /**
+         * download files in backgroundtask
+         */
         ProgressManager.getInstance().run(new Task.Backgroundable(project, "Downloading CodeCast Audiofiles...") {
             @Override
             public void run(@NotNull ProgressIndicator indicator) {
                 System.out.println("Downloading...");
                 for(AudioComment comment : comments){
-                    System.out.println(comment);
                     try {
+                        // Download file to audio folder
                         Files.copy(new URL(comment.getUrl()).openStream(), Paths.get(FilePathUtil.getCodeCastAudioDirectory(project) + comment.getFileName()));
                     } catch (FileAlreadyExistsException e){
                         BalloonNotifier.notifyWarning(project, "There is already a file called " + comment.getFileName() + ".");
@@ -45,6 +52,12 @@ public class DownloadUtil {
         });
     }
 
+    /**
+     * returns list with all comments which aren't downloaded yet
+     * @param project current project
+     * @param comments all comments of playlist
+     * @return list with comments to download
+     */
     private static ArrayList<AudioComment> getCommentsToDownload(Project project, ArrayList<AudioComment> comments){
         ArrayList<AudioComment> toDownload = new ArrayList<>();
         for(AudioComment comment : comments){

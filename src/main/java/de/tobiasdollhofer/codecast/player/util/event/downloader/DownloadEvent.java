@@ -2,6 +2,9 @@ package de.tobiasdollhofer.codecast.player.util.event.downloader;
 
 import de.tobiasdollhofer.codecast.player.util.event.Event;
 
+/**
+ * Event entity for events in context to file downloader
+ */
 public class DownloadEvent extends Event {
     private DownloadEventType type;
 

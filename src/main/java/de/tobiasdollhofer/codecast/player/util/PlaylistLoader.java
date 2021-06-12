@@ -23,12 +23,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.Locale;
 
 public class PlaylistLoader {
 
     /**
+     * TODO cleanup
      * Method loads xml and provides the complete playlist
      * @param path String value of path to meta file
      * @return loaded Playlist-Object

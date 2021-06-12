@@ -2,6 +2,9 @@ package de.tobiasdollhofer.codecast.player.util.event.ui;
 
 import de.tobiasdollhofer.codecast.player.util.event.Event;
 
+/**
+ * Event entity for events in context to all UI-Actions
+ */
 public class UIEvent extends Event {
 
     private UIEventType type;

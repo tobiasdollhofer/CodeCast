@@ -7,12 +7,22 @@ import org.jetbrains.annotations.Nullable;
 
 public class BalloonNotifier {
 
+    /**
+     * notify error message with a small popup
+     * @param project current project
+     * @param content message
+     */
     public static void notifyError(@Nullable Project project, String content) {
         NotificationGroupManager.getInstance().getNotificationGroup("CodeCastNotifier")
                 .createNotification(content, NotificationType.ERROR)
                 .notify(project);
     }
 
+    /**
+     * notify warning with a small popup
+     * @param project current project
+     * @param content message
+     */
     public static void notifyWarning(@Nullable Project project, String content) {
         NotificationGroupManager.getInstance().getNotificationGroup("CodeCastNotifier")
                 .createNotification(content, NotificationType.WARNING)
