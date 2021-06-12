@@ -13,4 +13,10 @@ public class BalloonNotifier {
                 .notify(project);
     }
 
+    public static void notifyWarning(@Nullable Project project, String content) {
+        NotificationGroupManager.getInstance().getNotificationGroup("CodeCastNotifier")
+                .createNotification(content, NotificationType.WARNING)
+                .notify(project);
+    }
+
 }
