@@ -4,6 +4,9 @@ import com.intellij.openapi.util.IconLoader;
 
 import javax.swing.*;
 
+/**
+ * Interface for icon paths
+ */
 public interface PluginIcons {
 
     Icon playFirst = IconLoader.getIcon("/icons/play_first.svg", PluginIcons.class);

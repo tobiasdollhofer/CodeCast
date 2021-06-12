@@ -1,15 +1,8 @@
 package de.tobiasdollhofer.codecast.player.ui;
 
 import com.intellij.openapi.project.Project;
-import com.intellij.ui.components.JBLabel;
-import com.intellij.ui.components.JBList;
-import com.intellij.ui.components.JBScrollPane;
-import de.tobiasdollhofer.codecast.player.CommentPlayer;
 import de.tobiasdollhofer.codecast.player.data.AudioComment;
-import de.tobiasdollhofer.codecast.player.data.Chapter;
 import de.tobiasdollhofer.codecast.player.data.Playlist;
-import de.tobiasdollhofer.codecast.player.service.PlaylistService;
-import de.tobiasdollhofer.codecast.player.util.FilePathUtil;
 import de.tobiasdollhofer.codecast.player.util.PluginIcons;
 import de.tobiasdollhofer.codecast.player.util.event.Observable;
 import de.tobiasdollhofer.codecast.player.util.event.ui.UIEvent;
@@ -17,7 +10,6 @@ import de.tobiasdollhofer.codecast.player.util.event.ui.UIEventType;
 
 import javax.swing.*;
 
-import java.awt.*;
 
 import static de.tobiasdollhofer.codecast.player.util.event.ui.UIEventType.*;
 
@@ -44,7 +36,6 @@ public class PlayerUI extends Observable{
     private boolean playing = false;
     private Playlist playlist;
     private AudioComment comment;
-   // private CommentPlayer player;
     public String playerTest;
 
     private final Project project;
@@ -79,6 +70,9 @@ public class PlayerUI extends Observable{
         volumeSlider.addChangeListener(e -> volumeSliderChange());
     }
 
+    /**
+     * notifies all observer about volume change
+     */
     private void volumeSliderChange() {
         double volume = volumeSlider.getValue();
 
@@ -91,51 +85,85 @@ public class PlayerUI extends Observable{
         notifyAll(new UIEvent(VOLUME_CHANGE, String.valueOf(volume)));
     }
 
+    /**
+     * notifies all observer about click event
+     */
     private void playLastClicked() {
         notifyAll(new UIEvent(PLAY_LAST_CLICKED, ""));
     }
 
+    /**
+     * notifies all observer about click event
+     */
     private void playNextClicked() {
         notifyAll(new UIEvent(PLAY_NEXT_CLICKED, ""));
     }
 
+    /**
+     * notifies all observer about click event
+     */
     private void playPauseClicked() {
         notifyAll(new UIEvent(PLAY_PAUSE_CLICKED, ""));
     }
 
-    //TODO: rename
+    /**
+     * sets play icon to button
+     */
     public void pausePlayer(){
         playPause.setIcon(PluginIcons.play);
     }
 
+    /**
+     * sets pause icon to button
+     */
     public void playPlayer(){
         playPause.setIcon(PluginIcons.pause);
     }
 
+    /**
+     * display current time progress
+     * @param time string value of time ( x:xx/x:xx)
+     */
     public void setProgressTime(String time){
         if(!time.equals(progressTime.getText()))
             progressTime.setText(time);
     }
 
+    /**
+     * sets progressbar progress
+     * @param progress int value between 0 and 100
+     */
     public void setProgress(int progress){
         playerProgressBar.setValue(progress);
     }
 
+    /**
+     * notifies all observer about click event
+     */
     private void playPreviousClicked() {
         notifyAll(new UIEvent(PLAY_PREVIOUS_CLICKED, ""));
         //TODO: add some cooldown to restart current comment
     }
 
+    /**
+     * notifies all observer about click event
+     */
     private void playFirstClicked() {
         notifyAll(new UIEvent(PLAY_FIRST_CLICKED, ""));
     }
 
+    /**
+     * inits toolbar buttons
+     */
     private void initToolbarListener() {
         autoplayButton.setIcon(PluginIcons.autoPlay);
         autoplayButton.addActionListener(e -> autoplayButtonClicked());
         reloadButton.addActionListener(e -> reloadPlayer());
     }
 
+    /**
+     * notifies all observer about click event and sets text to ON/OFF
+     */
     private void autoplayButtonClicked() {
         if(autoplayButton.isSelected()){
             autoplayButton.setText("Autoplay ON");
@@ -145,20 +173,34 @@ public class PlayerUI extends Observable{
         notifyAll(new UIEvent(AUTOPLAY_CLICKED, String.valueOf(autoplayButton.isSelected())));
     }
 
+    /**
+     *
+     * @return if autoplaybutton is selected
+     */
     public boolean getAutoplayStatus(){
         return autoplayButton.isSelected();
     }
 
+    /**
+     * notifies all observer about click event
+     */
     private void reloadPlayer() {
         notifyAll(new UIEvent(UIEventType.RESET_PLAYER, "Reloaded player"));
     }
 
+    /**
+     * TODO
+     * @param playlist
+     */
     public void setPlaylist(Playlist playlist) {
         System.out.println("SET PLAYLIST");
     }
 
+    /**
+     * sets progress value and title depending on comment
+     * @param comment comment to be setted
+     */
     public void setComment(AudioComment comment){
-        //pausePlayer();
         playerProgressBar.setValue(0);
         if(comment != null){
             this.comment = comment;
@@ -170,6 +212,10 @@ public class PlayerUI extends Observable{
         }
     }
 
+    /**
+     * enable/disable player buttons
+     * @param enabled true/false
+     */
     public void enablePlayer(boolean enabled){
         this.playFirst.setEnabled(enabled);
         this.playPrevious.setEnabled(enabled);
@@ -181,6 +227,10 @@ public class PlayerUI extends Observable{
         this.playerProgressBar.setEnabled(enabled);
     }
 
+    /**
+     *
+     * @return JPanel with UI
+     */
     public JPanel getContent(){
         return playerWindowContent;
     }

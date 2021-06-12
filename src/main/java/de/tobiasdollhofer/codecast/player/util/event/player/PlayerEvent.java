@@ -2,6 +2,9 @@ package de.tobiasdollhofer.codecast.player.util.event.player;
 
 import de.tobiasdollhofer.codecast.player.util.event.Event;
 
+/**
+ * Event entity for events in context to audio player
+ */
 public class PlayerEvent extends Event {
 
     private PlayerEventType type;
