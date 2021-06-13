@@ -10,6 +10,9 @@ import de.tobiasdollhofer.codecast.player.util.event.ui.UIEventType;
 
 import javax.swing.*;
 
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 
 import static de.tobiasdollhofer.codecast.player.util.event.ui.UIEventType.*;
 
@@ -45,6 +48,16 @@ public class PlayerUI extends Observable{
         this.project = project;
         initToolbarListener();
         initPlayerControls();
+        initListControls();
+    }
+
+    private void initListControls() {
+        playlistList.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                PlayerUI.this.notifyAll(new UIEvent(LIST_CLICKED, ""));
+            }
+        });
     }
 
     private void initPlayerControls() {
@@ -69,6 +82,7 @@ public class PlayerUI extends Observable{
         playLast.addActionListener(e -> playLastClicked());
         volumeSlider.addChangeListener(e -> volumeSliderChange());
     }
+
 
     /**
      * notifies all observer about volume change
@@ -189,11 +203,16 @@ public class PlayerUI extends Observable{
     }
 
     /**
-     * TODO
-     * @param playlist
+     * @param playlist playlist to set to playlistList
      */
     public void setPlaylist(Playlist playlist) {
         System.out.println("SET PLAYLIST");
+        ArrayList<AudioComment> comments = playlist.getAllComments();
+        DefaultListModel<AudioComment> listModel = new DefaultListModel<>();
+        listModel.addAll(comments);
+        playlistList.setModel(listModel);
+        playlistList.setCellRenderer(new CommentRenderer());
+        playlistList.setSelectedIndex(0);
     }
 
     /**
@@ -205,11 +224,19 @@ public class PlayerUI extends Observable{
         if(comment != null){
             this.comment = comment;
             currentTitleLabel.setText(comment.getTitle());
+            playlistList.setSelectedValue(comment, true);
             enablePlayer(true);
         }else {
-            currentTitleLabel.setText("No comment available.");
             enablePlayer(false);
         }
+    }
+
+    /**
+     *
+     * @return selected value from list
+     */
+    public AudioComment getSelectedListComment(){
+        return (AudioComment) playlistList.getSelectedValue();
     }
 
     /**
@@ -225,6 +252,13 @@ public class PlayerUI extends Observable{
         this.playLast.setEnabled(enabled);
         this.volumeSlider.setEnabled(enabled);
         this.playerProgressBar.setEnabled(enabled);
+        // add some placeholder if player is disabled
+        if(!enabled){
+            this.currentTitleLabel.setText("No comment available.");
+            this.playlistList.setModel(new DefaultListModel());
+            this.playerProgressBar.setValue(0);
+            this.progressTime.setText("0:00/0:00");
+        }
     }
 
     /**

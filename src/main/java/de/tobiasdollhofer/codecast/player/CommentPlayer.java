@@ -104,8 +104,8 @@ public class CommentPlayer extends Observable {
             this.mediaPlayer.setOnReady(new Runnable() {
                 @Override
                 public void run() {
-                    CommentPlayer.this.notifyAll(new PlayerEvent(PlayerEventType.INITIALIZED, ""));
                     ready = true;
+                    CommentPlayer.this.notifyAll(new PlayerEvent(PlayerEventType.INITIALIZED, ""));
                     setVolume(volume);
                     if(playAlong){
                         play();

@@ -90,7 +90,7 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
                 break;
 
             case LIST_CLICKED:
-
+                listClicked();
                 break;
 
             case RESET_PLAYER:
@@ -163,20 +163,20 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
         player.setVolume(val);
     }
 
+
+    private void listClicked() {
+        setComment(ui.getSelectedListComment());
+    }
+
+
     /**
-     * reloads playlist and sets first comment as current
+     * reloads playlist
+     * comment will be set after eventual download is finished -> onDownloadFinished()
      */
     private void resetPlayer() {
         player.pause();
         this.project.getService(PlaylistService.class).loadPlaylist();
         this.playlist = project.getService(PlaylistService.class).getPlaylist();
-        if(this.playlist != null){
-            ui.enablePlayer(true);
-            setComment(this.playlist.getFirstComment());
-            ui.setPlaylist(this.playlist);
-        }else{
-            ui.enablePlayer(false);
-        }
     }
 
     /**
@@ -300,10 +300,13 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
      * set first comment and initialize ui list view
      */
     private void onDownloadFinished() {
-        if(playlist != null){
+        if(playlist != null && !playlist.isEmpty()){
+            ui.enablePlayer(true);
             comment = playlist.getFirstComment();
             setComment(comment);
             ui.setPlaylist(playlist);
+        }else{
+            ui.enablePlayer(false);
         }
     }
 
@@ -312,6 +315,7 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
      */
     private void onDownloadCanceled() {
         BalloonNotifier.notifyError(project, "Download was canceled. Please reset player.");
+        ui.enablePlayer(false);
     }
 
     /**
