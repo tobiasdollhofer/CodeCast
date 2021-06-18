@@ -35,6 +35,7 @@ public class PlayerUI extends Observable{
     private JSlider volumeSlider;
     private JLabel volumeIcon;
     private JToggleButton autoplayButton;
+    private JToggleButton jumpToCode;
 
     private boolean playing = false;
     private Playlist playlist;
@@ -173,6 +174,7 @@ public class PlayerUI extends Observable{
         autoplayButton.setIcon(PluginIcons.autoPlay);
         autoplayButton.addActionListener(e -> autoplayButtonClicked());
         reloadButton.addActionListener(e -> reloadPlayer());
+        jumpToCode.addActionListener(e -> jumpToCodeButtonClicked());
     }
 
     /**
@@ -188,6 +190,17 @@ public class PlayerUI extends Observable{
     }
 
     /**
+     * notifies all observer about click event and sets text to ON/OFF
+     */
+    private void jumpToCodeButtonClicked(){
+        if(jumpToCode.isSelected()){
+            jumpToCode.setText("Jump-To-Code ON");
+        }else{
+            jumpToCode.setText("Jump-To-Code OFF");
+        }
+        notifyAll(new UIEvent(JUMP_TO_CODE_CLICKED, String.valueOf(jumpToCode.isSelected())));
+    }
+    /**
      *
      * @return if autoplaybutton is selected
      */
@@ -195,6 +208,13 @@ public class PlayerUI extends Observable{
         return autoplayButton.isSelected();
     }
 
+    /**
+     *
+     * @return if jump to code is activated
+     */
+    public boolean getJumpToCodeStatus(){
+        return jumpToCode.isSelected();
+    }
     /**
      * notifies all observer about click event
      */

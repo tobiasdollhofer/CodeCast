@@ -3,6 +3,8 @@ package de.tobiasdollhofer.codecast.player.util;
 import com.intellij.openapi.fileEditor.impl.LoadTextUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiManager;
 import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.search.GlobalSearchScope;
 import de.tobiasdollhofer.codecast.player.data.AudioComment;
@@ -149,7 +151,7 @@ public class PlaylistLoader {
         // extract all comments from codecast files
         ArrayList<AudioComment> comments = new ArrayList<>();
         for(VirtualFile file : codecastFiles){
-            comments.addAll(getCommetsFromFile(file));
+            comments.addAll(getCommetsFromFile(file, project));
         }
 
         // build playlist on using all comments
@@ -179,7 +181,7 @@ public class PlaylistLoader {
      * @param file virtual file to look at
      * @return arraylist with comments
      */
-    private static ArrayList<AudioComment> getCommetsFromFile(VirtualFile file) {
+    private static ArrayList<AudioComment> getCommetsFromFile(VirtualFile file, Project project) {
         ArrayList<AudioComment> comments = new ArrayList<>();
         String text = LoadTextUtil.loadText(file).toString();
 
@@ -190,7 +192,8 @@ public class PlaylistLoader {
             // check if comment is complete
             if(commentLower.contains("@chapter") && commentLower.contains("@title") && commentLower.contains("@position")
                     && commentLower.contains("@url") && commentLower.contains("@type")){
-                comments.add(getCommentFromTextBlock(comment));
+                PsiFile psiFile = PsiManager.getInstance(project).findFile(file);
+                comments.add(getCommentFromTextBlock(comment, psiFile));
             }
         }
         return comments;
@@ -201,7 +204,7 @@ public class PlaylistLoader {
      * @param text textblock which codecast-comment completeness was already checked
      * @return single audio comment
      */
-    private static AudioComment getCommentFromTextBlock(String text){
+    private static AudioComment getCommentFromTextBlock(String text, PsiFile file){
         // extract each annotation value from comment
         String chapter = getValueAfterAnnotation("@chapter", text);
         String title = getValueAfterAnnotation("@title", text);
@@ -219,7 +222,7 @@ public class PlaylistLoader {
         comment.setUrl(url);
         comment.setPosition(position);
         comment.setChapter(chapter);
-
+        comment.setFile(file);
         return comment;
     }
 

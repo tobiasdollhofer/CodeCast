@@ -1,5 +1,7 @@
 package de.tobiasdollhofer.codecast.player.data;
 
+import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.psi.PsiFile;
 import org.apache.commons.io.FilenameUtils;
 
 import java.util.Objects;
@@ -15,6 +17,7 @@ public class AudioComment {
     private AudioCommentType type;
     private String chapter;
     private String position;
+    private PsiFile file;
 
     public AudioComment(String title, AudioCommentType type) {
         this.title = title;
@@ -71,6 +74,14 @@ public class AudioComment {
 
     public void setPosition(String position) {
         this.position = position;
+    }
+
+    public PsiFile getFile() {
+        return file;
+    }
+
+    public void setFile(PsiFile file) {
+        this.file = file;
     }
 
     /**

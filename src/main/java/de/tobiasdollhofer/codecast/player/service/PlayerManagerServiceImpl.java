@@ -1,18 +1,33 @@
 package de.tobiasdollhofer.codecast.player.service;
 
+import com.google.common.collect.Iterables;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.Service;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.pom.Navigatable;
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiManager;
+import com.intellij.psi.search.FilenameIndex;
+import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.util.OpenSourceUtil;
+import com.intellij.util.PsiNavigateUtil;
 import de.tobiasdollhofer.codecast.player.CommentPlayer;
 import de.tobiasdollhofer.codecast.player.data.AudioComment;
 import de.tobiasdollhofer.codecast.player.data.Playlist;
 import de.tobiasdollhofer.codecast.player.util.BalloonNotifier;
 import de.tobiasdollhofer.codecast.player.util.FilePathUtil;
+import de.tobiasdollhofer.codecast.player.util.JumpToCodeUtil;
 import de.tobiasdollhofer.codecast.player.util.NoFileUrlException;
 import de.tobiasdollhofer.codecast.player.util.event.*;
 import de.tobiasdollhofer.codecast.player.util.event.downloader.DownloadEvent;
 import de.tobiasdollhofer.codecast.player.util.event.player.PlayerEvent;
 import de.tobiasdollhofer.codecast.player.util.event.ui.UIEvent;
 import de.tobiasdollhofer.codecast.player.ui.PlayerUI;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.Collection;
 
 @Service
 public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiable {
@@ -24,6 +39,7 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
     private PlayerUI ui;
     private boolean playing;
     private boolean autoPlayback = false;
+    private boolean jumpToCode = false;
 
     public PlayerManagerServiceImpl(Project project) {
         this.project = project;
@@ -101,12 +117,17 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
                 autoplayClicked();
                 break;
 
+            case JUMP_TO_CODE_CLICKED:
+                jumpToCodeClicked();
+                break;
+
             default:
                 throw new IllegalStateException("Unexpected value: " + e.getType());
         }
 
 
     }
+
 
     /**
      * sets first comment of playlist as current
@@ -163,11 +184,12 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
         player.setVolume(val);
     }
 
-
+    /**
+     * sets selected comment from list for the player
+     */
     private void listClicked() {
         setComment(ui.getSelectedListComment());
     }
-
 
     /**
      * reloads playlist
@@ -186,6 +208,13 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
         autoPlayback = ui.getAutoplayStatus();
     }
 
+
+    /**
+     * stores the jump-to-code status to handle playback actions correctly
+     */
+    private void jumpToCodeClicked() {
+        jumpToCode = ui.getJumpToCodeStatus();
+    }
 
     /**
      * routes Player-Event based on its type
@@ -331,7 +360,13 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
             if(comment != null && FilePathUtil.checkCommentDownloaded(project, comment)){
                 this.comment = comment;
                 ui.setComment(this.comment);
+                // jump to code position if it is activated
+                if(jumpToCode){
+                    JumpToCodeUtil.jumpToCode(project, comment);
+                }
                 player.setPath(FilePathUtil.getFilePathForCommentWithPrefix(project, comment), playingTemp);
+
+
             }
         } catch (NoFileUrlException e) {
             BalloonNotifier.notifyError(project, e.getMessage());
