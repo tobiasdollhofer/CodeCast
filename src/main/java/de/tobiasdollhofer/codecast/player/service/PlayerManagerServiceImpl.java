@@ -121,13 +121,16 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
                 jumpToCodeClicked();
                 break;
 
+            case SHOW_CODE_CLICKED:
+                showCodeClicked();
+                break;
+
             default:
                 throw new IllegalStateException("Unexpected value: " + e.getType());
         }
 
 
     }
-
 
     /**
      * sets first comment of playlist as current
@@ -214,6 +217,13 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
      */
     private void jumpToCodeClicked() {
         jumpToCode = ui.getJumpToCodeStatus();
+    }
+
+    /**
+     * jumps to code position of comment
+     */
+    private void showCodeClicked() {
+        JumpToCodeUtil.jumpToCode(comment);
     }
 
     /**

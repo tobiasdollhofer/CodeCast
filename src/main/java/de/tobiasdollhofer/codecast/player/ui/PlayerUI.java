@@ -36,6 +36,7 @@ public class PlayerUI extends Observable{
     private JLabel volumeIcon;
     private JToggleButton autoplayButton;
     private JToggleButton jumpToCode;
+    private JButton showCodeButton;
 
     private boolean playing = false;
     private Playlist playlist;
@@ -73,6 +74,7 @@ public class PlayerUI extends Observable{
         playNext.setIcon(PluginIcons.playNext);
         playLast.setIcon(PluginIcons.playLast);
         volumeIcon.setIcon(PluginIcons.volume);
+        showCodeButton.setIcon(PluginIcons.showCode);
     }
 
     private void initPlayerControlListener() {
@@ -82,6 +84,7 @@ public class PlayerUI extends Observable{
         playNext.addActionListener(e -> playNextClicked());
         playLast.addActionListener(e -> playLastClicked());
         volumeSlider.addChangeListener(e -> volumeSliderChange());
+        showCodeButton.addActionListener(e -> showCodeButtonClicked());
     }
 
 
@@ -98,6 +101,13 @@ public class PlayerUI extends Observable{
             volume = volume / 100;
         }
         notifyAll(new UIEvent(VOLUME_CHANGE, String.valueOf(volume)));
+    }
+
+    /**
+     * notifies all observer about click event
+     */
+    private void showCodeButtonClicked() {
+        notifyAll(new UIEvent(SHOW_CODE_CLICKED, ""));
     }
 
     /**
@@ -272,6 +282,7 @@ public class PlayerUI extends Observable{
         this.playLast.setEnabled(enabled);
         this.volumeSlider.setEnabled(enabled);
         this.playerProgressBar.setEnabled(enabled);
+        this.showCodeButton.setEnabled(enabled);
         // add some placeholder if player is disabled
         if(!enabled){
             this.currentTitleLabel.setText("No comment available.");
