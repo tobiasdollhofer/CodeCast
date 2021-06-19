@@ -362,7 +362,7 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
                 ui.setComment(this.comment);
                 // jump to code position if it is activated
                 if(jumpToCode){
-                    JumpToCodeUtil.jumpToCode(project, comment);
+                    JumpToCodeUtil.jumpToCode(comment);
                 }
                 player.setPath(FilePathUtil.getFilePathForCommentWithPrefix(project, comment), playingTemp);
 
