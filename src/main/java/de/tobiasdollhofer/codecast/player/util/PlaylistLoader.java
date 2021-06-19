@@ -205,6 +205,17 @@ public class PlaylistLoader {
      * @return single audio comment
      */
     private static AudioComment getCommentFromTextBlock(String text, PsiFile file){
+        AudioComment comment = getCommentFromTextBlock(text);
+        comment.setFile(file);
+        return comment;
+    }
+
+    /**
+     * Method creates single content from a textblock which codecast-comment completeness was already checked
+     * @param text textblock which codecast-comment completeness was already checked
+     * @return single audio comment
+     */
+    public static AudioComment getCommentFromTextBlock(String text){
         // extract each annotation value from comment
         String chapter = getValueAfterAnnotation("@chapter", text);
         String title = getValueAfterAnnotation("@title", text);
@@ -222,10 +233,8 @@ public class PlaylistLoader {
         comment.setUrl(url);
         comment.setPosition(position);
         comment.setChapter(chapter);
-        comment.setFile(file);
         return comment;
     }
-
     /**
      * Method extracts value after annotation in a string
      * @param annotation Annotation which value has to be extracted

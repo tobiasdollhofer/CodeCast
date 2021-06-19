@@ -392,6 +392,16 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
         this.autoPlayback = autoPlayback;
     }
 
+    public void setPlaylistCommentForFoundComment(AudioComment comment){
+        for(AudioComment playlistComment : playlist.getAllComments()){
+            if(playlistComment.equals(comment)){
+                if(!playing){
+                    playing = true;
+                }
+                setComment(playlistComment);
+            }
+        }
+    }
     /**
      * returns ui for factory
      * @return ui

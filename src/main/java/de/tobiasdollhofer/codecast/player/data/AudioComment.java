@@ -100,7 +100,7 @@ public class AudioComment {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         AudioComment comment = (AudioComment) o;
-        return downloaded == comment.downloaded && title.equals(comment.title) && Objects.equals(url, comment.url) && type == comment.type && Objects.equals(chapter, comment.chapter) && Objects.equals(position, comment.position);
+        return title.equals(comment.title) && Objects.equals(url, comment.url) && type == comment.type && Objects.equals(chapter, comment.chapter) && Objects.equals(position, comment.position);
     }
 
     @Override
