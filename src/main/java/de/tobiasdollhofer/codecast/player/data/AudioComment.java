@@ -64,6 +64,10 @@ public class AudioComment {
         return chapter;
     }
 
+    public String getChapterWithoutNumbers(){
+        return chapter.replaceFirst("^[0-9]+[.]", "");
+    }
+
     public void setChapter(String chapter) {
         this.chapter = chapter;
     }

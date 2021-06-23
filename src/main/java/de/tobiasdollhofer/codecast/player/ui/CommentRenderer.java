@@ -11,7 +11,7 @@ public class CommentRenderer extends JLabel implements ListCellRenderer<AudioCom
 
     @Override
     public Component getListCellRendererComponent(JList<? extends AudioComment> list, AudioComment value, int index, boolean isSelected, boolean cellHasFocus) {
-        setText(value.getChapter() + "  -  " + value.getTitle());
+        setText(value.getChapterWithoutNumbers() + "  -  " + value.getTitle());
         setBorder(JBUI.Borders.empty(5));
         return this;
     }

@@ -27,6 +27,10 @@ public class Chapter {
         return title;
     }
 
+    public String getTitleWithoutNumber(){
+        return title.replaceFirst("^[0-9]+[.]", "");
+    }
+
     public void setTitle(String title) {
         this.title = title;
     }
