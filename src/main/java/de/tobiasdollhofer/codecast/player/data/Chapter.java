@@ -103,7 +103,7 @@ public class Chapter {
         this.comments.sort(new Comparator<AudioComment>() {
             @Override
             public int compare(AudioComment c1, AudioComment c2) {
-                return c1.getPosition().compareTo(c2.getPosition());
+                return c1.getTitle().compareTo(c2.getTitle());
             }
         });
     }

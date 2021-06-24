@@ -51,7 +51,6 @@ public class JumpToCodeUtil {
         String text = el.getText().toLowerCase(Locale.ROOT);
 
         return text.contains(comment.getTitle().toLowerCase(Locale.ROOT)) && text.contains(comment.getUrl().toLowerCase(Locale.ROOT))
-                && text.contains(comment.getChapter().toLowerCase(Locale.ROOT)) && text.contains(comment.getPosition().toLowerCase(Locale.ROOT))
-                && text.contains(comment.getType().toString().toLowerCase(Locale.ROOT));
+                && text.contains(comment.getChapter().toLowerCase(Locale.ROOT)) && text.contains(comment.getType().toString().toLowerCase(Locale.ROOT));
     }
 }

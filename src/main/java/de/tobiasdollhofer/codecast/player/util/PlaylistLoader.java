@@ -277,7 +277,6 @@ public class PlaylistLoader {
         }
         AudioComment comment = new AudioComment(title, commentType);
         comment.setUrl(url);
-        comment.setPosition(position);
         comment.setChapter(chapter);
         //comment.calculateDuration(project);
         return comment;

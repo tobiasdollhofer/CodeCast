@@ -22,7 +22,6 @@ public class AudioComment {
     private String url;
     private AudioCommentType type;
     private String chapter;
-    private String position;
     private Duration duration;
     private PsiFile file;
 
@@ -30,7 +29,6 @@ public class AudioComment {
         this.title = title;
         this.url = "";
         this.chapter = "";
-        this.position = "";
         this.type = type;
         this.downloaded = false;
     }
@@ -83,18 +81,15 @@ public class AudioComment {
         this.chapter = chapter;
     }
 
-    public String getPosition() {
-        return position;
-    }
-
-    public void setPosition(String position) {
-        this.position = position;
-    }
-
     public Duration getDuration() {
         return duration;
     }
 
+    /**
+     * calculates and stores duration
+     * will be executed after download of file is finished
+     * @param project depending project used to get filepath where stored
+     */
     public void calculateDuration(Project project){
         PlatformImpl.startup(() -> {});
         Media media = new Media(FilePathUtil.getFilePathForCommentWithPrefix(project, this));
@@ -131,12 +126,12 @@ public class AudioComment {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         AudioComment comment = (AudioComment) o;
-        return title.equals(comment.title) && Objects.equals(url, comment.url) && type == comment.type && Objects.equals(chapter, comment.chapter) && Objects.equals(position, comment.position);
+        return title.equals(comment.title) && Objects.equals(url, comment.url) && type == comment.type && Objects.equals(chapter, comment.chapter) && Objects.equals(duration, comment.duration);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(title, downloaded, url, type, chapter, position);
+        return Objects.hash(title, downloaded, url, type, chapter, duration);
     }
 
     @Override
@@ -147,7 +142,7 @@ public class AudioComment {
                 ", url='" + url + '\'' +
                 ", type=" + type +
                 ", chapter='" + chapter + '\'' +
-                ", position='" + position + '\'' +
+                ", position='" + duration + '\'' +
                 '}';
     }
 }
