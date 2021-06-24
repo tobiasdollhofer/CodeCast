@@ -1,7 +1,11 @@
 package de.tobiasdollhofer.codecast.player;
 
 
+import com.intellij.openapi.project.Project;
 import com.sun.javafx.application.PlatformImpl;
+import de.tobiasdollhofer.codecast.player.data.AudioComment;
+import de.tobiasdollhofer.codecast.player.util.DurationFormatter;
+import de.tobiasdollhofer.codecast.player.util.FilePathUtil;
 import de.tobiasdollhofer.codecast.player.util.event.Observable;
 import de.tobiasdollhofer.codecast.player.util.event.player.PlayerEvent;
 import de.tobiasdollhofer.codecast.player.util.event.player.PlayerEventType;
@@ -97,6 +101,7 @@ public class CommentPlayer extends Observable {
         this.ready = false;
         this.path = path;
         try{
+            //TODO: create media objects for all comments directly?
             this.media = new Media(path);
             this.mediaPlayer = new MediaPlayer(this.media);
 
@@ -150,38 +155,12 @@ public class CommentPlayer extends Observable {
     public String getFormattedProgress(){
         StringBuilder sb = new StringBuilder();
         if(ready){
-            sb.append(getFormattedTime(mediaPlayer.getCurrentTime()));
+            sb.append(DurationFormatter.formatDuration(mediaPlayer.getCurrentTime()));
             sb.append('/');
-            sb.append(getFormattedTime(mediaPlayer.getMedia().getDuration()));
+            sb.append(DurationFormatter.formatDuration(mediaPlayer.getMedia().getDuration()));
         }else{
             sb.append("0:00/0:00");
         }
-        return sb.toString();
-    }
-
-    /**
-     *
-     * @param duration time to represent
-     * @return string representation of time in pattern x:xx
-     */
-    private String getFormattedTime(Duration duration){
-        double durationSeconds = duration.toSeconds();
-        int hours = (int) (durationSeconds / 3600);
-        durationSeconds = durationSeconds - 3600 * hours;
-        int minutes = (int) (durationSeconds / 60);
-        durationSeconds = durationSeconds - 60 * minutes;
-        int seconds = (int) durationSeconds;
-        StringBuilder sb = new StringBuilder();
-        if(hours > 0){
-            sb.append(hours);
-            sb.append(':');
-        }
-        sb.append(minutes);
-        sb.append(':');
-        if(seconds < 10){
-            sb.append(0);
-        }
-        sb.append(seconds);
         return sb.toString();
     }
 
@@ -198,4 +177,5 @@ public class CommentPlayer extends Observable {
         }
         return (int) percentage;
     }
+
 }

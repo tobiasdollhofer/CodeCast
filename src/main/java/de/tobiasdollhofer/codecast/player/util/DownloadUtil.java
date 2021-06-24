@@ -40,6 +40,8 @@ public class DownloadUtil {
                     try {
                         // Download file to audio folder
                         Files.copy(new URL(comment.getUrl()).openStream(), Paths.get(FilePathUtil.getCodeCastAudioDirectory(project) + comment.getFileName()));
+                        comment.setDownloaded(true);
+                        comment.calculateDuration(project);
                     } catch (FileAlreadyExistsException e){
                         BalloonNotifier.notifyWarning(project, "There is already a file called " + comment.getFileName() + ".");
                     } catch (IOException e) {
@@ -66,6 +68,7 @@ public class DownloadUtil {
                     toDownload.add(comment);
                 }else{
                     comment.setDownloaded(true);
+                    comment.calculateDuration(project);
                 }
             } catch (NoFileUrlException e) {
                 BalloonNotifier.notifyError(project, e.getMessage());

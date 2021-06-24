@@ -1,7 +1,13 @@
 package de.tobiasdollhofer.codecast.player.data;
 
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
+import com.sun.javafx.application.PlatformImpl;
+import de.tobiasdollhofer.codecast.player.util.FilePathUtil;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.util.Duration;
 import org.apache.commons.io.FilenameUtils;
 
 import java.util.Objects;
@@ -17,6 +23,7 @@ public class AudioComment {
     private AudioCommentType type;
     private String chapter;
     private String position;
+    private Duration duration;
     private PsiFile file;
 
     public AudioComment(String title, AudioCommentType type) {
@@ -30,6 +37,10 @@ public class AudioComment {
 
     public String getTitle() {
         return title;
+    }
+
+    public String getTitleWithoutNumbers(){
+        return title.replaceFirst("^[0-9]+[.]", "");
     }
 
     public void setTitle(String title) {
@@ -78,6 +89,22 @@ public class AudioComment {
 
     public void setPosition(String position) {
         this.position = position;
+    }
+
+    public Duration getDuration() {
+        return duration;
+    }
+
+    public void calculateDuration(Project project){
+        PlatformImpl.startup(() -> {});
+        Media media = new Media(FilePathUtil.getFilePathForCommentWithPrefix(project, this));
+        MediaPlayer mediaPlayer = new MediaPlayer(media);
+        mediaPlayer.setOnReady(new Runnable() {
+            @Override
+            public void run() {
+                duration = mediaPlayer.getMedia().getDuration();
+            }
+        });
     }
 
     public PsiFile getFile() {

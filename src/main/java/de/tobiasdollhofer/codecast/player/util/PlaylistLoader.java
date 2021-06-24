@@ -7,6 +7,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.search.GlobalSearchScope;
+import de.tobiasdollhofer.codecast.player.CommentPlayer;
 import de.tobiasdollhofer.codecast.player.data.AudioComment;
 import de.tobiasdollhofer.codecast.player.data.AudioCommentType;
 import de.tobiasdollhofer.codecast.player.data.Chapter;
@@ -193,7 +194,7 @@ public class PlaylistLoader {
             if(commentLower.contains("@chapter") && commentLower.contains("@title") && commentLower.contains("@position")
                     && commentLower.contains("@url") && commentLower.contains("@type")){
                 PsiFile psiFile = PsiManager.getInstance(project).findFile(file);
-                comments.add(getCommentFromTextBlock(comment, psiFile));
+                comments.add(getCommentFromTextBlock(project, comment, psiFile));
             }
         }
         return comments;
@@ -204,8 +205,8 @@ public class PlaylistLoader {
      * @param text textblock which codecast-comment completeness was already checked
      * @return single audio comment
      */
-    private static AudioComment getCommentFromTextBlock(String text, PsiFile file){
-        AudioComment comment = getCommentFromTextBlock(text);
+    private static AudioComment getCommentFromTextBlock(Project project, String text, PsiFile file){
+        AudioComment comment = getCommentFromTextBlock(project, text);
         comment.setFile(file);
         return comment;
     }
@@ -215,7 +216,7 @@ public class PlaylistLoader {
      * @param text textblock which codecast-comment completeness was already checked
      * @return single audio comment
      */
-    public static AudioComment getCommentFromTextBlock(String text){
+    public static AudioComment getCommentFromTextBlock(Project project, String text){
         // extract each annotation value from comment
         String chapter = getValueAfterAnnotation("@chapter", text);
         String title = getValueAfterAnnotation("@title", text);
@@ -233,6 +234,7 @@ public class PlaylistLoader {
         comment.setUrl(url);
         comment.setPosition(position);
         comment.setChapter(chapter);
+        //comment.calculateDuration(project);
         return comment;
     }
     /**

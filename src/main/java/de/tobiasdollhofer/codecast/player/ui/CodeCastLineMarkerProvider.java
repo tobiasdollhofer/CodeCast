@@ -32,7 +32,7 @@ public class CodeCastLineMarkerProvider implements LineMarkerProvider {
                 GutterIconNavigationHandler handler = new GutterIconNavigationHandler() {
                     @Override
                     public void navigate(MouseEvent e, PsiElement elt) {
-                        AudioComment comment = PlaylistLoader.getCommentFromTextBlock(elt.getParent().getText());
+                        AudioComment comment = PlaylistLoader.getCommentFromTextBlock(elt.getProject(), elt.getParent().getText());
                         Project project = elt.getProject();
                         project.getService(PlayerManagerService.class).setPlaylistCommentForFoundComment(comment);
                     }
