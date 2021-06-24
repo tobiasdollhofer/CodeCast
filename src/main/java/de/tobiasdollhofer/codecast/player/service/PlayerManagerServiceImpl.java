@@ -35,8 +35,8 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
     private Playlist playlist;
     private final Project project;
     private AudioComment comment;
-    private CommentPlayer player;
-    private PlayerUI ui;
+    private final CommentPlayer player;
+    private final PlayerUI ui;
     private boolean playing;
     private boolean autoPlayback = false;
     private boolean jumpToCode = false;

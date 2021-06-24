@@ -38,7 +38,7 @@ public class PlayerUI extends Observable{
     private JToggleButton jumpToCode;
     private JButton showCodeButton;
 
-    private boolean playing = false;
+    private final boolean playing = false;
     private Playlist playlist;
     private AudioComment comment;
     public String playerTest;

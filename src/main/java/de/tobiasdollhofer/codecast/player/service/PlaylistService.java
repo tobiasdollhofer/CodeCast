@@ -7,9 +7,9 @@ import de.tobiasdollhofer.codecast.player.data.Playlist;
  */
 public interface PlaylistService {
 
-    public Playlist getPlaylist();
+    Playlist getPlaylist();
 
-    public void loadPlaylist();
+    void loadPlaylist();
 
-    public void emptyPlaylist();
+    void emptyPlaylist();
 }
