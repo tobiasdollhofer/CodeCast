@@ -12,6 +12,7 @@ import com.intellij.refactoring.classMembers.MemberInfoTooltipManager;
 import de.tobiasdollhofer.codecast.player.data.AudioComment;
 import de.tobiasdollhofer.codecast.player.service.PlayerManagerService;
 import de.tobiasdollhofer.codecast.player.service.PlayerManagerServiceImpl;
+import de.tobiasdollhofer.codecast.player.util.JumpToCodeUtil;
 import de.tobiasdollhofer.codecast.player.util.PlaylistLoader;
 import de.tobiasdollhofer.codecast.player.util.PluginIcons;
 import org.jetbrains.annotations.NotNull;
@@ -26,22 +27,24 @@ public class CodeCastLineMarkerProvider implements LineMarkerProvider {
         if(!(element instanceof PsiComment)){
             return null;
         }
-        for(PsiElement el : element.getChildren()){
-            String value = el.getText();
-            if(value.contains("@codecast")){
-                GutterIconNavigationHandler handler = new GutterIconNavigationHandler() {
-                    @Override
-                    public void navigate(MouseEvent e, PsiElement elt) {
-                        AudioComment comment = PlaylistLoader.getCommentFromTextBlock(elt.getProject(), elt.getParent().getText());
-                        Project project = elt.getProject();
-                        project.getService(PlayerManagerService.class).setPlaylistCommentForFoundComment(comment);
-                    }
-                };
-                // TODO: remove deprecated function
-                return  new LineMarkerInfo(el, el.getTextRange(), PluginIcons.play,
-                        str -> "Play CodeCast comment", handler, GutterIconRenderer.Alignment.CENTER);
-            }
+        String value = element.getText();
+        if(value.contains("@codecast")){
+            GutterIconNavigationHandler handler = new GutterIconNavigationHandler() {
+                @Override
+                public void navigate(MouseEvent e, PsiElement elt) {
+                    AudioComment comment = PlaylistLoader.getCommentFromTextBlock(elt.getText());
+                    System.out.println(comment);
+                    Project project = elt.getProject();
+                    project.getService(PlayerManagerService.class).setPlaylistCommentForFoundComment(comment);
+                }
+            };
+
+            PsiElement elementAfterComment = JumpToCodeUtil.findElementAfterCommentElement(element);
+            // TODO: remove deprecated function
+            return  new LineMarkerInfo(elementAfterComment, elementAfterComment.getTextRange(), PluginIcons.play,
+                    str -> "Play CodeCast comment", handler, GutterIconRenderer.Alignment.CENTER);
         }
+
         return null;
 
     }

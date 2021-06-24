@@ -26,12 +26,12 @@ public class JumpToCodeUtil {
             @Override
             public void run() {
                 PsiFile commentFile = comment.getFile();
-                // TODO: use this function to extract comments for playlist generation
                 @NotNull Collection<PsiComment> element = PsiTreeUtil.findChildrenOfType(commentFile, PsiComment.class);
                 for(PsiElement el : element){
                     if(checkElementContainsComment(el, comment)){
                         // jump to end of comment and therefore to the beginning of the actual method where the audiocomment is for
-                        PsiNavigateUtil.navigate(el.getLastChild());
+                        PsiElement target = findElementAfterCommentElement(el);
+                        PsiNavigateUtil.navigate(target);
                         return;
                     }
                 }
@@ -51,6 +51,24 @@ public class JumpToCodeUtil {
         String text = el.getText().toLowerCase(Locale.ROOT);
 
         return text.contains(comment.getTitle().toLowerCase(Locale.ROOT)) && text.contains(comment.getUrl().toLowerCase(Locale.ROOT))
-                && text.contains(comment.getChapter().toLowerCase(Locale.ROOT)) && text.contains(comment.getType().toString().toLowerCase(Locale.ROOT));
+                && text.contains(comment.getChapter().toLowerCase(Locale.ROOT));
+    }
+
+    /**
+     *
+     * @param el comment element
+     * @return element 2 index positions after (2, because 1 would be end of block comment
+     */
+    public static PsiElement findElementAfterCommentElement(PsiElement el){
+        PsiElement parent = el.getParent();
+        PsiElement @NotNull [] children = parent.getChildren();
+        for(int i = 0; i < children.length; i++){
+            if(children[i].equals(el)){
+                if(children.length > i+2){
+                    return children[i+2];
+                }
+            }
+        }
+        return children[children.length - 1];
     }
 }

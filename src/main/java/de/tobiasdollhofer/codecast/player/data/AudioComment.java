@@ -126,12 +126,12 @@ public class AudioComment {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         AudioComment comment = (AudioComment) o;
-        return title.equals(comment.title) && Objects.equals(url, comment.url) && type == comment.type && Objects.equals(chapter, comment.chapter) && Objects.equals(duration, comment.duration);
+        return title.equals(comment.title) && Objects.equals(url, comment.url) && type == comment.type && Objects.equals(chapter, comment.chapter);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(title, downloaded, url, type, chapter, duration);
+        return Objects.hash(title, downloaded, url, type, chapter);
     }
 
     @Override
@@ -142,7 +142,7 @@ public class AudioComment {
                 ", url='" + url + '\'' +
                 ", type=" + type +
                 ", chapter='" + chapter + '\'' +
-                ", position='" + duration + '\'' +
+                ", duration='" + duration + '\'' +
                 '}';
     }
 }

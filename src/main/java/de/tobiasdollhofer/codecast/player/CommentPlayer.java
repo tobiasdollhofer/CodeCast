@@ -175,6 +175,9 @@ public class CommentPlayer extends Observable {
         if (percentage > 99) {
             return 100;
         }
+        if (percentage < 1){
+            return 1;
+        }
         return (int) percentage;
     }
 

@@ -208,17 +208,41 @@ public class PlaylistLoader {
     }
 
     private static void addCommentFromTextBlock(Project project, String textBlock, PsiFile file, ArrayList<AudioComment> list){
+        AudioComment comment = getCommentFromTextBlock(project, textBlock, file);
+
+        if(comment != null){
+            list.add(comment);
+        }
+    }
+
+    /**
+     * Method creates single content from a textblock which codecast-comment completeness was already checked
+     * @param text textblock which codecast-comment completeness was already checked
+     * @return single audio comment
+     */
+    private static AudioComment getCommentFromTextBlock(Project project, String text, PsiFile file){
+        AudioComment comment = getCommentFromTextBlock(text);
+        comment.setFile(file);
+        return comment;
+    }
+
+    /**
+     * Method creates single content from a textblock which codecast-comment completeness was already checked
+     * @param textBlock textblock which codecast-comment completeness was already checked
+     * @return single audio comment
+     */
+    public static AudioComment getCommentFromTextBlock(String textBlock){
         String rawInfos = getValueAfterAnnotation("@codecast", textBlock);
         String url = getValueAfterAnnotation("@url", textBlock);
 
         // return if no values for annotations were found
-        if(rawInfos.equals("") || url.equals("")) return;
+        if(rawInfos.equals("") || url.equals("")) return null;
 
         // split codecast-infos on pipe -> ["X. Chapter title", " X. comment title (type)"]
         String[] rawInfoSplit = rawInfos.split("\\|");
 
         // check if info is complete
-        if(rawInfoSplit.length != 2) return;
+        if(rawInfoSplit.length != 2) return null;
 
         String chapter = rawInfoSplit[0].trim();
 
@@ -237,50 +261,12 @@ public class PlaylistLoader {
             type = AudioCommentType.DEFAULT;
         }
 
-
         AudioComment comment = new AudioComment(title, type);
         comment.setChapter(chapter);
         comment.setUrl(url);
-        comment.setFile(file);
-        list.add(comment);
-    }
-
-    /**
-     * Method creates single content from a textblock which codecast-comment completeness was already checked
-     * @param text textblock which codecast-comment completeness was already checked
-     * @return single audio comment
-     */
-    private static AudioComment getCommentFromTextBlock(Project project, String text, PsiFile file){
-        AudioComment comment = getCommentFromTextBlock(project, text);
-        comment.setFile(file);
         return comment;
     }
 
-    /**
-     * Method creates single content from a textblock which codecast-comment completeness was already checked
-     * @param text textblock which codecast-comment completeness was already checked
-     * @return single audio comment
-     */
-    public static AudioComment getCommentFromTextBlock(Project project, String text){
-        // extract each annotation value from comment
-        String chapter = getValueAfterAnnotation("@chapter", text);
-        String title = getValueAfterAnnotation("@title", text);
-        String position = getValueAfterAnnotation("@position", text);
-        String url = getValueAfterAnnotation("@url", text);
-        String type = getValueAfterAnnotation("@type", text);
-
-        AudioCommentType commentType;
-        if(type.equals("")){
-            commentType = AudioCommentType.DEFAULT;
-        }else{
-            commentType = AudioCommentType.valueOf(type.toUpperCase(Locale.ROOT));
-        }
-        AudioComment comment = new AudioComment(title, commentType);
-        comment.setUrl(url);
-        comment.setChapter(chapter);
-        //comment.calculateDuration(project);
-        return comment;
-    }
     /**
      * Method extracts value after annotation in a string
      * @param annotation Annotation which value has to be extracted
