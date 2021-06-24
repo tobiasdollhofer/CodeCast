@@ -201,17 +201,18 @@ public class PlaylistLoader {
                 comments.add(getCommentFromTextBlock(project, comment, psiFile));
             }*/
             if(comment.getText().contains("@codecast") && comment.getText().contains("@url")){
-                addCommentFromTextBlock(project, comment.getText(), psi, comments);
+                addCommentFromTextBlock(project, comment, psi, comments);
             }
         }
         return comments;
     }
 
-    private static void addCommentFromTextBlock(Project project, String textBlock, PsiFile file, ArrayList<AudioComment> list){
-        AudioComment comment = getCommentFromTextBlock(project, textBlock, file);
+    private static void addCommentFromTextBlock(Project project, PsiComment comment, PsiFile file, ArrayList<AudioComment> list){
+
+        AudioComment audioComment = getCommentFromTextBlock(project, comment.getText(), file);
 
         if(comment != null){
-            list.add(comment);
+            list.add(audioComment);
         }
     }
 

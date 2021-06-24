@@ -19,6 +19,7 @@
         <projectService serviceImplementation="de.tobiasdollhofer.codecast.player.service.PlayerManagerServiceImpl"
                         serviceInterface="de.tobiasdollhofer.codecast.player.service.PlayerManagerService" />
         <codeInsight.lineMarkerProvider language="JAVA" implementationClass="de.tobiasdollhofer.codecast.player.ui.CodeCastLineMarkerProvider" />
+        <lang.foldingBuilder language="JAVA" implementationClass="de.tobiasdollhofer.codecast.player.ui.CodeCastFoldingBuilder" />
     </extensions>
 
     <actions>
