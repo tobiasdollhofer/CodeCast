@@ -3,15 +3,18 @@ package de.tobiasdollhofer.codecast.player.util;
 import com.intellij.openapi.fileEditor.impl.LoadTextUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.psi.PsiComment;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.psi.util.PsiTreeUtil;
 import de.tobiasdollhofer.codecast.player.CommentPlayer;
 import de.tobiasdollhofer.codecast.player.data.AudioComment;
 import de.tobiasdollhofer.codecast.player.data.AudioCommentType;
 import de.tobiasdollhofer.codecast.player.data.Chapter;
 import de.tobiasdollhofer.codecast.player.data.Playlist;
+import org.jetbrains.annotations.NotNull;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -185,19 +188,61 @@ public class PlaylistLoader {
     private static ArrayList<AudioComment> getCommetsFromFile(VirtualFile file, Project project) {
         ArrayList<AudioComment> comments = new ArrayList<>();
         String text = LoadTextUtil.loadText(file).toString();
-
+        PsiFile psi = PsiManager.getInstance(project).findFile(file);
+        @NotNull Collection<PsiComment> psiComments = PsiTreeUtil.findChildrenOfType(psi, PsiComment.class);
         // split text comment of file on every @codecast-annotation
-        String[] commentSplit = text.split("@codecast");
-        for(String comment : commentSplit){
-            String commentLower = comment.toLowerCase(Locale.ROOT);
+        //String[] commentSplit = text.split("@codecast");
+        for(PsiComment comment : psiComments){
+            //String commentLower = comment.toLowerCase(Locale.ROOT);
             // check if comment is complete
-            if(commentLower.contains("@chapter") && commentLower.contains("@title") && commentLower.contains("@position")
+            /*if(commentLower.contains("@chapter") && commentLower.contains("@title") && commentLower.contains("@position")
                     && commentLower.contains("@url") && commentLower.contains("@type")){
                 PsiFile psiFile = PsiManager.getInstance(project).findFile(file);
                 comments.add(getCommentFromTextBlock(project, comment, psiFile));
+            }*/
+            if(comment.getText().contains("@codecast") && comment.getText().contains("@url")){
+                addCommentFromTextBlock(project, comment.getText(), psi, comments);
             }
         }
         return comments;
+    }
+
+    private static void addCommentFromTextBlock(Project project, String textBlock, PsiFile file, ArrayList<AudioComment> list){
+        String rawInfos = getValueAfterAnnotation("@codecast", textBlock);
+        String url = getValueAfterAnnotation("@url", textBlock);
+
+        // return if no values for annotations were found
+        if(rawInfos.equals("") || url.equals("")) return;
+
+        // split codecast-infos on pipe -> ["X. Chapter title", " X. comment title (type)"]
+        String[] rawInfoSplit = rawInfos.split("\\|");
+
+        // check if info is complete
+        if(rawInfoSplit.length != 2) return;
+
+        String chapter = rawInfoSplit[0].trim();
+
+        // split before comment type -> ["X. comment title", "type)"]
+        String[] rawTitleSplit = rawInfoSplit[1].split("\\(");
+        String title = rawTitleSplit[0].trim();
+
+        AudioCommentType type;
+        try{
+            // take everything from after the opening bracket
+            String rawCommentValue = rawTitleSplit[1];
+            // remove closing bracket and get depending comment type: "type)" -> AudioCommentType.TYPE
+            type = AudioCommentType.valueOf(rawCommentValue.replace("\\)", "").trim().toUpperCase(Locale.ROOT));
+        }catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e){
+            // use default type if annotated type was not found or no type was annotated
+            type = AudioCommentType.DEFAULT;
+        }
+
+
+        AudioComment comment = new AudioComment(title, type);
+        comment.setChapter(chapter);
+        comment.setUrl(url);
+        comment.setFile(file);
+        list.add(comment);
     }
 
     /**
