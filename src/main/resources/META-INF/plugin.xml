@@ -31,5 +31,6 @@
 
     <applicationListeners>
         <listener class="de.tobiasdollhofer.codecast.player.service.ProjectOpenCloseListener" topic="com.intellij.openapi.project.ProjectManagerListener" />
+        <listener class="de.tobiasdollhofer.codecast.player.service.PluginUnloadListener" topic="com.intellij.ide.plugins.DynamicPluginListener" />
     </applicationListeners>
 </idea-plugin>
