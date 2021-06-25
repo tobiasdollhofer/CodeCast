@@ -62,10 +62,7 @@ public class FilePathUtil {
      */
     public static String getFilePathForCommentWithPrefix(Project project, AudioComment comment){
         File file = new File(getFilePathForComment(project, comment));
-
-        return "file:///" + file.getAbsolutePath().replace("\\", "/");
-        //return "file:///C:/Users/tdoll/codecast/HelloWorld/introduction.mp3";
-        //return new URI(getFilePathForComment(project, comment)).getPath().toString();
+        return file.toURI().toASCIIString();
     }
 
     /**
