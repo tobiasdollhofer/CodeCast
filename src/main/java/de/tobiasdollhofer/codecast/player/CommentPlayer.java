@@ -88,6 +88,16 @@ public class CommentPlayer extends Observable {
         }
     }
 
+    /**
+     *
+     * @param seconds position where player should be seet
+     */
+    public void goToPosition(int seconds){
+        if (seconds < 0) return;
+        mediaPlayer.seek(new Duration(seconds * 1000));
+        notifyAll(new PlayerEvent(PlayerEventType.PROGRESS_CHANGED, ""));
+    }
+
     public String getPath() {
         return path;
     }

@@ -24,6 +24,7 @@ import de.tobiasdollhofer.codecast.player.util.event.downloader.DownloadEvent;
 import de.tobiasdollhofer.codecast.player.util.event.player.PlayerEvent;
 import de.tobiasdollhofer.codecast.player.util.event.ui.UIEvent;
 import de.tobiasdollhofer.codecast.player.ui.PlayerUI;
+import javafx.util.Duration;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -125,12 +126,17 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
                 showCodeClicked();
                 break;
 
+            case PROGRESSBAR_CLICKED:
+                onProgressBarClicked(Double.parseDouble(e.getData()));
+                break;
+
             default:
                 throw new IllegalStateException("Unexpected value: " + e.getType());
         }
 
 
     }
+
 
     /**
      * sets first comment of playlist as current
@@ -224,6 +230,18 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
      */
     private void showCodeClicked() {
         JumpToCodeUtil.jumpToCode(comment);
+    }
+
+    /**
+     * percentage position of the comment
+     * @param position double value between 0 and 1
+     */
+    private void onProgressBarClicked(double position) {
+        Duration duration = comment.getDuration();
+        if(duration != null){
+            int seconds = (int)comment.getDuration().toSeconds();
+            player.goToPosition( (int)(seconds * position));
+        }
     }
 
     /**
@@ -339,6 +357,12 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
      * set first comment and initialize ui list view
      */
     private void onDownloadFinished() {
+        // some cooldown to calculate audio file length
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         if(playlist != null && !playlist.isEmpty()){
             ui.enablePlayer(true);
             comment = playlist.getFirstComment();

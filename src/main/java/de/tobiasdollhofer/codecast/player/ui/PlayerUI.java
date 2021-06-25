@@ -86,8 +86,24 @@ public class PlayerUI extends Observable{
         playLast.addActionListener(e -> playLastClicked());
         volumeSlider.addChangeListener(e -> volumeSliderChange());
         showCodeButton.addActionListener(e -> showCodeButtonClicked());
-    }
+        playerProgressBar.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                double progress = e.getX();
+                progress = progress / playerProgressBar.getWidth();
+                PlayerUI.this.notifyAll(new UIEvent(PROGRESSBAR_CLICKED, String.valueOf(progress)));
+            }
 
+            @Override
+            public void mousePressed(MouseEvent e) {
+                super.mousePressed(e);
+                double progress = e.getX();
+                progress = progress / playerProgressBar.getWidth();
+                PlayerUI.this.notifyAll(new UIEvent(PROGRESSBAR_CLICKED, String.valueOf(progress)));
+            }
+        });
+    }
 
     /**
      * notifies all observer about volume change
