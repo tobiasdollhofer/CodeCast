@@ -41,7 +41,9 @@ public class CodeCastLineMarkerProvider implements LineMarkerProvider {
 
             PsiElement elementAfterComment = JumpToCodeUtil.findElementAfterCommentElement(element);
             // TODO: remove deprecated function
-            return  new LineMarkerInfo(elementAfterComment, elementAfterComment.getTextRange(), PluginIcons.play,
+            /*return  new LineMarkerInfo(elementAfterComment, elementAfterComment.getTextRange(), PluginIcons.play,
+                    str -> "Play CodeCast comment", handler, GutterIconRenderer.Alignment.CENTER);*/
+            return  new LineMarkerInfo(element, elementAfterComment.getTextRange(), PluginIcons.play,
                     str -> "Play CodeCast comment", handler, GutterIconRenderer.Alignment.CENTER);
         }
 

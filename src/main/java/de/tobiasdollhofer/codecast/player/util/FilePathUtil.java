@@ -1,10 +1,14 @@
 package de.tobiasdollhofer.codecast.player.util;
 
+import com.android.tools.r8.graph.S;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ProjectRootManager;
 import de.tobiasdollhofer.codecast.player.data.AudioComment;
 
 import java.io.File;
+import java.net.URI;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * Methods provide some basic file paths as Strings
@@ -16,21 +20,16 @@ public class FilePathUtil {
      * @param project current project
      * @return absolute root path of project
      */
-    public static String getAbsoluteRootFilePath(Project project){
+    public static String getProjectRootPath(Project project){
         return ProjectRootManager.getInstance(project).getContentRoots()[0].getPath();
     }
 
     /**
      *
-     * @param project current project
-     * @return absolute root folder path of codecast files
+     * @return absolute path to codecast root directory
      */
-    public static String getCodeCastRootPath(Project project){
-        return getAbsoluteRootFilePath(project) + "/.codecast/";
-    }
- //TODO remove
-    public static String getCodeCastMetaPath(Project project){
-        return getCodeCastRootPath(project) + "meta.codecast";
+    public static String getCodeCastRootDirectory(){
+        return System.getProperty("user.home") + "/" + "codecast" + "/";
     }
 
     /**
@@ -38,8 +37,8 @@ public class FilePathUtil {
      * @param project current project
      * @return absolute folder path of audio files
      */
-    public static String getCodeCastAudioDirectory(Project project){
-        return getCodeCastRootPath(project) + "audio/";
+    public static String getCodeCastProjectRootDirectory(Project project){
+        return getCodeCastRootDirectory() + project.getName() + "/";
     }
 
     /**
@@ -50,7 +49,7 @@ public class FilePathUtil {
      */
     public static String getFilePathForComment(Project project, AudioComment comment){
         if(!comment.getFileName().equals("")){
-            return getCodeCastAudioDirectory(project) + comment.getFileName();
+            return getCodeCastProjectRootDirectory(project) + comment.getFileName();
         }
         return null;
     }
@@ -62,7 +61,11 @@ public class FilePathUtil {
      * @return adds file:/// to filepath for mediaplayer
      */
     public static String getFilePathForCommentWithPrefix(Project project, AudioComment comment){
-        return "file:///" + getFilePathForComment(project, comment);
+        File file = new File(getFilePathForComment(project, comment));
+
+        return "file:///" + file.getAbsolutePath().replace("\\", "/");
+        //return "file:///C:/Users/tdoll/codecast/HelloWorld/introduction.mp3";
+        //return new URI(getFilePathForComment(project, comment)).getPath().toString();
     }
 
     /**

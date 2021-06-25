@@ -11,6 +11,7 @@ import de.tobiasdollhofer.codecast.player.util.event.downloader.DownloadEvent;
 import de.tobiasdollhofer.codecast.player.util.event.downloader.DownloadEventType;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.FileAlreadyExistsException;
@@ -35,11 +36,21 @@ public class DownloadUtil {
         ProgressManager.getInstance().run(new Task.Backgroundable(project, "Downloading CodeCast Audiofiles...") {
             @Override
             public void run(@NotNull ProgressIndicator indicator) {
+                File codecastRoot = new File(FilePathUtil.getCodeCastRootDirectory());
+                if(!codecastRoot.exists()){
+                    codecastRoot.mkdir();
+                }
+
+                File codecastProjectRoot = new File(FilePathUtil.getCodeCastProjectRootDirectory(project));
+                if(!codecastProjectRoot.exists()){
+                    codecastProjectRoot.mkdir();
+                }
+
                 System.out.println("Downloading...");
                 for(AudioComment comment : comments){
                     try {
                         // Download file to audio folder
-                        Files.copy(new URL(comment.getUrl()).openStream(), Paths.get(FilePathUtil.getCodeCastAudioDirectory(project) + comment.getFileName()));
+                        Files.copy(new URL(comment.getUrl()).openStream(), Paths.get(FilePathUtil.getCodeCastProjectRootDirectory(project) + comment.getFileName()));
                         comment.setDownloaded(true);
                         comment.calculateDuration(project);
                     } catch (FileAlreadyExistsException e){
