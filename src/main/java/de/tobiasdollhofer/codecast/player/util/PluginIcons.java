@@ -17,6 +17,8 @@ public interface PluginIcons {
     Icon playLast = IconLoader.getIcon("/icons/play_last.svg", PluginIcons.class);
     Icon volume = IconLoader.getIcon("/icons/volume_up.svg", PluginIcons.class);
     Icon volumeOff = IconLoader.getIcon("/icons/volume_off.svg", PluginIcons.class);
-    Icon autoPlay = IconLoader.getIcon("/icons/infinity.svg", PluginIcons.class);
-    Icon showCode = IconLoader.getIcon("/icons/showCode.svg", PluginIcons.class);
+    Icon autoPlayOff = IconLoader.getIcon("/icons/infinity.svg", PluginIcons.class);
+    Icon autoPlayOn = IconLoader.getIcon("/icons/infinity_on.svg", PluginIcons.class);
+    Icon showCodeOff = IconLoader.getIcon("/icons/showCode.svg", PluginIcons.class);
+    Icon showCodeOn = IconLoader.getIcon("/icons/showCode_on.svg", PluginIcons.class);
 }

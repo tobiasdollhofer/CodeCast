@@ -10,6 +10,7 @@ import de.tobiasdollhofer.codecast.player.util.event.ui.UIEventType;
 
 import javax.swing.*;
 
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -74,7 +75,7 @@ public class PlayerUI extends Observable{
         playNext.setIcon(PluginIcons.playNext);
         playLast.setIcon(PluginIcons.playLast);
         volumeIcon.setIcon(PluginIcons.volume);
-        showCodeButton.setIcon(PluginIcons.showCode);
+        showCodeButton.setIcon(PluginIcons.showCodeOff);
     }
 
     private void initPlayerControlListener() {
@@ -181,10 +182,11 @@ public class PlayerUI extends Observable{
      * inits toolbar buttons
      */
     private void initToolbarListener() {
-        autoplayButton.setIcon(PluginIcons.autoPlay);
+        autoplayButton.setIcon(PluginIcons.autoPlayOff);
         autoplayButton.addActionListener(e -> autoplayButtonClicked());
         reloadButton.addActionListener(e -> reloadPlayer());
         jumpToCode.addActionListener(e -> jumpToCodeButtonClicked());
+        jumpToCode.setIcon(PluginIcons.showCodeOff);
     }
 
     /**
@@ -192,9 +194,9 @@ public class PlayerUI extends Observable{
      */
     private void autoplayButtonClicked() {
         if(autoplayButton.isSelected()){
-            autoplayButton.setText("Autoplay ON");
+            autoplayButton.setIcon(PluginIcons.autoPlayOn);
         }else{
-            autoplayButton.setText("Autoplay OFF");
+            autoplayButton.setIcon(PluginIcons.autoPlayOff);
         }
         notifyAll(new UIEvent(AUTOPLAY_CLICKED, String.valueOf(autoplayButton.isSelected())));
     }
@@ -204,9 +206,9 @@ public class PlayerUI extends Observable{
      */
     private void jumpToCodeButtonClicked(){
         if(jumpToCode.isSelected()){
-            jumpToCode.setText("Jump-To-Code ON");
+            jumpToCode.setIcon(PluginIcons.showCodeOn);
         }else{
-            jumpToCode.setText("Jump-To-Code OFF");
+            jumpToCode.setIcon(PluginIcons.showCodeOff);
         }
         notifyAll(new UIEvent(JUMP_TO_CODE_CLICKED, String.valueOf(jumpToCode.isSelected())));
     }

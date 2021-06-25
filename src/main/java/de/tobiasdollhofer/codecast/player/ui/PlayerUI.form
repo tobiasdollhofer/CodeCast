@@ -96,6 +96,7 @@
                   <minimumSize width="30" height="30"/>
                   <preferredSize width="30" height="30"/>
                   <text value=""/>
+                  <toolTipText value="Play first comment"/>
                 </properties>
               </component>
               <component id="2eb37" class="javax.swing.JButton" binding="playPrevious">
@@ -105,6 +106,7 @@
                   <minimumSize width="30" height="30"/>
                   <preferredSize width="30" height="30"/>
                   <text value=""/>
+                  <toolTipText value="Play previous comment"/>
                 </properties>
               </component>
               <component id="41dfb" class="javax.swing.JButton" binding="playPause">
@@ -114,6 +116,7 @@
                   <minimumSize width="40" height="40"/>
                   <preferredSize width="40" height="40"/>
                   <text value=""/>
+                  <toolTipText value="Play / Pause"/>
                 </properties>
               </component>
               <component id="bd408" class="javax.swing.JButton" binding="playNext">
@@ -123,6 +126,7 @@
                   <minimumSize width="30" height="30"/>
                   <preferredSize width="30" height="30"/>
                   <text value=""/>
+                  <toolTipText value="Play next Comment"/>
                 </properties>
               </component>
               <component id="91767" class="javax.swing.JButton" binding="playLast">
@@ -132,6 +136,7 @@
                   <minimumSize width="30" height="30"/>
                   <preferredSize width="30" height="30"/>
                   <text value=""/>
+                  <toolTipText value="Play last comment"/>
                 </properties>
               </component>
               <grid id="820c1" layout-manager="FlowLayout" hgap="0" vgap="5" flow-align="2">
@@ -177,7 +182,7 @@
             </constraints>
             <properties>
               <text value=""/>
-              <toolTipText value="Show Code"/>
+              <toolTipText value="Show Code for this Explanation"/>
             </properties>
           </component>
         </children>
@@ -202,23 +207,31 @@
               <horizontalTextPosition value="11"/>
               <icon value="actions/refresh.png"/>
               <label value=""/>
-              <maximumSize width="30" height="30"/>
-              <minimumSize width="30" height="30"/>
-              <preferredSize width="30" height="30"/>
+              <maximumSize width="40" height="40"/>
+              <minimumSize width="40" height="40"/>
+              <preferredSize width="40" height="40"/>
               <text value=""/>
-              <toolTipText value="Reload Playlist-File"/>
+              <toolTipText value="Reload Playlist"/>
             </properties>
           </component>
           <component id="3bde8" class="javax.swing.JToggleButton" binding="autoplayButton">
             <constraints/>
             <properties>
-              <text value="Autoplay OFF"/>
+              <maximumSize width="40" height="40"/>
+              <minimumSize width="40" height="40"/>
+              <preferredSize width="40" height="40"/>
+              <text value=""/>
+              <toolTipText value="Enable / Disable Autoplay"/>
             </properties>
           </component>
           <component id="f0c88" class="javax.swing.JToggleButton" binding="jumpToCode">
             <constraints/>
             <properties>
-              <text value="Jump-To-Code OFF"/>
+              <maximumSize width="40" height="40"/>
+              <minimumSize width="40" height="40"/>
+              <preferredSize width="40" height="40"/>
+              <text value=""/>
+              <toolTipText value="Enable / Disable Automatic Jump to Code"/>
             </properties>
           </component>
         </children>
