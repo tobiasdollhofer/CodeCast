@@ -9,6 +9,9 @@ import de.tobiasdollhofer.codecast.player.util.event.ui.UIEvent;
 import de.tobiasdollhofer.codecast.player.util.event.ui.UIEventType;
 
 import javax.swing.*;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledDocument;
 
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -167,8 +170,14 @@ public class PlayerUI extends Observable{
      * @param time string value of time ( x:xx/x:xx)
      */
     public void setProgressTime(String time){
-        if(!time.equals(progressTime.getText()))
+        if(!time.equals(progressTime.getText())){
+            StyledDocument doc = progressTime.getStyledDocument();
+            SimpleAttributeSet center = new SimpleAttributeSet();
+            StyleConstants.setAlignment(center, StyleConstants.ALIGN_CENTER);
+            doc.setParagraphAttributes(0, doc.getLength(), center, false);
+        }
             progressTime.setText(time);
+
     }
 
     /**
