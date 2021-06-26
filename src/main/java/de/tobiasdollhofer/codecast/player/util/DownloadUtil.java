@@ -81,7 +81,7 @@ public class DownloadUtil {
         ArrayList<AudioComment> toDownload = new ArrayList<>();
         for(AudioComment comment : comments){
             try {
-                if(!FilePathUtil.checkCommentDownloaded(project, comment)){
+                if(!FilePathUtil.checkCommentDownloadedUpToDate(project, comment)){
                     toDownload.add(comment);
                 }else{
                     comment.setDownloaded(true);

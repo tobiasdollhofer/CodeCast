@@ -282,6 +282,7 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
      */
     private void onPlayerInitialized() {
         onProgressChanged();
+        ui.setComment(this.comment);
     }
 
     /**
@@ -356,13 +357,7 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
      * set first comment and initialize ui list view
      */
     private void onDownloadFinished() {
-        // some cooldown to calculate audio file length
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        if(playlist != null && !playlist.isEmpty()){
+             if(playlist != null && !playlist.isEmpty()){
             ui.enablePlayer(true);
             comment = playlist.getFirstComment();
             setComment(comment);
@@ -389,20 +384,14 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
         // playingTemp is used for restart playback some lines below
         boolean playingTemp = this.playing;
         player.pause();
-        try {
-            if(comment != null && FilePathUtil.checkCommentDownloaded(project, comment)){
-                this.comment = comment;
-                ui.setComment(this.comment);
-                // jump to code position if it is activated
-                if(jumpToCode){
-                    JumpToCodeUtil.jumpToCode(comment);
-                }
-                player.setPath(FilePathUtil.getFilePathForCommentWithPrefix(project, comment), playingTemp);
+        if(comment != null && FilePathUtil.checkCommentDownloaded(project, comment)){
+            this.comment = comment;
 
-
+            // jump to code position if it is activated
+            if(jumpToCode){
+                JumpToCodeUtil.jumpToCode(comment);
             }
-        } catch (NoFileUrlException e) {
-            BalloonNotifier.notifyError(project, e.getMessage());
+            player.setPath(FilePathUtil.getFilePathForCommentWithPrefix(project, comment), playingTemp);
         }
     }
 

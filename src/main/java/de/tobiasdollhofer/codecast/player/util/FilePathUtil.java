@@ -75,12 +75,24 @@ public class FilePathUtil {
 
     /**
      *
+      * @param project current project
+     * @param comment comment to check
+     * @return if comment is downloaded
+     */
+    public static boolean checkCommentDownloaded(Project project, AudioComment comment){
+        if(getFilePathForComment(project, comment) != null)
+            return new File(getFilePathForComment(project, comment)).exists();
+        return false;
+    }
+
+    /**
+     *
      * @param project current project
      * @param comment comment to check
-     * @return if comment file is already stored
+     * @return if comment file is already stored and up to date
      * @throws NoFileUrlException
      */
-    public static boolean checkCommentDownloaded(Project project, AudioComment comment) throws NoFileUrlException {
+    public static boolean checkCommentDownloadedUpToDate(Project project, AudioComment comment) throws NoFileUrlException{
         if(getFilePathForComment(project, comment) != null){
             File temp = new File(getFilePathForComment(project, comment));
             if(temp.exists()){
