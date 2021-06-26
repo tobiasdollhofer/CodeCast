@@ -9,7 +9,14 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
 import org.apache.commons.io.FilenameUtils;
+import org.jaudiotagger.audio.AudioFile;
+import org.jaudiotagger.audio.AudioFileIO;
 
+import javax.sound.sampled.AudioFileFormat;
+import javax.sound.sampled.AudioSystem;
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Objects;
 
 /**
@@ -91,15 +98,13 @@ public class AudioComment {
      * @param project depending project used to get filepath where stored
      */
     public void calculateDuration(Project project){
-        PlatformImpl.startup(() -> {});
-        Media media = new Media(FilePathUtil.getFilePathForCommentWithPrefix(project, this));
-        MediaPlayer mediaPlayer = new MediaPlayer(media);
-        mediaPlayer.setOnReady(new Runnable() {
-            @Override
-            public void run() {
-                duration = mediaPlayer.getMedia().getDuration();
-            }
-        });
+        try{
+            AudioFile audioFile = AudioFileIO.read(new File(FilePathUtil.getFilePathForComment(project, this)));
+            Duration duration = new Duration(audioFile.getAudioHeader().getTrackLength() * 1000);
+            this.duration = duration;
+        } catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     public PsiFile getFile() {
