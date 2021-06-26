@@ -15,10 +15,7 @@ import com.intellij.util.PsiNavigateUtil;
 import de.tobiasdollhofer.codecast.player.CommentPlayer;
 import de.tobiasdollhofer.codecast.player.data.AudioComment;
 import de.tobiasdollhofer.codecast.player.data.Playlist;
-import de.tobiasdollhofer.codecast.player.util.BalloonNotifier;
-import de.tobiasdollhofer.codecast.player.util.FilePathUtil;
-import de.tobiasdollhofer.codecast.player.util.JumpToCodeUtil;
-import de.tobiasdollhofer.codecast.player.util.NoFileUrlException;
+import de.tobiasdollhofer.codecast.player.util.*;
 import de.tobiasdollhofer.codecast.player.util.event.*;
 import de.tobiasdollhofer.codecast.player.util.event.downloader.DownloadEvent;
 import de.tobiasdollhofer.codecast.player.util.event.player.PlayerEvent;
@@ -323,7 +320,9 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
      */
     private void onProgressChanged() {
         this.ui.setProgress(this.player.getProgressPercentage());
-        this.ui.setProgressTime(this.player.getFormattedProgress());
+        this.ui.setProgressTime(DurationFormatter.formatDuration(this.player.getDurationProgress())
+                + "/"
+                + DurationFormatter.formatDuration(comment.getDuration()));
     }
 
     /**

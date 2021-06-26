@@ -160,22 +160,6 @@ public class CommentPlayer extends Observable {
 
     /**
      *
-     * @return progress of player in pattern x:xx/x:xx
-     */
-    public String getFormattedProgress(){
-        StringBuilder sb = new StringBuilder();
-        if(ready){
-            sb.append(DurationFormatter.formatDuration(mediaPlayer.getCurrentTime()));
-            sb.append('/');
-            sb.append(DurationFormatter.formatDuration(mediaPlayer.getMedia().getDuration()));
-        }else{
-            sb.append("0:00/0:00");
-        }
-        return sb.toString();
-    }
-
-    /**
-     *
      * @return value between 0 and 100 of playback progress
      */
     public int getProgressPercentage(){
@@ -191,4 +175,15 @@ public class CommentPlayer extends Observable {
         return (int) percentage;
     }
 
+    /**
+     *
+     * @return current progress as duration
+     */
+    public Duration getDurationProgress() {
+        if(ready){
+            return mediaPlayer.getCurrentTime();
+        }else{
+            return Duration.ZERO;
+        }
+    }
 }
