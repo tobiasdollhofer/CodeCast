@@ -43,7 +43,7 @@ public class CodeCastLineMarkerProvider implements LineMarkerProvider {
             // TODO: remove deprecated function
             /*return  new LineMarkerInfo(elementAfterComment, elementAfterComment.getTextRange(), PluginIcons.play,
                     str -> "Play CodeCast comment", handler, GutterIconRenderer.Alignment.CENTER);*/
-            return  new LineMarkerInfo(element, elementAfterComment.getTextRange(), PluginIcons.play,
+            return  new LineMarkerInfo(element, elementAfterComment.getTextRange(), PluginIcons.playCodecast,
                     str -> "Play CodeCast comment", handler, GutterIconRenderer.Alignment.CENTER);
         }
 
