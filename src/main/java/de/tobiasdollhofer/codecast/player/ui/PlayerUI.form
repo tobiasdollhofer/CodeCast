@@ -79,7 +79,7 @@
                   </grid>
                 </constraints>
                 <properties>
-                  <value value="50"/>
+                  <value value="0"/>
                 </properties>
               </component>
             </children>

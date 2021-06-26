@@ -6,9 +6,17 @@ import com.intellij.openapi.roots.ProjectRootManager;
 import de.tobiasdollhofer.codecast.player.data.AudioComment;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 /**
  * Methods provide some basic file paths as Strings
@@ -75,7 +83,28 @@ public class FilePathUtil {
     public static boolean checkCommentDownloaded(Project project, AudioComment comment) throws NoFileUrlException {
         if(getFilePathForComment(project, comment) != null){
             File temp = new File(getFilePathForComment(project, comment));
-            return temp.exists();
+            if(temp.exists()){
+                try{
+                    // check if expires exist
+                    URL url = new URL(comment.getUrl());
+                    HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                    String expires = con.getHeaderField("expires");
+                    if(expires != null){
+                        SimpleDateFormat format = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z", Locale.US);
+                        Date expiresDate = format.parse(expires);
+                        Date lastChangeDate = new Date(temp.lastModified());
+                        // return false if file is expired
+                        if(expiresDate.before(lastChangeDate)){
+                            return false;
+                        }
+                    }
+                    con.disconnect();
+                }catch(IOException | ParseException e){
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
         throw new NoFileUrlException(comment);
     }
