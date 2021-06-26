@@ -281,7 +281,6 @@ public class PlayerUI extends Observable{
         if(comment != null){
             this.comment = comment;
             currentTitleLabel.setText(comment.getTitle());
-            playlistList.setSelectedValue(comment, true);
             enablePlayer(true);
         }else {
             enablePlayer(false);

@@ -28,6 +28,7 @@ public class ProjectOpenCloseListener implements ProjectManagerListener {
             @Override
             public void run() {
                 PlaylistService playlistService = project.getService(PlaylistService.class);
+                playlistService.loadPlaylist();
                 PlayerManagerService playerManagerService = project.getService(PlayerManagerService.class);
             }
         });

@@ -41,7 +41,6 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
 
     public PlayerManagerServiceImpl(Project project) {
         this.project = project;
-        this.playlist = project.getService(PlaylistService.class).getPlaylist();
         this.player = new CommentPlayer();
         this.ui = new PlayerUI(project);
         this.playing = false;
@@ -357,11 +356,12 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
      * set first comment and initialize ui list view
      */
     private void onDownloadFinished() {
-             if(playlist != null && !playlist.isEmpty()){
+        playlist = project.getService(PlaylistService.class).getPlaylist();
+        if(playlist != null && !playlist.isEmpty()){
+            ui.setPlaylist(playlist);
             ui.enablePlayer(true);
             comment = playlist.getFirstComment();
             setComment(comment);
-            ui.setPlaylist(playlist);
         }else{
             ui.enablePlayer(false);
         }
@@ -386,7 +386,6 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
         player.pause();
         if(comment != null && FilePathUtil.checkCommentDownloaded(project, comment)){
             this.comment = comment;
-
             // jump to code position if it is activated
             if(jumpToCode){
                 JumpToCodeUtil.jumpToCode(comment);
