@@ -1,22 +1,18 @@
 package de.tobiasdollhofer.codecast.player.data;
 
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
-import com.sun.javafx.application.PlatformImpl;
+import com.intellij.ui.components.JBLabel;
+import com.intellij.ui.components.JBPanel;
+import de.tobiasdollhofer.codecast.player.ui.playlist.CommentView;
 import de.tobiasdollhofer.codecast.player.util.FilePathUtil;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
 import org.apache.commons.io.FilenameUtils;
 import org.jaudiotagger.audio.AudioFile;
 import org.jaudiotagger.audio.AudioFileIO;
 
-import javax.sound.sampled.AudioFileFormat;
-import javax.sound.sampled.AudioSystem;
+import javax.swing.*;
 import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Objects;
 
 /**

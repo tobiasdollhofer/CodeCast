@@ -1,5 +1,11 @@
 package de.tobiasdollhofer.codecast.player.data;
 
+import com.android.tools.r8.graph.G;
+import com.intellij.ui.components.JBLabel;
+import com.intellij.ui.components.JBPanel;
+
+import javax.swing.*;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -148,4 +154,5 @@ public class Chapter {
     public int hashCode() {
         return Objects.hash(title, comments);
     }
+
 }

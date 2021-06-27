@@ -2,7 +2,12 @@ package de.tobiasdollhofer.codecast.player.data;
 
 
 
+import com.intellij.ui.components.JBPanel;
+import com.intellij.uiDesigner.core.GridConstraints;
+import com.intellij.uiDesigner.core.GridLayoutManager;
+
 import javax.swing.*;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;

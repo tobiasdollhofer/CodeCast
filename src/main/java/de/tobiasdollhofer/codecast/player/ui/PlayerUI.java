@@ -1,8 +1,16 @@
 package de.tobiasdollhofer.codecast.player.ui;
 
+import com.android.tools.r8.graph.J;
+import com.android.tools.r8.graph.S;
 import com.intellij.openapi.project.Project;
+import com.intellij.ui.components.JBLabel;
+import com.intellij.ui.components.JBPanel;
+import com.intellij.ui.components.JBScrollPane;
+import com.intellij.uiDesigner.core.GridLayoutManager;
 import de.tobiasdollhofer.codecast.player.data.AudioComment;
+import de.tobiasdollhofer.codecast.player.data.Chapter;
 import de.tobiasdollhofer.codecast.player.data.Playlist;
+import de.tobiasdollhofer.codecast.player.ui.playlist.PlaylistView;
 import de.tobiasdollhofer.codecast.player.util.PluginIcons;
 import de.tobiasdollhofer.codecast.player.util.event.Observable;
 import de.tobiasdollhofer.codecast.player.util.event.ui.UIEvent;
@@ -46,6 +54,7 @@ public class PlayerUI extends Observable{
     private Playlist playlist;
     private AudioComment comment;
     public String playerTest;
+    private PlaylistView playlistView;
 
     private final Project project;
 
@@ -58,12 +67,12 @@ public class PlayerUI extends Observable{
     }
 
     private void initListControls() {
-        playlistList.addMouseListener(new MouseAdapter() {
+        /*playlistList.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 PlayerUI.this.notifyAll(new UIEvent(LIST_CLICKED, ""));
             }
-        });
+        });*/
     }
 
     private void initPlayerControls() {
@@ -264,12 +273,8 @@ public class PlayerUI extends Observable{
      */
     public void setPlaylist(Playlist playlist) {
         System.out.println("SET PLAYLIST");
-        ArrayList<AudioComment> comments = playlist.getAllComments();
-        DefaultListModel<AudioComment> listModel = new DefaultListModel<>();
-        listModel.addAll(comments);
-        playlistList.setModel(listModel);
-        playlistList.setCellRenderer(new CommentRenderer());
-        playlistList.setSelectedIndex(0);
+        playlistView = new PlaylistView(playlist, project);
+        playlistPane.getViewport().add(playlistView);
     }
 
     /**
@@ -281,6 +286,7 @@ public class PlayerUI extends Observable{
         if(comment != null){
             this.comment = comment;
             currentTitleLabel.setText(comment.getTitle());
+            playlistView.setCurrent(comment);
             enablePlayer(true);
         }else {
             enablePlayer(false);
@@ -292,7 +298,11 @@ public class PlayerUI extends Observable{
      * @return selected value from list
      */
     public AudioComment getSelectedListComment(){
-        return (AudioComment) playlistList.getSelectedValue();
+        if(playlistPane.getViewport().getComponent(0) != null){
+           PlaylistView playlistView = (PlaylistView) playlistPane.getViewport().getComponent(0);
+           return playlistView.getCurrent();
+        }
+        return null;
     }
 
     /**
@@ -309,10 +319,10 @@ public class PlayerUI extends Observable{
         this.volumeSlider.setEnabled(enabled);
         this.playerProgressBar.setEnabled(enabled);
         this.showCodeButton.setEnabled(enabled);
+        this.playlistPane.setEnabled(enabled);
         // add some placeholder if player is disabled
         if(!enabled){
             this.currentTitleLabel.setText("No comment available.");
-            this.playlistList.setModel(new DefaultListModel());
             this.playerProgressBar.setValue(0);
             this.progressTime.setText("0:00/0:00");
         }
@@ -326,4 +336,9 @@ public class PlayerUI extends Observable{
         return playerWindowContent;
     }
 
+    private void createUIComponents() {
+        // TODO: place custom component creation code here
+        playlistPane = new JBScrollPane();
+        playlistPane.setLayout(new ScrollPaneLayout());
+    }
 }
