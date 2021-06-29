@@ -130,7 +130,7 @@ public class PlaylistLoader {
             // take everything from after the opening bracket
             String rawCommentValue = rawTitleSplit[1];
             // remove closing bracket and get depending comment type: "type)" -> AudioCommentType.TYPE
-            type = AudioCommentType.valueOf(rawCommentValue.replace("\\)", "").trim().toUpperCase(Locale.ROOT));
+            type = AudioCommentType.valueOf(rawCommentValue.replace(")", "").trim().toUpperCase(Locale.ROOT));
         }catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e){
             // use default type if annotated type was not found or no type was annotated
             type = AudioCommentType.DEFAULT;
