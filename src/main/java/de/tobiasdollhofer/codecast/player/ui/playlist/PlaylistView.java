@@ -1,5 +1,6 @@
 package de.tobiasdollhofer.codecast.player.ui.playlist;
 
+import com.android.tools.r8.graph.J;
 import com.intellij.openapi.project.Project;
 import com.intellij.ui.components.JBLabel;
 import com.intellij.ui.components.JBPanel;
@@ -43,14 +44,19 @@ public class PlaylistView extends JPanel {
             ChapterView chapterView = new ChapterView(chapter);
             //chapterView.setSize(this.getSize());
 
-            for(AudioComment comment : chapter.getComments()){
+            for(int i = 0; i < chapter.getComments().size(); i++){
+                AudioComment comment = chapter.getComment(i);
 
                 CommentView commentView = new CommentView(comment);
                 commentView.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent e) {
-                        current = comment;
-                        project.getService(PlayerManagerService.class).notify(new UIEvent(UIEventType.LIST_CLICKED, ""));
+                        if(current.equals(comment)){
+                            project.getService(PlayerManagerService.class).notify(new UIEvent(UIEventType.LIST_CLICKED_SAME, ""));
+                        }else{
+                            current = comment;
+                            project.getService(PlayerManagerService.class).notify(new UIEvent(UIEventType.LIST_CLICKED, ""));
+                        }
                     }
                 });
                 commentView.getPlayPauseIcon().addMouseListener(new MouseAdapter() {
@@ -61,9 +67,16 @@ public class PlaylistView extends JPanel {
                     }
                 });
                 commentView.setAlignmentX(Component.LEFT_ALIGNMENT);
-                commentView.setSize(new Dimension(650, 30));
+                //commentView.setSize(new Dimension(650, 30));
                 chapterView.add(commentView);
                 commentViews.add(commentView);
+
+                if(i < chapter.getComments().size() - 1){
+                    JSeparator separator = new JSeparator();
+                    separator.setMaximumSize(new Dimension(Integer.MAX_VALUE, 5));
+                    chapterView.add(separator);
+                }
+
             }
             chapterView.add(Box.createVerticalStrut(20));
             add(chapterView);

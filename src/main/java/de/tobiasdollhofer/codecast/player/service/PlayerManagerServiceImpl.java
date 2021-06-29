@@ -106,6 +106,10 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
                 listClicked();
                 break;
 
+            case LIST_CLICKED_SAME:
+                listClickedSame();
+                break;
+
             case RESET_PLAYER:
                 resetPlayer();
                 break;
@@ -132,7 +136,6 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
 
 
     }
-
 
     /**
      * sets first comment of playlist as current
@@ -194,6 +197,17 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
      */
     private void listClicked() {
         setComment(ui.getSelectedListComment());
+    }
+
+    /**
+     * starts playing or pausing if current title was clicked again in list
+     */
+    private void listClickedSame() {
+        if(playing){
+            player.pause();
+        }else{
+            player.play();
+        }
     }
 
     /**
