@@ -165,6 +165,7 @@ public class PlayerUI extends Observable{
      */
     public void pausePlayer(){
         playPause.setIcon(PluginIcons.play);
+        playlistView.pauseCurrent();
     }
 
     /**
@@ -172,6 +173,7 @@ public class PlayerUI extends Observable{
      */
     public void playPlayer(){
         playPause.setIcon(PluginIcons.pause);
+        playlistView.playCurrent();
     }
 
     /**
@@ -274,7 +276,11 @@ public class PlayerUI extends Observable{
     public void setPlaylist(Playlist playlist) {
         System.out.println("SET PLAYLIST");
         playlistView = new PlaylistView(playlist, project);
-        playlistPane.getViewport().add(playlistView);
+        //playlistView.setPreferredSize(new Dimension(-1, -1));
+        //playlistView.setAlignmentX(Component.LEFT_ALIGNMENT);
+        //createUIComponents();
+        playlistPane.setViewportView(playlistView);
+
     }
 
     /**
@@ -340,5 +346,7 @@ public class PlayerUI extends Observable{
         // TODO: place custom component creation code here
         playlistPane = new JBScrollPane();
         playlistPane.setLayout(new ScrollPaneLayout());
+        playlistPane.setPreferredSize(new Dimension(-1, -1));
+        playlistPane.setVisible(true);
     }
 }

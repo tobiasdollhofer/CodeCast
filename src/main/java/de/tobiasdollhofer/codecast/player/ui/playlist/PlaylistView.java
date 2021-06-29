@@ -34,7 +34,10 @@ public class PlaylistView extends JPanel {
 
     private void buildView() {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        setAlignmentX(LEFT_ALIGNMENT);
+        //
+        //setAlignmentX(LEFT_ALIGNMENT);
+        setBorder(BorderFactory.createEmptyBorder(16, 16, 16, 16));
+        //setBorder(BorderFactory.createTitledBorder("PlaylistView"));
         for(Chapter chapter : playlist.getChapters()){
 
             ChapterView chapterView = new ChapterView(chapter);
@@ -43,7 +46,6 @@ public class PlaylistView extends JPanel {
             for(AudioComment comment : chapter.getComments()){
 
                 CommentView commentView = new CommentView(comment);
-
                 commentView.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent e) {
@@ -51,14 +53,21 @@ public class PlaylistView extends JPanel {
                         project.getService(PlayerManagerService.class).notify(new UIEvent(UIEventType.LIST_CLICKED, ""));
                     }
                 });
-
+                commentView.getPlayPauseIcon().addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        super.mouseClicked(e);
+                        project.getService(PlayerManagerService.class).notify(new UIEvent(UIEventType.PLAY_PAUSE_CLICKED, ""));
+                    }
+                });
+                commentView.setAlignmentX(Component.LEFT_ALIGNMENT);
+                commentView.setSize(new Dimension(650, 30));
                 chapterView.add(commentView);
                 commentViews.add(commentView);
             }
             chapterView.add(Box.createVerticalStrut(20));
             add(chapterView);
         }
-        updateUI();
     }
 
     private void resetCommentViews() {
@@ -88,5 +97,21 @@ public class PlaylistView extends JPanel {
     public void setCurrent(AudioComment current) {
         this.current = current;
         resetCommentViews();
+    }
+
+    public void playCurrent(){
+        for(CommentView commentView : commentViews){
+            if(commentView.getComment().equals(current)){
+                commentView.play();
+            }
+        }
+    }
+
+    public void pauseCurrent(){
+        for(CommentView commentView : commentViews){
+            if(commentView.getComment().equals(current)){
+                commentView.pause();
+            }
+        }
     }
 }
