@@ -1,17 +1,11 @@
 package de.tobiasdollhofer.codecast.player.ui;
 
-import com.android.tools.r8.graph.J;
-import com.android.tools.r8.graph.S;
 import com.intellij.openapi.project.Project;
-import com.intellij.ui.components.JBLabel;
-import com.intellij.ui.components.JBPanel;
 import com.intellij.ui.components.JBScrollPane;
-import com.intellij.uiDesigner.core.GridLayoutManager;
 import de.tobiasdollhofer.codecast.player.data.AudioComment;
-import de.tobiasdollhofer.codecast.player.data.Chapter;
 import de.tobiasdollhofer.codecast.player.data.Playlist;
 import de.tobiasdollhofer.codecast.player.ui.playlist.PlaylistView;
-import de.tobiasdollhofer.codecast.player.util.PluginIcons;
+import de.tobiasdollhofer.codecast.player.util.constants.PluginIcons;
 import de.tobiasdollhofer.codecast.player.util.event.Observable;
 import de.tobiasdollhofer.codecast.player.util.event.ui.UIEvent;
 import de.tobiasdollhofer.codecast.player.util.event.ui.UIEventType;
@@ -24,7 +18,6 @@ import javax.swing.text.StyledDocument;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
 
 import static de.tobiasdollhofer.codecast.player.util.event.ui.UIEventType.*;
 
@@ -63,17 +56,7 @@ public class PlayerUI extends Observable{
         this.project = project;
         initToolbarListener();
         initPlayerControls();
-        initListControls();
         //TODO: adjust font size
-    }
-
-    private void initListControls() {
-        /*playlistList.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                PlayerUI.this.notifyAll(new UIEvent(LIST_CLICKED, ""));
-            }
-        });*/
     }
 
     private void initPlayerControls() {
@@ -99,6 +82,10 @@ public class PlayerUI extends Observable{
         playLast.addActionListener(e -> playLastClicked());
         volumeSlider.addChangeListener(e -> volumeSliderChange());
         showCodeButton.addActionListener(e -> showCodeButtonClicked());
+        initPlayerProgressBarListener();
+    }
+
+    private void initPlayerProgressBarListener(){
         playerProgressBar.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {

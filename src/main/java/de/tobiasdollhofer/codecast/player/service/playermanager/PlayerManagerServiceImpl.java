@@ -1,31 +1,19 @@
-package de.tobiasdollhofer.codecast.player.service;
+package de.tobiasdollhofer.codecast.player.service.playermanager;
 
-import com.google.common.collect.Iterables;
-import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.Service;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.pom.Navigatable;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiManager;
-import com.intellij.psi.search.FilenameIndex;
-import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.util.OpenSourceUtil;
-import com.intellij.util.PsiNavigateUtil;
 import de.tobiasdollhofer.codecast.player.CommentPlayer;
 import de.tobiasdollhofer.codecast.player.data.AudioComment;
 import de.tobiasdollhofer.codecast.player.data.Playlist;
+import de.tobiasdollhofer.codecast.player.service.playlist.PlaylistService;
 import de.tobiasdollhofer.codecast.player.util.*;
 import de.tobiasdollhofer.codecast.player.util.event.*;
 import de.tobiasdollhofer.codecast.player.util.event.downloader.DownloadEvent;
 import de.tobiasdollhofer.codecast.player.util.event.player.PlayerEvent;
 import de.tobiasdollhofer.codecast.player.util.event.ui.UIEvent;
 import de.tobiasdollhofer.codecast.player.ui.PlayerUI;
+import de.tobiasdollhofer.codecast.player.util.notification.BalloonNotifier;
 import javafx.util.Duration;
-import org.jetbrains.annotations.NotNull;
-
-import java.util.ArrayList;
-import java.util.Collection;
 
 @Service
 public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiable {
@@ -216,8 +204,8 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
      */
     private void resetPlayer() {
         player.pause();
-        this.project.getService(PlaylistService.class).getPlaylist();
-        this.playlist = project.getService(PlaylistService.class).getPlaylist();
+        ui.enablePlayer(false);
+        this.project.getService(PlaylistService.class).loadPlaylist();
     }
 
     /**
@@ -417,6 +405,11 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
         this.autoPlayback = autoPlayback;
     }
 
+    /**
+     * Method sets existing comment which is equal to provided comment
+     * used i.e. for jump-to-code where comment is extracted from code but is a new entity
+     * @param comment
+     */
     public void setPlaylistCommentForFoundComment(AudioComment comment){
         for(AudioComment playlistComment : playlist.getAllComments()){
             if(playlistComment.equals(comment)){
@@ -427,6 +420,7 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
             }
         }
     }
+
     /**
      * returns ui for factory
      * @return ui

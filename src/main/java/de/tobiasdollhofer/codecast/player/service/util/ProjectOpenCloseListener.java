@@ -1,9 +1,11 @@
-package de.tobiasdollhofer.codecast.player.service;
+package de.tobiasdollhofer.codecast.player.service.util;
 
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.DumbService;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManagerListener;
+import de.tobiasdollhofer.codecast.player.service.playermanager.PlayerManagerService;
+import de.tobiasdollhofer.codecast.player.service.playlist.PlaylistService;
 import org.jetbrains.annotations.NotNull;
 
 /**

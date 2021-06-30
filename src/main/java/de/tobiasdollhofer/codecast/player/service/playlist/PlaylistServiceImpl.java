@@ -1,4 +1,4 @@
-package de.tobiasdollhofer.codecast.player.service;
+package de.tobiasdollhofer.codecast.player.service.playlist;
 
 import com.intellij.openapi.components.Service;
 import com.intellij.openapi.project.Project;

@@ -6,9 +6,11 @@ import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
 import de.tobiasdollhofer.codecast.player.data.AudioComment;
 import de.tobiasdollhofer.codecast.player.data.Playlist;
-import de.tobiasdollhofer.codecast.player.service.PlayerManagerService;
+import de.tobiasdollhofer.codecast.player.service.playermanager.PlayerManagerService;
 import de.tobiasdollhofer.codecast.player.util.event.downloader.DownloadEvent;
 import de.tobiasdollhofer.codecast.player.util.event.downloader.DownloadEventType;
+import de.tobiasdollhofer.codecast.player.util.exception.NoFileUrlException;
+import de.tobiasdollhofer.codecast.player.util.notification.BalloonNotifier;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -18,8 +20,6 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.file.FileAlreadyExistsException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 
 public class DownloadUtil {

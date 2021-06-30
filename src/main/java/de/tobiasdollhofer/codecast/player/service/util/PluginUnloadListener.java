@@ -1,4 +1,4 @@
-package de.tobiasdollhofer.codecast.player.service;
+package de.tobiasdollhofer.codecast.player.service.util;
 
 import com.intellij.ide.plugins.DynamicPluginListener;
 import com.intellij.ide.plugins.IdeaPluginDescriptor;

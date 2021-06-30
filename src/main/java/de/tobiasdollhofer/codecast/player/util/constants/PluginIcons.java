@@ -1,4 +1,4 @@
-package de.tobiasdollhofer.codecast.player.util;
+package de.tobiasdollhofer.codecast.player.util.constants;
 
 import com.intellij.openapi.util.IconLoader;
 

@@ -2,16 +2,12 @@ package de.tobiasdollhofer.codecast.player.data;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiFile;
-import com.intellij.ui.components.JBLabel;
-import com.intellij.ui.components.JBPanel;
-import de.tobiasdollhofer.codecast.player.ui.playlist.CommentView;
 import de.tobiasdollhofer.codecast.player.util.FilePathUtil;
 import javafx.util.Duration;
 import org.apache.commons.io.FilenameUtils;
 import org.jaudiotagger.audio.AudioFile;
 import org.jaudiotagger.audio.AudioFileIO;
 
-import javax.swing.*;
 import java.io.File;
 import java.util.Objects;
 

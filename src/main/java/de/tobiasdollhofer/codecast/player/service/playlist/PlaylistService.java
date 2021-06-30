@@ -1,4 +1,4 @@
-package de.tobiasdollhofer.codecast.player.service;
+package de.tobiasdollhofer.codecast.player.service.playlist;
 
 import de.tobiasdollhofer.codecast.player.data.Playlist;
 

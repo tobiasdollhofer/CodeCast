@@ -1,18 +1,14 @@
 package de.tobiasdollhofer.codecast.player.util;
 
-import com.android.tools.r8.graph.S;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ProjectRootManager;
 import de.tobiasdollhofer.codecast.player.data.AudioComment;
+import de.tobiasdollhofer.codecast.player.util.exception.NoFileUrlException;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URL;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;

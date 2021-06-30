@@ -1,4 +1,4 @@
-package de.tobiasdollhofer.codecast.player.ui;
+package de.tobiasdollhofer.codecast.player.ui.editor;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.folding.FoldingBuilderEx;

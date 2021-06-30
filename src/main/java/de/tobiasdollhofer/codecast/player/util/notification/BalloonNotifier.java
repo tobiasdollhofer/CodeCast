@@ -1,4 +1,4 @@
-package de.tobiasdollhofer.codecast.player.util;
+package de.tobiasdollhofer.codecast.player.util.notification;
 
 import com.intellij.notification.NotificationGroupManager;
 import com.intellij.notification.NotificationType;

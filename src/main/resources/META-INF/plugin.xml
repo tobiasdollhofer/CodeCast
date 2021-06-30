@@ -14,23 +14,20 @@
     <extensions defaultExtensionNs="com.intellij">
         <notificationGroup id="CodeCastNotifier" displayType="BALLOON"/>
         <toolWindow factoryClass="de.tobiasdollhofer.codecast.player.ui.PlayerUIFactory" id="CodeCast" anchor="right" />
-        <projectService serviceImplementation="de.tobiasdollhofer.codecast.player.service.PlaylistServiceImpl"
-                        serviceInterface="de.tobiasdollhofer.codecast.player.service.PlaylistService" />
-        <projectService serviceImplementation="de.tobiasdollhofer.codecast.player.service.PlayerManagerServiceImpl"
-                        serviceInterface="de.tobiasdollhofer.codecast.player.service.PlayerManagerService" />
-        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="de.tobiasdollhofer.codecast.player.ui.CodeCastLineMarkerProvider" />
-        <lang.foldingBuilder language="JAVA" implementationClass="de.tobiasdollhofer.codecast.player.ui.CodeCastFoldingBuilder" />
+        <projectService serviceImplementation="de.tobiasdollhofer.codecast.player.service.playlist.PlaylistServiceImpl"
+                        serviceInterface="de.tobiasdollhofer.codecast.player.service.playlist.PlaylistService" />
+        <projectService serviceImplementation="de.tobiasdollhofer.codecast.player.service.playermanager.PlayerManagerServiceImpl"
+                        serviceInterface="de.tobiasdollhofer.codecast.player.service.playermanager.PlayerManagerService" />
+        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="de.tobiasdollhofer.codecast.player.ui.editor.CodeCastLineMarkerProvider" />
+        <lang.foldingBuilder language="JAVA" implementationClass="de.tobiasdollhofer.codecast.player.ui.editor.CodeCastFoldingBuilder" />
     </extensions>
 
     <actions>
-        <action id="org.intellij.sdk.action.GroupPopupDialogAction" class="Test"
-                text="Test Action" description="Simple action to test action-functionallity">
-            <add-to-group group-id="ToolsMenu" />
-        </action>
+
     </actions>
 
     <applicationListeners>
-        <listener class="de.tobiasdollhofer.codecast.player.service.ProjectOpenCloseListener" topic="com.intellij.openapi.project.ProjectManagerListener" />
-        <listener class="de.tobiasdollhofer.codecast.player.service.PluginUnloadListener" topic="com.intellij.ide.plugins.DynamicPluginListener" />
+        <listener class="de.tobiasdollhofer.codecast.player.service.util.ProjectOpenCloseListener" topic="com.intellij.openapi.project.ProjectManagerListener" />
+        <listener class="de.tobiasdollhofer.codecast.player.service.util.PluginUnloadListener" topic="com.intellij.ide.plugins.DynamicPluginListener" />
     </applicationListeners>
 </idea-plugin>
