@@ -27,6 +27,10 @@ public class Chapter {
         return title;
     }
 
+    public String getTitleWithoutNumber(){
+        return title.replaceFirst("^[0-9]+[.]", "");
+    }
+
     public void setTitle(String title) {
         this.title = title;
     }
@@ -99,7 +103,7 @@ public class Chapter {
         this.comments.sort(new Comparator<AudioComment>() {
             @Override
             public int compare(AudioComment c1, AudioComment c2) {
-                return c1.getPosition().compareTo(c2.getPosition());
+                return c1.getTitle().compareTo(c2.getTitle());
             }
         });
     }
@@ -144,4 +148,5 @@ public class Chapter {
     public int hashCode() {
         return Objects.hash(title, comments);
     }
+
 }

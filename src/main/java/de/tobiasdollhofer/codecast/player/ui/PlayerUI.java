@@ -1,15 +1,23 @@
 package de.tobiasdollhofer.codecast.player.ui;
 
 import com.intellij.openapi.project.Project;
+import com.intellij.ui.components.JBScrollPane;
 import de.tobiasdollhofer.codecast.player.data.AudioComment;
 import de.tobiasdollhofer.codecast.player.data.Playlist;
-import de.tobiasdollhofer.codecast.player.util.PluginIcons;
+import de.tobiasdollhofer.codecast.player.ui.playlist.PlaylistView;
+import de.tobiasdollhofer.codecast.player.util.constants.PluginIcons;
 import de.tobiasdollhofer.codecast.player.util.event.Observable;
 import de.tobiasdollhofer.codecast.player.util.event.ui.UIEvent;
 import de.tobiasdollhofer.codecast.player.util.event.ui.UIEventType;
 
 import javax.swing.*;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledDocument;
 
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 import static de.tobiasdollhofer.codecast.player.util.event.ui.UIEventType.*;
 
@@ -32,11 +40,14 @@ public class PlayerUI extends Observable{
     private JSlider volumeSlider;
     private JLabel volumeIcon;
     private JToggleButton autoplayButton;
+    private JToggleButton jumpToCode;
+    private JButton showCodeButton;
 
-    private boolean playing = false;
+    private final boolean playing = false;
     private Playlist playlist;
     private AudioComment comment;
     public String playerTest;
+    private PlaylistView playlistView;
 
     private final Project project;
 
@@ -45,6 +56,7 @@ public class PlayerUI extends Observable{
         this.project = project;
         initToolbarListener();
         initPlayerControls();
+        //TODO: adjust font size
     }
 
     private void initPlayerControls() {
@@ -59,6 +71,7 @@ public class PlayerUI extends Observable{
         playNext.setIcon(PluginIcons.playNext);
         playLast.setIcon(PluginIcons.playLast);
         volumeIcon.setIcon(PluginIcons.volume);
+        showCodeButton.setIcon(PluginIcons.showCodeOff);
     }
 
     private void initPlayerControlListener() {
@@ -68,6 +81,28 @@ public class PlayerUI extends Observable{
         playNext.addActionListener(e -> playNextClicked());
         playLast.addActionListener(e -> playLastClicked());
         volumeSlider.addChangeListener(e -> volumeSliderChange());
+        showCodeButton.addActionListener(e -> showCodeButtonClicked());
+        initPlayerProgressBarListener();
+    }
+
+    private void initPlayerProgressBarListener(){
+        playerProgressBar.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                double progress = e.getX();
+                progress = progress / playerProgressBar.getWidth();
+                PlayerUI.this.notifyAll(new UIEvent(PROGRESSBAR_CLICKED, String.valueOf(progress)));
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                super.mousePressed(e);
+                double progress = e.getX();
+                progress = progress / playerProgressBar.getWidth();
+                PlayerUI.this.notifyAll(new UIEvent(PROGRESSBAR_CLICKED, String.valueOf(progress)));
+            }
+        });
     }
 
     /**
@@ -83,6 +118,13 @@ public class PlayerUI extends Observable{
             volume = volume / 100;
         }
         notifyAll(new UIEvent(VOLUME_CHANGE, String.valueOf(volume)));
+    }
+
+    /**
+     * notifies all observer about click event
+     */
+    private void showCodeButtonClicked() {
+        notifyAll(new UIEvent(SHOW_CODE_CLICKED, ""));
     }
 
     /**
@@ -111,6 +153,7 @@ public class PlayerUI extends Observable{
      */
     public void pausePlayer(){
         playPause.setIcon(PluginIcons.play);
+        playlistView.pauseCurrent();
     }
 
     /**
@@ -118,6 +161,7 @@ public class PlayerUI extends Observable{
      */
     public void playPlayer(){
         playPause.setIcon(PluginIcons.pause);
+        playlistView.playCurrent();
     }
 
     /**
@@ -125,8 +169,14 @@ public class PlayerUI extends Observable{
      * @param time string value of time ( x:xx/x:xx)
      */
     public void setProgressTime(String time){
-        if(!time.equals(progressTime.getText()))
+        if(!time.equals(progressTime.getText())){
+            StyledDocument doc = progressTime.getStyledDocument();
+            SimpleAttributeSet center = new SimpleAttributeSet();
+            StyleConstants.setAlignment(center, StyleConstants.ALIGN_CENTER);
+            doc.setParagraphAttributes(0, doc.getLength(), center, false);
+        }
             progressTime.setText(time);
+
     }
 
     /**
@@ -156,9 +206,11 @@ public class PlayerUI extends Observable{
      * inits toolbar buttons
      */
     private void initToolbarListener() {
-        autoplayButton.setIcon(PluginIcons.autoPlay);
+        autoplayButton.setIcon(PluginIcons.autoPlayOff);
         autoplayButton.addActionListener(e -> autoplayButtonClicked());
         reloadButton.addActionListener(e -> reloadPlayer());
+        jumpToCode.addActionListener(e -> jumpToCodeButtonClicked());
+        jumpToCode.setIcon(PluginIcons.showCodeOff);
     }
 
     /**
@@ -166,13 +218,24 @@ public class PlayerUI extends Observable{
      */
     private void autoplayButtonClicked() {
         if(autoplayButton.isSelected()){
-            autoplayButton.setText("Autoplay ON");
+            autoplayButton.setIcon(PluginIcons.autoPlayOn);
         }else{
-            autoplayButton.setText("Autoplay OFF");
+            autoplayButton.setIcon(PluginIcons.autoPlayOff);
         }
         notifyAll(new UIEvent(AUTOPLAY_CLICKED, String.valueOf(autoplayButton.isSelected())));
     }
 
+    /**
+     * notifies all observer about click event and sets text to ON/OFF
+     */
+    private void jumpToCodeButtonClicked(){
+        if(jumpToCode.isSelected()){
+            jumpToCode.setIcon(PluginIcons.showCodeOn);
+        }else{
+            jumpToCode.setIcon(PluginIcons.showCodeOff);
+        }
+        notifyAll(new UIEvent(JUMP_TO_CODE_CLICKED, String.valueOf(jumpToCode.isSelected())));
+    }
     /**
      *
      * @return if autoplaybutton is selected
@@ -182,6 +245,13 @@ public class PlayerUI extends Observable{
     }
 
     /**
+     *
+     * @return if jump to code is activated
+     */
+    public boolean getJumpToCodeStatus(){
+        return jumpToCode.isSelected();
+    }
+    /**
      * notifies all observer about click event
      */
     private void reloadPlayer() {
@@ -189,11 +259,11 @@ public class PlayerUI extends Observable{
     }
 
     /**
-     * TODO
-     * @param playlist
+     * @param playlist playlist to set to playlistList
      */
     public void setPlaylist(Playlist playlist) {
-        System.out.println("SET PLAYLIST");
+        playlistView = new PlaylistView(playlist, project);
+        playlistPane.setViewportView(playlistView);
     }
 
     /**
@@ -205,11 +275,23 @@ public class PlayerUI extends Observable{
         if(comment != null){
             this.comment = comment;
             currentTitleLabel.setText(comment.getTitle());
+            playlistView.setCurrent(comment);
             enablePlayer(true);
         }else {
-            currentTitleLabel.setText("No comment available.");
             enablePlayer(false);
         }
+    }
+
+    /**
+     *
+     * @return selected value from list
+     */
+    public AudioComment getSelectedListComment(){
+        if(playlistPane.getViewport().getComponent(0) != null){
+           PlaylistView playlistView = (PlaylistView) playlistPane.getViewport().getComponent(0);
+           return playlistView.getCurrent();
+        }
+        return null;
     }
 
     /**
@@ -225,6 +307,14 @@ public class PlayerUI extends Observable{
         this.playLast.setEnabled(enabled);
         this.volumeSlider.setEnabled(enabled);
         this.playerProgressBar.setEnabled(enabled);
+        this.showCodeButton.setEnabled(enabled);
+        this.playlistPane.setEnabled(enabled);
+        // add some placeholder if player is disabled
+        if(!enabled){
+            this.currentTitleLabel.setText("No comment available.");
+            this.playerProgressBar.setValue(0);
+            this.progressTime.setText("0:00/0:00");
+        }
     }
 
     /**
@@ -235,4 +325,11 @@ public class PlayerUI extends Observable{
         return playerWindowContent;
     }
 
+    private void createUIComponents() {
+        // TODO: place custom component creation code here
+        playlistPane = new JBScrollPane();
+        playlistPane.setLayout(new ScrollPaneLayout());
+        playlistPane.setPreferredSize(new Dimension(-1, -1));
+        playlistPane.setVisible(true);
+    }
 }

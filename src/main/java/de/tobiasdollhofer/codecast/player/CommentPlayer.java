@@ -1,7 +1,11 @@
 package de.tobiasdollhofer.codecast.player;
 
 
+import com.intellij.openapi.project.Project;
 import com.sun.javafx.application.PlatformImpl;
+import de.tobiasdollhofer.codecast.player.data.AudioComment;
+import de.tobiasdollhofer.codecast.player.util.DurationFormatter;
+import de.tobiasdollhofer.codecast.player.util.FilePathUtil;
 import de.tobiasdollhofer.codecast.player.util.event.Observable;
 import de.tobiasdollhofer.codecast.player.util.event.player.PlayerEvent;
 import de.tobiasdollhofer.codecast.player.util.event.player.PlayerEventType;
@@ -84,6 +88,16 @@ public class CommentPlayer extends Observable {
         }
     }
 
+    /**
+     *
+     * @param seconds position where player should be seet
+     */
+    public void goToPosition(int seconds){
+        if (seconds < 0) return;
+        mediaPlayer.seek(new Duration(seconds * 1000));
+        notifyAll(new PlayerEvent(PlayerEventType.PROGRESS_CHANGED, ""));
+    }
+
     public String getPath() {
         return path;
     }
@@ -97,6 +111,7 @@ public class CommentPlayer extends Observable {
         this.ready = false;
         this.path = path;
         try{
+            //TODO: create media objects for all comments directly?
             this.media = new Media(path);
             this.mediaPlayer = new MediaPlayer(this.media);
 
@@ -104,8 +119,8 @@ public class CommentPlayer extends Observable {
             this.mediaPlayer.setOnReady(new Runnable() {
                 @Override
                 public void run() {
-                    CommentPlayer.this.notifyAll(new PlayerEvent(PlayerEventType.INITIALIZED, ""));
                     ready = true;
+                    CommentPlayer.this.notifyAll(new PlayerEvent(PlayerEventType.INITIALIZED, ""));
                     setVolume(volume);
                     if(playAlong){
                         play();
@@ -145,48 +160,6 @@ public class CommentPlayer extends Observable {
 
     /**
      *
-     * @return progress of player in pattern x:xx/x:xx
-     */
-    public String getFormattedProgress(){
-        StringBuilder sb = new StringBuilder();
-        if(ready){
-            sb.append(getFormattedTime(mediaPlayer.getCurrentTime()));
-            sb.append('/');
-            sb.append(getFormattedTime(mediaPlayer.getMedia().getDuration()));
-        }else{
-            sb.append("0:00/0:00");
-        }
-        return sb.toString();
-    }
-
-    /**
-     *
-     * @param duration time to represent
-     * @return string representation of time in pattern x:xx
-     */
-    private String getFormattedTime(Duration duration){
-        double durationSeconds = duration.toSeconds();
-        int hours = (int) (durationSeconds / 3600);
-        durationSeconds = durationSeconds - 3600 * hours;
-        int minutes = (int) (durationSeconds / 60);
-        durationSeconds = durationSeconds - 60 * minutes;
-        int seconds = (int) durationSeconds;
-        StringBuilder sb = new StringBuilder();
-        if(hours > 0){
-            sb.append(hours);
-            sb.append(':');
-        }
-        sb.append(minutes);
-        sb.append(':');
-        if(seconds < 10){
-            sb.append(0);
-        }
-        sb.append(seconds);
-        return sb.toString();
-    }
-
-    /**
-     *
      * @return value between 0 and 100 of playback progress
      */
     public int getProgressPercentage(){
@@ -196,6 +169,21 @@ public class CommentPlayer extends Observable {
         if (percentage > 99) {
             return 100;
         }
+        if (percentage < 1){
+            return 1;
+        }
         return (int) percentage;
+    }
+
+    /**
+     *
+     * @return current progress as duration
+     */
+    public Duration getDurationProgress() {
+        if(ready){
+            return mediaPlayer.getCurrentTime();
+        }else{
+            return Duration.ZERO;
+        }
     }
 }

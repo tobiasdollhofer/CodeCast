@@ -1,4 +1,4 @@
-package de.tobiasdollhofer.codecast.player.service;
+package de.tobiasdollhofer.codecast.player.service.playlist;
 
 import com.intellij.openapi.components.Service;
 import com.intellij.openapi.project.Project;
@@ -14,7 +14,6 @@ public class PlaylistServiceImpl implements PlaylistService{
 
     public PlaylistServiceImpl(Project project) {
         this.project = project;
-        loadPlaylist();
     }
 
     /**

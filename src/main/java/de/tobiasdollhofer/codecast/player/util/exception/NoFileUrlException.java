@@ -1,4 +1,4 @@
-package de.tobiasdollhofer.codecast.player.util;
+package de.tobiasdollhofer.codecast.player.util.exception;
 
 import de.tobiasdollhofer.codecast.player.data.AudioComment;
 

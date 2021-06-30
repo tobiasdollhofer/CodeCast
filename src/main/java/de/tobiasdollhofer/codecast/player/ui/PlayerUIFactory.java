@@ -5,7 +5,7 @@ import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowFactory;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
-import de.tobiasdollhofer.codecast.player.service.PlayerManagerService;
+import de.tobiasdollhofer.codecast.player.service.playermanager.PlayerManagerService;
 import org.jetbrains.annotations.NotNull;
 
 

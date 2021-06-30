@@ -1,18 +1,19 @@
-package de.tobiasdollhofer.codecast.player.service;
+package de.tobiasdollhofer.codecast.player.service.playermanager;
 
 import com.intellij.openapi.components.Service;
 import com.intellij.openapi.project.Project;
 import de.tobiasdollhofer.codecast.player.CommentPlayer;
 import de.tobiasdollhofer.codecast.player.data.AudioComment;
 import de.tobiasdollhofer.codecast.player.data.Playlist;
-import de.tobiasdollhofer.codecast.player.util.BalloonNotifier;
-import de.tobiasdollhofer.codecast.player.util.FilePathUtil;
-import de.tobiasdollhofer.codecast.player.util.NoFileUrlException;
+import de.tobiasdollhofer.codecast.player.service.playlist.PlaylistService;
+import de.tobiasdollhofer.codecast.player.util.*;
 import de.tobiasdollhofer.codecast.player.util.event.*;
 import de.tobiasdollhofer.codecast.player.util.event.downloader.DownloadEvent;
 import de.tobiasdollhofer.codecast.player.util.event.player.PlayerEvent;
 import de.tobiasdollhofer.codecast.player.util.event.ui.UIEvent;
 import de.tobiasdollhofer.codecast.player.ui.PlayerUI;
+import de.tobiasdollhofer.codecast.player.util.notification.BalloonNotifier;
+import javafx.util.Duration;
 
 @Service
 public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiable {
@@ -20,14 +21,14 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
     private Playlist playlist;
     private final Project project;
     private AudioComment comment;
-    private CommentPlayer player;
-    private PlayerUI ui;
+    private final CommentPlayer player;
+    private final PlayerUI ui;
     private boolean playing;
     private boolean autoPlayback = false;
+    private boolean jumpToCode = false;
 
     public PlayerManagerServiceImpl(Project project) {
         this.project = project;
-        this.playlist = project.getService(PlaylistService.class).getPlaylist();
         this.player = new CommentPlayer();
         this.ui = new PlayerUI(project);
         this.playing = false;
@@ -90,7 +91,11 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
                 break;
 
             case LIST_CLICKED:
+                listClicked();
+                break;
 
+            case LIST_CLICKED_SAME:
+                listClickedSame();
                 break;
 
             case RESET_PLAYER:
@@ -99,6 +104,18 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
 
             case AUTOPLAY_CLICKED:
                 autoplayClicked();
+                break;
+
+            case JUMP_TO_CODE_CLICKED:
+                jumpToCodeClicked();
+                break;
+
+            case SHOW_CODE_CLICKED:
+                showCodeClicked();
+                break;
+
+            case PROGRESSBAR_CLICKED:
+                onProgressBarClicked(Double.parseDouble(e.getData()));
                 break;
 
             default:
@@ -164,19 +181,31 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
     }
 
     /**
-     * reloads playlist and sets first comment as current
+     * sets selected comment from list for the player
+     */
+    private void listClicked() {
+        setComment(ui.getSelectedListComment());
+    }
+
+    /**
+     * starts playing or pausing if current title was clicked again in list
+     */
+    private void listClickedSame() {
+        if(playing){
+            player.pause();
+        }else{
+            player.play();
+        }
+    }
+
+    /**
+     * reloads playlist
+     * comment will be set after eventual download is finished -> onDownloadFinished()
      */
     private void resetPlayer() {
         player.pause();
+        ui.enablePlayer(false);
         this.project.getService(PlaylistService.class).loadPlaylist();
-        this.playlist = project.getService(PlaylistService.class).getPlaylist();
-        if(this.playlist != null){
-            ui.enablePlayer(true);
-            setComment(this.playlist.getFirstComment());
-            ui.setPlaylist(this.playlist);
-        }else{
-            ui.enablePlayer(false);
-        }
     }
 
     /**
@@ -186,6 +215,32 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
         autoPlayback = ui.getAutoplayStatus();
     }
 
+
+    /**
+     * stores the jump-to-code status to handle playback actions correctly
+     */
+    private void jumpToCodeClicked() {
+        jumpToCode = ui.getJumpToCodeStatus();
+    }
+
+    /**
+     * jumps to code position of comment
+     */
+    private void showCodeClicked() {
+        JumpToCodeUtil.jumpToCode(comment);
+    }
+
+    /**
+     * percentage position of the comment
+     * @param position double value between 0 and 1
+     */
+    private void onProgressBarClicked(double position) {
+        Duration duration = comment.getDuration();
+        if(duration != null){
+            int seconds = (int)comment.getDuration().toSeconds();
+            player.goToPosition( (int)(seconds * position));
+        }
+    }
 
     /**
      * routes Player-Event based on its type
@@ -228,6 +283,7 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
      */
     private void onPlayerInitialized() {
         onProgressChanged();
+        ui.setComment(this.comment);
     }
 
     /**
@@ -266,7 +322,9 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
      */
     private void onProgressChanged() {
         this.ui.setProgress(this.player.getProgressPercentage());
-        this.ui.setProgressTime(this.player.getFormattedProgress());
+        this.ui.setProgressTime(DurationFormatter.formatDuration(this.player.getDurationProgress())
+                + "/"
+                + DurationFormatter.formatDuration(comment.getDuration()));
     }
 
     /**
@@ -300,10 +358,14 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
      * set first comment and initialize ui list view
      */
     private void onDownloadFinished() {
-        if(playlist != null){
+        playlist = project.getService(PlaylistService.class).getPlaylist();
+        if(playlist != null && !playlist.isEmpty()){
+            ui.setPlaylist(playlist);
+            ui.enablePlayer(true);
             comment = playlist.getFirstComment();
             setComment(comment);
-            ui.setPlaylist(playlist);
+        }else{
+            ui.enablePlayer(false);
         }
     }
 
@@ -312,6 +374,7 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
      */
     private void onDownloadCanceled() {
         BalloonNotifier.notifyError(project, "Download was canceled. Please reset player.");
+        ui.enablePlayer(false);
     }
 
     /**
@@ -323,14 +386,13 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
         // playingTemp is used for restart playback some lines below
         boolean playingTemp = this.playing;
         player.pause();
-        try {
-            if(comment != null && FilePathUtil.checkCommentDownloaded(project, comment)){
-                this.comment = comment;
-                ui.setComment(this.comment);
-                player.setPath(FilePathUtil.getFilePathForCommentWithPrefix(project, comment), playingTemp);
+        if(comment != null && FilePathUtil.checkCommentDownloaded(project, comment)){
+            this.comment = comment;
+            // jump to code position if it is activated
+            if(jumpToCode){
+                JumpToCodeUtil.jumpToCode(comment);
             }
-        } catch (NoFileUrlException e) {
-            BalloonNotifier.notifyError(project, e.getMessage());
+            player.setPath(FilePathUtil.getFilePathForCommentWithPrefix(project, comment), playingTemp);
         }
     }
 
@@ -341,6 +403,22 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
 
     public void setAutoPlayback(boolean autoPlayback) {
         this.autoPlayback = autoPlayback;
+    }
+
+    /**
+     * Method sets existing comment which is equal to provided comment
+     * used i.e. for jump-to-code where comment is extracted from code but is a new entity
+     * @param comment
+     */
+    public void setPlaylistCommentForFoundComment(AudioComment comment){
+        for(AudioComment playlistComment : playlist.getAllComments()){
+            if(playlistComment.equals(comment)){
+                if(!playing){
+                    playing = true;
+                }
+                setComment(playlistComment);
+            }
+        }
     }
 
     /**

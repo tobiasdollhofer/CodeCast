@@ -1,7 +1,14 @@
 package de.tobiasdollhofer.codecast.player.data;
 
+import com.intellij.openapi.project.Project;
+import com.intellij.psi.PsiFile;
+import de.tobiasdollhofer.codecast.player.util.FilePathUtil;
+import javafx.util.Duration;
 import org.apache.commons.io.FilenameUtils;
+import org.jaudiotagger.audio.AudioFile;
+import org.jaudiotagger.audio.AudioFileIO;
 
+import java.io.File;
 import java.util.Objects;
 
 /**
@@ -14,19 +21,23 @@ public class AudioComment {
     private String url;
     private AudioCommentType type;
     private String chapter;
-    private String position;
+    private Duration duration;
+    private PsiFile file;
 
     public AudioComment(String title, AudioCommentType type) {
         this.title = title;
         this.url = "";
         this.chapter = "";
-        this.position = "";
         this.type = type;
         this.downloaded = false;
     }
 
     public String getTitle() {
         return title;
+    }
+
+    public String getTitleWithoutNumbers(){
+        return title.replaceFirst("^[0-9]+[.]", "");
     }
 
     public void setTitle(String title) {
@@ -61,16 +72,39 @@ public class AudioComment {
         return chapter;
     }
 
+    public String getChapterWithoutNumbers(){
+        return chapter.replaceFirst("^[0-9]+[.]", "");
+    }
+
     public void setChapter(String chapter) {
         this.chapter = chapter;
     }
 
-    public String getPosition() {
-        return position;
+    public Duration getDuration() {
+        return duration;
     }
 
-    public void setPosition(String position) {
-        this.position = position;
+    /**
+     * calculates and stores duration
+     * will be executed after download of file is finished
+     * @param project depending project used to get filepath where stored
+     */
+    public void calculateDuration(Project project){
+        try{
+            AudioFile audioFile = AudioFileIO.read(new File(FilePathUtil.getFilePathForComment(project, this)));
+            Duration duration = new Duration(audioFile.getAudioHeader().getTrackLength() * 1000);
+            this.duration = duration;
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public PsiFile getFile() {
+        return file;
+    }
+
+    public void setFile(PsiFile file) {
+        this.file = file;
     }
 
     /**
@@ -89,12 +123,12 @@ public class AudioComment {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         AudioComment comment = (AudioComment) o;
-        return downloaded == comment.downloaded && title.equals(comment.title) && Objects.equals(url, comment.url) && type == comment.type && Objects.equals(chapter, comment.chapter) && Objects.equals(position, comment.position);
+        return title.equals(comment.title) && Objects.equals(url, comment.url) && type == comment.type && Objects.equals(chapter, comment.chapter);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(title, downloaded, url, type, chapter, position);
+        return Objects.hash(title, downloaded, url, type, chapter);
     }
 
     @Override
@@ -105,7 +139,7 @@ public class AudioComment {
                 ", url='" + url + '\'' +
                 ", type=" + type +
                 ", chapter='" + chapter + '\'' +
-                ", position='" + position + '\'' +
+                ", duration='" + duration + '\'' +
                 '}';
     }
 }

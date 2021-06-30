@@ -11,7 +11,7 @@
     </properties>
     <border type="none"/>
     <children>
-      <scrollpane id="5965" binding="playlistPane">
+      <scrollpane id="5965" binding="playlistPane" custom-create="true">
         <constraints>
           <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
         </constraints>
@@ -19,16 +19,9 @@
           <visible value="true"/>
         </properties>
         <border type="none"/>
-        <children>
-          <component id="5a63b" class="javax.swing.JList" binding="playlistList">
-            <constraints/>
-            <properties>
-              <model/>
-            </properties>
-          </component>
-        </children>
+        <children/>
       </scrollpane>
-      <grid id="f0665" binding="playerPanel" layout-manager="GridLayoutManager" row-count="3" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+      <grid id="f0665" binding="playerPanel" layout-manager="GridLayoutManager" row-count="3" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
         <margin top="0" left="0" bottom="0" right="0"/>
         <constraints>
           <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
@@ -40,7 +33,7 @@
         <children>
           <component id="eafbe" class="javax.swing.JTextPane" binding="currentTitleLabel">
             <constraints>
-              <grid row="0" column="0" row-span="1" col-span="2" vsize-policy="2" hsize-policy="2" anchor="0" fill="0" indent="0" use-parent-layout="false">
+              <grid row="0" column="0" row-span="1" col-span="3" vsize-policy="2" hsize-policy="2" anchor="0" fill="0" indent="0" use-parent-layout="false">
                 <preferred-size width="-1" height="25"/>
               </grid>
             </constraints>
@@ -52,26 +45,34 @@
           <grid id="a0ee" layout-manager="GridLayoutManager" row-count="1" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
             <margin top="0" left="0" bottom="0" right="0"/>
             <constraints>
-              <grid row="1" column="0" row-span="1" col-span="2" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+              <grid row="1" column="0" row-span="1" col-span="3" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties/>
             <border type="none"/>
             <children>
               <component id="56c67" class="javax.swing.JTextPane" binding="progressTime">
                 <constraints>
-                  <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="2" hsize-policy="2" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                  <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="2" hsize-policy="2" anchor="0" fill="2" indent="0" use-parent-layout="false">
+                    <preferred-size width="100" height="-1"/>
+                  </grid>
                 </constraints>
                 <properties>
+                  <editable value="false"/>
+                  <enabled value="true"/>
                   <text value="0:00/0:00"/>
                   <toolTipText value="Current Time"/>
                 </properties>
               </component>
               <component id="8949a" class="javax.swing.JProgressBar" binding="playerProgressBar">
                 <constraints>
-                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false">
+                    <minimum-size width="-1" height="5"/>
+                    <preferred-size width="-1" height="5"/>
+                    <maximum-size width="-1" height="5"/>
+                  </grid>
                 </constraints>
                 <properties>
-                  <value value="50"/>
+                  <value value="0"/>
                 </properties>
               </component>
             </children>
@@ -96,6 +97,7 @@
                   <minimumSize width="30" height="30"/>
                   <preferredSize width="30" height="30"/>
                   <text value=""/>
+                  <toolTipText value="Play first comment"/>
                 </properties>
               </component>
               <component id="2eb37" class="javax.swing.JButton" binding="playPrevious">
@@ -105,6 +107,7 @@
                   <minimumSize width="30" height="30"/>
                   <preferredSize width="30" height="30"/>
                   <text value=""/>
+                  <toolTipText value="Play previous comment"/>
                 </properties>
               </component>
               <component id="41dfb" class="javax.swing.JButton" binding="playPause">
@@ -114,6 +117,7 @@
                   <minimumSize width="40" height="40"/>
                   <preferredSize width="40" height="40"/>
                   <text value=""/>
+                  <toolTipText value="Play / Pause"/>
                 </properties>
               </component>
               <component id="bd408" class="javax.swing.JButton" binding="playNext">
@@ -123,6 +127,7 @@
                   <minimumSize width="30" height="30"/>
                   <preferredSize width="30" height="30"/>
                   <text value=""/>
+                  <toolTipText value="Play next Comment"/>
                 </properties>
               </component>
               <component id="91767" class="javax.swing.JButton" binding="playLast">
@@ -132,6 +137,7 @@
                   <minimumSize width="30" height="30"/>
                   <preferredSize width="30" height="30"/>
                   <text value=""/>
+                  <toolTipText value="Play last comment"/>
                 </properties>
               </component>
               <grid id="820c1" layout-manager="FlowLayout" hgap="0" vgap="5" flow-align="2">
@@ -167,6 +173,19 @@
               </grid>
             </children>
           </grid>
+          <component id="e094d" class="javax.swing.JButton" binding="showCodeButton">
+            <constraints>
+              <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false">
+                <minimum-size width="30" height="30"/>
+                <preferred-size width="30" height="30"/>
+                <maximum-size width="30" height="30"/>
+              </grid>
+            </constraints>
+            <properties>
+              <text value=""/>
+              <toolTipText value="Show Code for this Explanation"/>
+            </properties>
+          </component>
         </children>
       </grid>
       <toolbar id="97b4e" binding="toolbar">
@@ -189,17 +208,31 @@
               <horizontalTextPosition value="11"/>
               <icon value="actions/refresh.png"/>
               <label value=""/>
-              <maximumSize width="30" height="30"/>
-              <minimumSize width="30" height="30"/>
-              <preferredSize width="30" height="30"/>
+              <maximumSize width="40" height="40"/>
+              <minimumSize width="40" height="40"/>
+              <preferredSize width="40" height="40"/>
               <text value=""/>
-              <toolTipText value="Reload Playlist-File"/>
+              <toolTipText value="Reload Playlist"/>
             </properties>
           </component>
           <component id="3bde8" class="javax.swing.JToggleButton" binding="autoplayButton">
             <constraints/>
             <properties>
-              <text value="Autoplay OFF"/>
+              <maximumSize width="40" height="40"/>
+              <minimumSize width="40" height="40"/>
+              <preferredSize width="40" height="40"/>
+              <text value=""/>
+              <toolTipText value="Enable / Disable Autoplay"/>
+            </properties>
+          </component>
+          <component id="f0c88" class="javax.swing.JToggleButton" binding="jumpToCode">
+            <constraints/>
+            <properties>
+              <maximumSize width="40" height="40"/>
+              <minimumSize width="40" height="40"/>
+              <preferredSize width="40" height="40"/>
+              <text value=""/>
+              <toolTipText value="Enable / Disable Automatic Jump to Code"/>
             </properties>
           </component>
         </children>

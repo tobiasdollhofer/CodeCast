@@ -1,8 +1,5 @@
 package de.tobiasdollhofer.codecast.player.data;
 
-
-
-import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -208,18 +205,6 @@ public class Playlist {
         addChapter(chapter);
     }
 
-    public ListModel toListModel(){
-
-        DefaultListModel model = new DefaultListModel();
-        for(Chapter c : chapters){
-            model.addElement(c.getTitle());
-            for(AudioComment comment : c.getComments()){
-                model.addElement(comment.getTitle());
-            }
-        }
-        return model;
-    }
-
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -243,5 +228,13 @@ public class Playlist {
             comments.addAll(chapter.getComments());
         }
         return comments;
+    }
+
+    /**
+     *
+     * @return if playlist has no comments in it
+     */
+    public boolean isEmpty() {
+        return getAllComments().size() == 0;
     }
 }
