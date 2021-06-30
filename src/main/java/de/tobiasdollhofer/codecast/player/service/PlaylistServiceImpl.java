@@ -14,7 +14,6 @@ public class PlaylistServiceImpl implements PlaylistService{
 
     public PlaylistServiceImpl(Project project) {
         this.project = project;
-        //loadPlaylist();
     }
 
     /**

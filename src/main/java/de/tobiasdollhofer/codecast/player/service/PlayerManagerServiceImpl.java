@@ -216,7 +216,7 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
      */
     private void resetPlayer() {
         player.pause();
-        this.project.getService(PlaylistService.class).loadPlaylist();
+        this.project.getService(PlaylistService.class).getPlaylist();
         this.playlist = project.getService(PlaylistService.class).getPlaylist();
     }
 

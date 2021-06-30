@@ -64,6 +64,7 @@ public class PlayerUI extends Observable{
         initToolbarListener();
         initPlayerControls();
         initListControls();
+        //TODO: adjust font size
     }
 
     private void initListControls() {
@@ -274,13 +275,8 @@ public class PlayerUI extends Observable{
      * @param playlist playlist to set to playlistList
      */
     public void setPlaylist(Playlist playlist) {
-        System.out.println("SET PLAYLIST");
         playlistView = new PlaylistView(playlist, project);
-        //playlistView.setPreferredSize(new Dimension(-1, -1));
-        //playlistView.setAlignmentX(Component.LEFT_ALIGNMENT);
-        //createUIComponents();
         playlistPane.setViewportView(playlistView);
-
     }
 
     /**
