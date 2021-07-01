@@ -22,7 +22,9 @@ public class PlayerUIFactory implements ToolWindowFactory {
     public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
         PlayerUI ui = project.getService(PlayerManagerService.class).getPlayerUI();
         ContentFactory contentFactory = ContentFactory.SERVICE.getInstance();
-        Content content = contentFactory.createContent(ui.getContent(), Strings.WINDOW_DISPLAY_NAME, false);
-        toolWindow.getContentManager().addContent(content);
+        Content playerContent = contentFactory.createContent(ui.getContent(), Strings.WINDOW_DISPLAY_NAME, false);
+        toolWindow.getContentManager().addContent(playerContent);
+        Content helpTabContent = contentFactory.createContent(new HelpTab().getHelpTabContent(), Strings.HELP_DISPLAY_NAME, false);
+        toolWindow.getContentManager().addContent(helpTabContent);
     }
 }

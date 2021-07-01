@@ -16,12 +16,13 @@ public class Strings {
 
     public final static String FOLDING_GROUP_NAME = uiTextBundle.getString("folding_group_name");
 
-
     public final static String FOLDING_PLACEHOLDER_TEXT = uiTextBundle.getString("folding_placeholder_text");
 
     public final static String TOOLTIP_GUTTER_ICON = uiTextBundle.getString("tooltip_gutterIcon");
 
     public final static String WINDOW_DISPLAY_NAME = uiTextBundle.getString("window_displayName");
+
+    public final static String HELP_DISPLAY_NAME = uiTextBundle.getString("help_displayName");
 
     public final static String NOTIFICATION_GROUP_NAME = uiTextBundle.getString("notification_group_name");
 
