@@ -12,6 +12,8 @@ import com.intellij.psi.util.PsiTreeUtil;
 import de.tobiasdollhofer.codecast.player.data.AudioComment;
 import de.tobiasdollhofer.codecast.player.data.AudioCommentType;
 import de.tobiasdollhofer.codecast.player.data.Playlist;
+import de.tobiasdollhofer.codecast.player.util.constants.Config;
+import de.tobiasdollhofer.codecast.player.util.constants.Strings;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -28,7 +30,7 @@ public class PlaylistLoader {
     public static Playlist loadPlaylistFromComments(Project project) {
 
         // find all java project files
-        Collection<VirtualFile> files = FilenameIndex.getAllFilesByExt(project, "java", GlobalSearchScope.projectScope(project));
+        Collection<VirtualFile> files = FilenameIndex.getAllFilesByExt(project, Config.LANGUAGE, GlobalSearchScope.projectScope(project));
 
         // find all files with @codecast annotation
         ArrayList<VirtualFile> codecastFiles = getAllCodecastFiles(files);
@@ -72,7 +74,7 @@ public class PlaylistLoader {
         @NotNull Collection<PsiComment> psiComments = PsiTreeUtil.findChildrenOfType(psi, PsiComment.class);
         for(PsiComment comment : psiComments){
             // check if comment is complete
-            if(comment.getText().contains("@codecast") && comment.getText().contains("@url")){
+            if(comment.getText().contains(Config.CODECAST_ANNOTATION) && comment.getText().contains(Config.URL_ANNOTATION)){
                 addCommentFromTextBlock(project, comment, psi, comments);
             }
         }
@@ -107,8 +109,8 @@ public class PlaylistLoader {
      * @return single audio comment
      */
     public static AudioComment getCommentFromTextBlock(String textBlock){
-        String rawInfos = getValueAfterAnnotation("@codecast", textBlock);
-        String url = getValueAfterAnnotation("@url", textBlock);
+        String rawInfos = getValueAfterAnnotation(Config.CODECAST_ANNOTATION, textBlock);
+        String url = getValueAfterAnnotation(Config.URL_ANNOTATION, textBlock);
 
         // return if no values for annotations were found
         if(rawInfos.equals("") || url.equals("")) return null;
@@ -175,7 +177,7 @@ public class PlaylistLoader {
             CharSequence text = LoadTextUtil.loadText(file);
             String textString = text.toString();
 
-            if(textString.contains("@codecast")){
+            if(textString.contains(Config.CODECAST_ANNOTATION)){
                 codecastFiles.add(file);
             }
         }

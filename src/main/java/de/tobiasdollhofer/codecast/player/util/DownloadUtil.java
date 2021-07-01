@@ -7,6 +7,7 @@ import com.intellij.openapi.project.Project;
 import de.tobiasdollhofer.codecast.player.data.AudioComment;
 import de.tobiasdollhofer.codecast.player.data.Playlist;
 import de.tobiasdollhofer.codecast.player.service.playermanager.PlayerManagerService;
+import de.tobiasdollhofer.codecast.player.util.constants.Strings;
 import de.tobiasdollhofer.codecast.player.util.event.downloader.DownloadEvent;
 import de.tobiasdollhofer.codecast.player.util.event.downloader.DownloadEventType;
 import de.tobiasdollhofer.codecast.player.util.exception.NoFileUrlException;
@@ -38,7 +39,7 @@ public class DownloadUtil {
         /**
          * download files in backgroundtask
          */
-        ProgressManager.getInstance().run(new Task.Backgroundable(project, "Downloading CodeCast Audiofiles...") {
+        ProgressManager.getInstance().run(new Task.Backgroundable(project, Strings.DOWNLOAD_TASK_TITLE) {
             @Override
             public void run(@NotNull ProgressIndicator indicator) {
                 File codecastRoot = new File(FilePathUtil.getCodeCastRootDirectory());
@@ -60,7 +61,7 @@ public class DownloadUtil {
                         comment.setDownloaded(true);
                         comment.calculateDuration(project);
                     } catch (FileAlreadyExistsException e){
-                        BalloonNotifier.notifyWarning(project, "There is already a file called " + comment.getFileName() + ".");
+                        BalloonNotifier.notifyWarning(project, Strings.FILE_ALREADY_EXIST + comment.getFileName());
                     } catch (IOException e) {
                         e.printStackTrace();
                         project.getService(PlayerManagerService.class).notify(new DownloadEvent(DownloadEventType.CANCELED, ""));
@@ -128,7 +129,7 @@ public class DownloadUtil {
             inputStream.close();
         } else {
             httpConn.disconnect();
-            throw new IOException("No file to download. Server replied HTTP code: " + responseCode);
+            throw new IOException(Strings.DOWNLOAD_FAILED_EXCEPTION + responseCode);
         }
         httpConn.disconnect();
     }

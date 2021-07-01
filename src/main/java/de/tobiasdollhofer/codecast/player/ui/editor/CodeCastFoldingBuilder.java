@@ -10,6 +10,8 @@ import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiComment;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
+import de.tobiasdollhofer.codecast.player.util.constants.Config;
+import de.tobiasdollhofer.codecast.player.util.constants.Strings;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -33,7 +35,7 @@ public class CodeCastFoldingBuilder extends FoldingBuilderEx implements DumbAwar
     @Override
     public FoldingDescriptor @NotNull [] buildFoldRegions(@NotNull PsiElement root, @NotNull Document document, boolean quick) {
         // Initialize the group of folding regions that will expand/collapse together.
-        FoldingGroup group = FoldingGroup.newGroup("CodeCast");
+        FoldingGroup group = FoldingGroup.newGroup(Strings.FOLDING_GROUP_NAME);
         // Initialize the list of folding regions
         List<FoldingDescriptor> descriptors = new ArrayList<>();
         // search for comments in this root element
@@ -43,7 +45,7 @@ public class CodeCastFoldingBuilder extends FoldingBuilderEx implements DumbAwar
         for (final PsiComment comment : comments) {
             String value = comment.getText();
             // add descriptor if it is a codecast comment
-            if (value != null && value.contains("@codecast")) {
+            if (value != null && value.contains(Config.CODECAST_ANNOTATION)) {
                 descriptors.add(new FoldingDescriptor(comment.getNode(),
                         new TextRange(comment.getTextRange().getStartOffset() + 1, comment.getTextRange().getEndOffset() - 1), group));
             }
@@ -58,7 +60,7 @@ public class CodeCastFoldingBuilder extends FoldingBuilderEx implements DumbAwar
      */
     @Override
     public @Nullable String getPlaceholderText(@NotNull ASTNode node) {
-        return "codecast";
+        return Strings.FOLDING_PLACEHOLDER_TEXT;
     }
 
     @Override

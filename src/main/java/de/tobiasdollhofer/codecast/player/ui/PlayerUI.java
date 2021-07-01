@@ -6,6 +6,7 @@ import de.tobiasdollhofer.codecast.player.data.AudioComment;
 import de.tobiasdollhofer.codecast.player.data.Playlist;
 import de.tobiasdollhofer.codecast.player.ui.playlist.PlaylistView;
 import de.tobiasdollhofer.codecast.player.util.constants.PluginIcons;
+import de.tobiasdollhofer.codecast.player.util.constants.Strings;
 import de.tobiasdollhofer.codecast.player.util.event.Observable;
 import de.tobiasdollhofer.codecast.player.util.event.ui.UIEvent;
 import de.tobiasdollhofer.codecast.player.util.event.ui.UIEventType;
@@ -18,6 +19,7 @@ import javax.swing.text.StyledDocument;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ResourceBundle;
 
 import static de.tobiasdollhofer.codecast.player.util.event.ui.UIEventType.*;
 
@@ -42,6 +44,7 @@ public class PlayerUI extends Observable{
     private JToggleButton autoplayButton;
     private JToggleButton jumpToCode;
     private JButton showCodeButton;
+    private JTextPane explanation;
 
     private final boolean playing = false;
     private Playlist playlist;
@@ -71,7 +74,7 @@ public class PlayerUI extends Observable{
         playNext.setIcon(PluginIcons.playNext);
         playLast.setIcon(PluginIcons.playLast);
         volumeIcon.setIcon(PluginIcons.volume);
-        showCodeButton.setIcon(PluginIcons.showCodeOff);
+        showCodeButton.setIcon(PluginIcons.jumpToCode);
     }
 
     private void initPlayerControlListener() {
@@ -311,9 +314,9 @@ public class PlayerUI extends Observable{
         this.playlistPane.setEnabled(enabled);
         // add some placeholder if player is disabled
         if(!enabled){
-            this.currentTitleLabel.setText("No comment available.");
+            this.currentTitleLabel.setText(Strings.NO_COMMENT_AVAILABLE);
             this.playerProgressBar.setValue(0);
-            this.progressTime.setText("0:00/0:00");
+            this.progressTime.setText(Strings.PLAYBACK_ZERO);
         }
     }
 
