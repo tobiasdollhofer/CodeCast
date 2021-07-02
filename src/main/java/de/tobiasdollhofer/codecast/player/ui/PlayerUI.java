@@ -267,6 +267,7 @@ public class PlayerUI extends Observable{
     public void setPlaylist(Playlist playlist) {
         playlistView = new PlaylistView(playlist, project);
         playlistPane.setViewportView(playlistView);
+        playlistPane.updateUI();
     }
 
     /**
