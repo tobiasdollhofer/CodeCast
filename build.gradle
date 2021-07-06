@@ -5,7 +5,7 @@ plugins {
 }
 
 group 'de.tobiasdollhofer'
-version '0.0.4'
+version '0.0.5'
 
 repositories {
     mavenCentral()
@@ -15,7 +15,7 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
     compile(group: 'commons-io', name: 'commons-io', version: '2.6')
-    compile('org:jaudiotagger:2.0.3')
+    implementation group: 'org', name: 'jaudiotagger', version: '2.0.3'
 }
 
 javafx {
