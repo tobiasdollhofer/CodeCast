@@ -5,7 +5,7 @@ plugins {
 }
 
 group 'de.tobiasdollhofer'
-version '0.0.3'
+version '0.0.4'
 
 repositories {
     mavenCentral()
@@ -40,7 +40,7 @@ intellij {
 
 patchPluginXml {
     changeNotes """
-      new Playlist-UI, new comment structure, caching in user-home"""
+      UI-Updates and some bugfixes"""
 }
 test {
     useJUnitPlatform()
