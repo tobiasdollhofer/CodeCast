@@ -14,8 +14,8 @@ repositories {
 dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
-    implementation group: 'commons-io', name: 'commons-io', version: '2.6'
-    implementation 'org:jaudiotagger:2.0.3'
+    compile(group: 'commons-io', name: 'commons-io', version: '2.6')
+    compile('org:jaudiotagger:2.0.3')
 }
 
 javafx {

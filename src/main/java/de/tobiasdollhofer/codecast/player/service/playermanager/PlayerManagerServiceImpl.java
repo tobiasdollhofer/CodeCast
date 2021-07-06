@@ -7,6 +7,7 @@ import de.tobiasdollhofer.codecast.player.data.AudioComment;
 import de.tobiasdollhofer.codecast.player.data.Playlist;
 import de.tobiasdollhofer.codecast.player.service.playlist.PlaylistService;
 import de.tobiasdollhofer.codecast.player.util.*;
+import de.tobiasdollhofer.codecast.player.util.constants.Strings;
 import de.tobiasdollhofer.codecast.player.util.event.*;
 import de.tobiasdollhofer.codecast.player.util.event.downloader.DownloadEvent;
 import de.tobiasdollhofer.codecast.player.util.event.player.PlayerEvent;
@@ -331,7 +332,7 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
      * shows message if comment file isn' available
      */
     private void onMediaUnavailable() {
-        BalloonNotifier.notifyError(this.project, "Current file with path " + FilePathUtil.getFilePathForComment(this.project, comment) + " not available!");
+        BalloonNotifier.notifyError(this.project, Strings.FILE_NOT_AVAILABLE + FilePathUtil.getFilePathForComment(this.project, comment));
     }
 
     /**
@@ -373,7 +374,7 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
      * show error message
      */
     private void onDownloadCanceled() {
-        BalloonNotifier.notifyError(project, "Download was canceled. Please reset player.");
+        BalloonNotifier.notifyError(project, Strings.DOWNLOAD_CANCELED);
         ui.enablePlayer(false);
     }
 
