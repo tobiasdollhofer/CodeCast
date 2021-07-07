@@ -13,6 +13,9 @@ import de.tobiasdollhofer.codecast.player.util.event.downloader.DownloadEvent;
 import de.tobiasdollhofer.codecast.player.util.event.player.PlayerEvent;
 import de.tobiasdollhofer.codecast.player.util.event.ui.UIEvent;
 import de.tobiasdollhofer.codecast.player.ui.PlayerUI;
+import de.tobiasdollhofer.codecast.player.util.event.ui.UIEventType;
+import de.tobiasdollhofer.codecast.player.util.logging.Context;
+import de.tobiasdollhofer.codecast.player.util.logging.CsvLogger;
 import de.tobiasdollhofer.codecast.player.util.notification.BalloonNotifier;
 import javafx.util.Duration;
 
@@ -131,6 +134,7 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
      */
     private void playFirstClicked() {
         AudioComment comment = playlist.getFirstComment();
+        CsvLogger.log(Context.PLAYER, UIEventType.PLAY_FIRST_CLICKED, comment.getTitle());
         setComment(comment);
     }
 
@@ -141,6 +145,7 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
         AudioComment comment = playlist.getPreviousComment(this.comment);
 
         if(comment != null)
+            CsvLogger.log(Context.PLAYER, UIEventType.PLAY_PREVIOUS_CLICKED, comment.getTitle());
             setComment(comment);
     }
 
@@ -150,8 +155,10 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
     private void playPauseClicked() {
         if(playing){
             player.pause();
+            CsvLogger.log(Context.PLAYER, UIEventType.PLAY_PAUSE_CLICKED, comment.getTitle() + " paused: " + getFormattedDurationProgress());
         }else{
             player.play();
+            CsvLogger.log(Context.PLAYER, UIEventType.PLAY_PAUSE_CLICKED, comment.getTitle() + " started");
         }
     }
 
@@ -162,6 +169,7 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
         AudioComment comment = playlist.getNextComment(this.comment);
 
         if(comment != null)
+            CsvLogger.log(Context.PLAYER, UIEventType.PLAY_NEXT_CLICKED, comment.getTitle());
             setComment(comment);
     }
 
@@ -171,6 +179,7 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
     private void playLastClicked() {
         AudioComment comment = playlist.getLastComment();
         setComment(comment);
+        CsvLogger.log(Context.PLAYER, UIEventType.PLAY_LAST_CLICKED, comment.getTitle());
     }
 
     /**
@@ -179,6 +188,7 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
      */
     private void volumeChanged(double val) {
         player.setVolume(val);
+        CsvLogger.log(Context.PLAYER, UIEventType.VOLUME_CHANGE, String.valueOf(val));
     }
 
     /**
@@ -186,6 +196,7 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
      */
     private void listClicked() {
         setComment(ui.getSelectedListComment());
+        CsvLogger.log(Context.PLAYER, UIEventType.LIST_CLICKED, ui.getSelectedListComment().getTitle());
     }
 
     /**
@@ -194,8 +205,10 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
     private void listClickedSame() {
         if(playing){
             player.pause();
+            CsvLogger.log(Context.PLAYER, UIEventType.LIST_CLICKED_SAME, comment.getTitle() + " paused: " + getFormattedDurationProgress());
         }else{
             player.play();
+            CsvLogger.log(Context.PLAYER, UIEventType.LIST_CLICKED_SAME, comment.getTitle() + " started");
         }
     }
 
@@ -207,6 +220,7 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
         player.pause();
         ui.enablePlayer(false);
         this.project.getService(PlaylistService.class).loadPlaylist();
+        CsvLogger.log(Context.PLAYER, UIEventType.RESET_PLAYER, "");
     }
 
     /**
@@ -214,6 +228,7 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
      */
     private void autoplayClicked() {
         autoPlayback = ui.getAutoplayStatus();
+        CsvLogger.log(Context.PLAYER, UIEventType.AUTOPLAY_CLICKED, "enabled: " + ui.getAutoplayStatus());
     }
 
 
@@ -222,6 +237,7 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
      */
     private void jumpToCodeClicked() {
         jumpToCode = ui.getJumpToCodeStatus();
+        CsvLogger.log(Context.PLAYER, UIEventType.JUMP_TO_CODE_CLICKED, "enabled: " + ui.getJumpToCodeStatus());
     }
 
     /**
@@ -229,6 +245,7 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
      */
     private void showCodeClicked() {
         JumpToCodeUtil.jumpToCode(comment);
+        CsvLogger.log(Context.PLAYER, UIEventType.SHOW_CODE_CLICKED, comment.getTitle());
     }
 
     /**
@@ -237,6 +254,7 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
      */
     private void onProgressBarClicked(double position) {
         Duration duration = comment.getDuration();
+        CsvLogger.log(Context.PLAYER, UIEventType.PROGRESSBAR_CLICKED, "percentage: " + position);
         if(duration != null){
             int seconds = (int)comment.getDuration().toSeconds();
             player.goToPosition( (int)(seconds * position));
@@ -308,6 +326,7 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
      */
     private void onPlayerEnded() {
         this.ui.pausePlayer();
+        CsvLogger.log(Context.PLAYER, UIEventType.PLAYBACK_ENDED, comment.getTitle());
         if(this.autoPlayback){
             AudioComment comment = playlist.getNextComment(this.comment);
             if(comment != null)
@@ -323,9 +342,7 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
      */
     private void onProgressChanged() {
         this.ui.setProgress(this.player.getProgressPercentage());
-        this.ui.setProgressTime(DurationFormatter.formatDuration(this.player.getDurationProgress())
-                + "/"
-                + DurationFormatter.formatDuration(comment.getDuration()));
+        this.ui.setProgressTime(getFormattedDurationProgress());
     }
 
     /**
@@ -406,12 +423,19 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
         this.autoPlayback = autoPlayback;
     }
 
+
+    private String getFormattedDurationProgress(){
+        return DurationFormatter.formatDuration(this.player.getDurationProgress())
+                + "/"
+                + DurationFormatter.formatDuration(comment.getDuration());
+    }
     /**
      * Method sets existing comment which is equal to provided comment
      * used i.e. for jump-to-code where comment is extracted from code but is a new entity
      * @param comment
      */
     public void setPlaylistCommentForFoundComment(AudioComment comment){
+        CsvLogger.log(Context.PLAYER, UIEventType.GUTTER_ICON_CLICKED, comment.getTitle());
         for(AudioComment playlistComment : playlist.getAllComments()){
             if(playlistComment.equals(comment)){
                 if(!playing){

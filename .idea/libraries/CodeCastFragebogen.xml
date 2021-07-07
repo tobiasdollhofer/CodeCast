@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="CodeCastFragebogen">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../CodeCastFragebogen/build/distributions/CodeCastFragebogen.zip!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

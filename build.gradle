@@ -11,11 +11,14 @@ repositories {
     mavenCentral()
 }
 
+
+
 dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
     compile group: 'commons-io', name: 'commons-io', version: '2.6'
     implementation 'org:jaudiotagger:2.0.3'
+    compile group: 'com.opencsv', name: 'opencsv', version: '4.1'
 }
 
 javafx {
@@ -36,7 +39,6 @@ intellij {
         targetCompatibility = '1.8'
     }
 }
-
 
 patchPluginXml {
     changeNotes """

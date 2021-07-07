@@ -10,6 +10,9 @@ import de.tobiasdollhofer.codecast.player.util.constants.Strings;
 import de.tobiasdollhofer.codecast.player.util.event.Observable;
 import de.tobiasdollhofer.codecast.player.util.event.ui.UIEvent;
 import de.tobiasdollhofer.codecast.player.util.event.ui.UIEventType;
+import de.tobiasdollhofer.codecast.player.util.logging.Context;
+import de.tobiasdollhofer.codecast.player.util.logging.CsvLogger;
+import de.tobiasdollhofer.codecast.player.util.logging.EventType;
 
 import javax.swing.*;
 import javax.swing.text.SimpleAttributeSet;
@@ -148,7 +151,7 @@ public class PlayerUI extends Observable{
      * notifies all observer about click event
      */
     private void playPauseClicked() {
-        notifyAll(new UIEvent(PLAY_PAUSE_CLICKED, ""));
+        notifyAll(new UIEvent(PLAY_PAUSE_CLICKED, String.valueOf(!playing)));
     }
 
     /**
