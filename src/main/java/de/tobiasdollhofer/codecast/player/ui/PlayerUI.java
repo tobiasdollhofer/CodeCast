@@ -62,7 +62,6 @@ public class PlayerUI extends Observable{
         this.project = project;
         initToolbarListener();
         initPlayerControls();
-        //TODO: adjust font size
     }
 
     private void initPlayerControls() {
@@ -198,7 +197,6 @@ public class PlayerUI extends Observable{
      */
     private void playPreviousClicked() {
         notifyAll(new UIEvent(PLAY_PREVIOUS_CLICKED, ""));
-        //TODO: add some cooldown to restart current comment
     }
 
     /**
@@ -333,7 +331,6 @@ public class PlayerUI extends Observable{
     }
 
     private void createUIComponents() {
-        // TODO: place custom component creation code here
         playlistPane = new JBScrollPane();
         playlistPane.setLayout(new ScrollPaneLayout());
         playlistPane.setPreferredSize(new Dimension(-1, -1));

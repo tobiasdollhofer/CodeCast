@@ -59,7 +59,6 @@ public class HelpTab {
 
     private void createUIComponents() {
         initializeImages();
-        // TODO: place custom component creation code here
     }
 }
 

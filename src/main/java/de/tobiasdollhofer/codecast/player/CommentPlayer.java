@@ -111,7 +111,6 @@ public class CommentPlayer extends Observable {
         this.ready = false;
         this.path = path;
         try{
-            //TODO: create media objects for all comments directly?
             this.media = new Media(path);
             this.mediaPlayer = new MediaPlayer(this.media);
 
