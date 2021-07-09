@@ -6,6 +6,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManagerListener;
 import de.tobiasdollhofer.codecast.player.service.playermanager.PlayerManagerService;
 import de.tobiasdollhofer.codecast.player.service.playlist.PlaylistService;
+import de.tobiasdollhofer.codecast.player.util.logging.CsvLogger;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -35,6 +36,7 @@ public class ProjectOpenCloseListener implements ProjectManagerListener {
             }
         });
 
+        CsvLogger.logStartup();
     }
 
     /**

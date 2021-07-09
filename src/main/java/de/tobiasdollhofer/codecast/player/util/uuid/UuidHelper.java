@@ -14,6 +14,7 @@ public class UuidHelper {
 
 
     private UUID uuid;
+    private UUID sessionId;
 
     private static UuidHelper instance;
 
@@ -22,6 +23,7 @@ public class UuidHelper {
         if(uuid == null){
             createNewUuid();
         }
+        createNewSessionId();
     }
 
     /**
@@ -30,6 +32,14 @@ public class UuidHelper {
      */
     public UUID getUuid() {
         return uuid;
+    }
+
+    /**
+     *
+     * @return current session id
+     */
+    public UUID getSessionId(){
+        return sessionId;
     }
 
     /**
@@ -59,6 +69,10 @@ public class UuidHelper {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void createNewSessionId() {
+        sessionId = UUID.randomUUID();
     }
 
     /**

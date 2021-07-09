@@ -9,8 +9,8 @@
          on how to target different products -->
     <depends>com.intellij.modules.platform</depends>
     <depends>com.intellij.modules.java</depends>
-    <depends>com.intellij.javafx</depends>
-    <depends>de.tobiasdollhofer.CodeCastFragebogen</depends>
+   <!-- <depends>com.intellij.javafx</depends>-->
+   <!-- <depends>de.tobiasdollhofer.CodeCastFragebogen</depends>-->
 
     <extensions defaultExtensionNs="com.intellij">
         <notificationGroup id="CodeCastNotifier" displayType="BALLOON"/>
