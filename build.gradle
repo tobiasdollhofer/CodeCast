@@ -5,7 +5,7 @@ plugins {
 }
 
 group 'de.tobiasdollhofer'
-version '0.0.6'
+version '0.0.7'
 
 repositories {
     mavenCentral()
@@ -42,7 +42,7 @@ intellij {
 
 patchPluginXml {
     changeNotes """
-      UI-Updates and some bugfixes"""
+      Logging adjustments"""
 }
 test {
     useJUnitPlatform()
