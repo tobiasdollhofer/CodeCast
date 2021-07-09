@@ -21,20 +21,16 @@ public class CsvLogger {
     public static void log(Context context, UIEventType type, String message){
         try{
             File csv = new File(CSV_PATH);
-
             FileWriter fileWriter = new FileWriter(csv, true);
-            String[] data;
-            if(csv.exists()){
-                String uuid = UuidHelper.getInstance().getUuid().toString();
-                String sessionId = UuidHelper.getInstance().getSessionId().toString();
-                String date = getCurrentDate();
-                String time = getCurrentTime();
-                data = new String[]{uuid, sessionId, date, time, context.toString(), type.toString(), message};
-            }else{
-                data = new String[]{"uuid", "sessionId", "date", "time", "context", "eventtype", "message"};
-            }
+
+            String uuid = UuidHelper.getInstance().getUuid().toString();
+            String sessionId = UuidHelper.getInstance().getSessionId().toString();
+            String date = getCurrentDate();
+            String time = getCurrentTime();
+            String[] data = {uuid, sessionId, date, time, context.toString(), type.toString(), message};
             CSVWriter csvWriter = new CSVWriter(fileWriter);
             System.out.println(Arrays.toString(data));
+
             csvWriter.writeNext(data);
             csvWriter.close();
         }catch(IOException e){
