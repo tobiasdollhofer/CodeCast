@@ -207,6 +207,7 @@
           <component id="641d4" class="javax.swing.JButton" binding="reloadButton">
             <constraints/>
             <properties>
+              <enabled value="true"/>
               <horizontalAlignment value="0"/>
               <horizontalTextPosition value="11"/>
               <icon value="actions/refresh.png"/>

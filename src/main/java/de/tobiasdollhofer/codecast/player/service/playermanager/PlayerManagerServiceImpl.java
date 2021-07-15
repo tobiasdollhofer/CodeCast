@@ -432,16 +432,19 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
     /**
      * Method sets existing comment which is equal to provided comment
      * used i.e. for jump-to-code where comment is extracted from code but is a new entity
-     * @param comment
      */
-    public void setPlaylistCommentForFoundComment(AudioComment comment){
-        CsvLogger.log(Context.PLAYER, UIEventType.GUTTER_ICON_CLICKED, comment.getTitle());
+    public void setPlaylistCommentForFoundComment(AudioComment found){
+        CsvLogger.log(Context.PLAYER, UIEventType.GUTTER_ICON_CLICKED, found.getTitle());
         for(AudioComment playlistComment : playlist.getAllComments()){
-            if(playlistComment.equals(comment)){
-                if(!playing){
-                    playing = true;
+            if(playlistComment.equals(found)){
+                // only set and play comment if it isn't the current comment, otherwise handle like pause/play control
+                if(!this.comment.equals(found)){
+                    player.play();
+                    setComment(playlistComment);
+                }else{
+                    playPauseClicked();
                 }
-                setComment(playlistComment);
+
             }
         }
     }

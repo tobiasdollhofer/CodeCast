@@ -23,4 +23,5 @@ public interface PluginIcons {
     Icon showCodeOn = IconLoader.getIcon("/icons/showCode_on.svg", PluginIcons.class);
     Icon jumpToCode = IconLoader.getIcon("/icons/stepOutCodeBlock.svg", PluginIcons.class);
     Icon playCodecast = IconLoader.getIcon("/icons/play_codecast.svg", PluginIcons.class);
+    Icon refresh = IconLoader.getIcon("/icons/refresh.svg", PluginIcons.class);
 }

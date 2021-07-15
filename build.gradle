@@ -5,7 +5,7 @@ plugins {
 }
 
 group 'de.tobiasdollhofer'
-version '0.0.9'
+version '0.0.10'
 
 repositories {
     mavenCentral()
@@ -43,7 +43,7 @@ intellij {
 
 patchPluginXml {
     changeNotes """
-      fixed bug where jump to code didn't work properly"""
+      fixed bug where jump to code didn't work properly, minor usability adjustments"""
 }
 test {
     useJUnitPlatform()

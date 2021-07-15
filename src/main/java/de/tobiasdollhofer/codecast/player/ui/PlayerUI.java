@@ -77,6 +77,7 @@ public class PlayerUI extends Observable{
         playLast.setIcon(PluginIcons.playLast);
         volumeIcon.setIcon(PluginIcons.volume);
         showCodeButton.setIcon(PluginIcons.jumpToCode);
+        reloadButton.setIcon(PluginIcons.refresh);
     }
 
     private void initPlayerControlListener() {
