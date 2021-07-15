@@ -3,7 +3,7 @@ package de.tobiasdollhofer.codecast.player.service.playlist;
 import com.intellij.openapi.components.Service;
 import com.intellij.openapi.project.Project;
 import de.tobiasdollhofer.codecast.player.data.Playlist;
-import de.tobiasdollhofer.codecast.player.util.PlaylistLoader;
+import de.tobiasdollhofer.codecast.player.util.playlist.PlaylistLoader;
 
 
 @Service

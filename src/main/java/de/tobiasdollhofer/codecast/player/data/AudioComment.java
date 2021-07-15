@@ -1,6 +1,7 @@
 package de.tobiasdollhofer.codecast.player.data;
 
 import com.intellij.openapi.project.Project;
+import com.intellij.psi.PsiComment;
 import com.intellij.psi.PsiFile;
 import de.tobiasdollhofer.codecast.player.util.FilePathUtil;
 import javafx.util.Duration;
@@ -22,7 +23,6 @@ public class AudioComment {
     private AudioCommentType type;
     private String chapter;
     private Duration duration;
-    private PsiFile file;
 
     public AudioComment(String title, AudioCommentType type) {
         this.title = title;
@@ -97,14 +97,6 @@ public class AudioComment {
         } catch (Exception e){
             e.printStackTrace();
         }
-    }
-
-    public PsiFile getFile() {
-        return file;
-    }
-
-    public void setFile(PsiFile file) {
-        this.file = file;
     }
 
     /**

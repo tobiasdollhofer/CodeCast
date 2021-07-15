@@ -244,7 +244,7 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
      * jumps to code position of comment
      */
     private void showCodeClicked() {
-        JumpToCodeUtil.jumpToCode(comment);
+        JumpToCodeUtil.jumpToCode(project, comment);
         CsvLogger.log(Context.PLAYER, UIEventType.SHOW_CODE_CLICKED, comment.getTitle());
     }
 
@@ -408,7 +408,7 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
             this.comment = comment;
             // jump to code position if it is activated
             if(jumpToCode){
-                JumpToCodeUtil.jumpToCode(comment);
+                JumpToCodeUtil.jumpToCode(project, comment);
             }
             player.setPath(FilePathUtil.getFilePathForCommentWithPrefix(project, comment), playingTemp);
         }

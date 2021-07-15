@@ -7,7 +7,8 @@ import com.intellij.psi.*;
 import de.tobiasdollhofer.codecast.player.data.AudioComment;
 import de.tobiasdollhofer.codecast.player.service.playermanager.PlayerManagerService;
 import de.tobiasdollhofer.codecast.player.util.JumpToCodeUtil;
-import de.tobiasdollhofer.codecast.player.util.PlaylistLoader;
+import de.tobiasdollhofer.codecast.player.util.playlist.CommentExtractor;
+import de.tobiasdollhofer.codecast.player.util.playlist.PlaylistLoader;
 import de.tobiasdollhofer.codecast.player.util.constants.Config;
 import de.tobiasdollhofer.codecast.player.util.constants.PluginIcons;
 import de.tobiasdollhofer.codecast.player.util.constants.Strings;
@@ -27,7 +28,7 @@ public class CodeCastLineMarkerProvider implements LineMarkerProvider {
             GutterIconNavigationHandler handler = new GutterIconNavigationHandler() {
                 @Override
                 public void navigate(MouseEvent e, PsiElement elt) {
-                    AudioComment comment = PlaylistLoader.getCommentFromTextBlock(elt.getText());
+                    AudioComment comment = CommentExtractor.getCommentFromTextBlock(elt.getText());
                     //System.out.println(comment);
                     Project project = elt.getProject();
                     project.getService(PlayerManagerService.class).setPlaylistCommentForFoundComment(comment);

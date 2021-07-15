@@ -34,8 +34,8 @@ public class HelpTab {
     }
 
     private void initializeImages() {
-        reloadImg = loadImageInPanel("img/reload.png");
-        autoplayImg = loadImageInPanel("img/autoplay.png");
+        reloadImg = loadImageInPanel("/img/reload.png");
+        autoplayImg = loadImageInPanel("/img/autoplay.png");
         jumpToCodeImg = loadImageInPanel("/img/jump_to_code.png");
         showCodeImg = loadImageInPanel("/img/show_code.png");
         gutterImg = loadImageInPanel("/img/gutter.png");
@@ -43,7 +43,7 @@ public class HelpTab {
 
 
     private JPanel loadImageInPanel(String path){
-        URL url = this.getClass().getClassLoader().getResource(path);
+        URL url =  getClass().getResource(path);
         if(url != null){
             Image image = ImageLoader.loadFromUrl(url);
             if(image != null){

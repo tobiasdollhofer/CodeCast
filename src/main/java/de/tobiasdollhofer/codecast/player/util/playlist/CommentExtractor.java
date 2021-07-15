@@ -1,4 +1,4 @@
-package de.tobiasdollhofer.codecast.player.util;
+package de.tobiasdollhofer.codecast.player.util.playlist;
 
 import com.intellij.openapi.fileEditor.impl.LoadTextUtil;
 import com.intellij.openapi.project.Project;
@@ -11,96 +11,22 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
 import de.tobiasdollhofer.codecast.player.data.AudioComment;
 import de.tobiasdollhofer.codecast.player.data.AudioCommentType;
-import de.tobiasdollhofer.codecast.player.data.Playlist;
 import de.tobiasdollhofer.codecast.player.util.constants.Config;
-import de.tobiasdollhofer.codecast.player.util.constants.Strings;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Locale;
 
-public class PlaylistLoader {
+public class CommentExtractor {
 
-    /**
-     * Method generates Playlist from project comment annotations
-     * @param project current project
-     * @return Playlist
-     */
-    public static Playlist loadPlaylistFromComments(Project project) {
-
-        // find all java project files
-        Collection<VirtualFile> files = FilenameIndex.getAllFilesByExt(project, Config.LANGUAGE, GlobalSearchScope.projectScope(project));
-
-        // find all files with @codecast annotation
-        ArrayList<VirtualFile> codecastFiles = getAllCodecastFiles(files);
-
-        // extract all comments from codecast files
-        ArrayList<AudioComment> comments = new ArrayList<>();
-        for(VirtualFile file : codecastFiles){
-            comments.addAll(getCommetsFromFile(file, project));
-        }
-
-        // build playlist on using all comments
-        return createPlaylistFromComments(project, comments);
-    }
-
-    /**
-     * Method generates playlist from provided comments list
-     * @param comments extracted comments list
-     * @return playlist
-     */
-    private static Playlist createPlaylistFromComments(Project project, ArrayList<AudioComment> comments) {
-        Playlist playlist = new Playlist();
-
-        // add all comments to playlist (sorting will be handled by playlist and their chapters)
-        for(AudioComment comment : comments){
-            playlist.addComment(comment);
-        }
-
-        DownloadUtil.downloadComments(project, playlist);
-        System.out.println(playlist);
-        return playlist;
-    }
-
-    /**
-     * Method creates list with all comments found in this file
-     * @param file virtual file to look at
-     * @return arraylist with comments
-     */
-    private static ArrayList<AudioComment> getCommetsFromFile(VirtualFile file, Project project) {
-        ArrayList<AudioComment> comments = new ArrayList<>();
-        PsiFile psi = PsiManager.getInstance(project).findFile(file);
-        @NotNull Collection<PsiComment> psiComments = PsiTreeUtil.findChildrenOfType(psi, PsiComment.class);
-        for(PsiComment comment : psiComments){
-            // check if comment is complete
-            if(comment.getText().contains(Config.CODECAST_ANNOTATION) && comment.getText().contains(Config.URL_ANNOTATION)){
-                addCommentFromTextBlock(project, comment, psi, comments);
-            }
-        }
-        return comments;
-    }
-
-    private static void addCommentFromTextBlock(Project project, PsiComment comment, PsiFile file, ArrayList<AudioComment> list){
-
-        AudioComment audioComment = getCommentFromTextBlock(project, comment.getText(), file);
-
-        if(audioComment != null){
-            list.add(audioComment);
-        }
-    }
 
     /**
      * Method creates single content from a textblock which codecast-comment completeness was already checked
-     * @param text textblock which codecast-comment completeness was already checked
      * @return single audio comment
      */
-    private static AudioComment getCommentFromTextBlock(Project project, String text, PsiFile file){
-        AudioComment comment = getCommentFromTextBlock(text);
-        if(comment != null){
-            comment.setFile(file);
-        }
-        return comment;
+    public static AudioComment getCommentFromTextBlock(PsiComment psiComment){
+        return getCommentFromTextBlock(psiComment.getText());
     }
 
     /**
@@ -153,6 +79,7 @@ public class PlaylistLoader {
     private static String getValueAfterAnnotation(String annotation, String text){
         String value = "";
 
+        if(text.equals("") || text.length() < annotation.length()) return value;
         // cut off whole text before the actual value of the annotation
         String rawValue = text.substring(text.indexOf(annotation) + annotation.length());
 
@@ -169,7 +96,7 @@ public class PlaylistLoader {
      * @param javaFiles collection of virtual javafiles
      * @return arraylist with virtualfiles with codecast annotations
      */
-    private static ArrayList<VirtualFile> getAllCodecastFiles(Collection<VirtualFile> javaFiles){
+    public static ArrayList<VirtualFile> getAllCodecastFiles(Collection<VirtualFile> javaFiles){
         ArrayList<VirtualFile> codecastFiles = new ArrayList<>();
 
         // check for each file if there is a codecast annotation in there
@@ -183,4 +110,30 @@ public class PlaylistLoader {
         }
         return codecastFiles;
     }
+
+    public static PsiComment findElementForComment(Project project, AudioComment comment) {
+        // find all java project files
+        Collection<VirtualFile> files = FilenameIndex.getAllFilesByExt(project, Config.LANGUAGE, GlobalSearchScope.projectScope(project));
+        // find all files with @codecast annotation
+        ArrayList<VirtualFile> codecastFiles = getAllCodecastFiles(files);
+
+        return findElementInCodeCastFiles(project, codecastFiles, comment);
+
+    }
+
+    private static PsiComment findElementInCodeCastFiles(Project project, ArrayList<VirtualFile> codecastFiles, AudioComment comment) {
+        for(VirtualFile file : codecastFiles){
+            PsiFile psi = PsiManager.getInstance(project).findFile(file);
+            @NotNull Collection<PsiComment> comments = PsiTreeUtil.findChildrenOfType(psi, PsiComment.class);
+
+            for(PsiComment psiComment : comments){
+                if(comment.equals(getCommentFromTextBlock(psiComment))){
+                    return psiComment;
+                }
+            }
+        }
+        return null;
+
+    }
+
 }
