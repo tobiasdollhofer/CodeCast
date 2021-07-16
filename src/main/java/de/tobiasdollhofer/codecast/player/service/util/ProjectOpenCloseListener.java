@@ -52,7 +52,5 @@ public class ProjectOpenCloseListener implements ProjectManagerListener {
             return;
         }
 
-        PlaylistService playlistService = project.getService(PlaylistService.class);
-        playlistService.emptyPlaylist();
     }
 }
