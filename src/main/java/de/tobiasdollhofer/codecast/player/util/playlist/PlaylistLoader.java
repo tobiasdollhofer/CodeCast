@@ -38,31 +38,15 @@ public class PlaylistLoader {
         // find all files with @codecast annotation
         ArrayList<VirtualFile> codecastFiles = CommentExtractor.getAllCodecastFiles(files);
 
-        // extract all comments from codecast files
-        ArrayList<AudioComment> comments = new ArrayList<>();
-        for(VirtualFile file : codecastFiles){
-            comments.addAll(getCommentsFromFile(file, project));
-        }
-
-        // build playlist on using all comments
-        return createPlaylistFromComments(project, comments);
-    }
-
-    /**
-     * Method generates playlist from provided comments list
-     * @param comments extracted comments list
-     * @return playlist
-     */
-    private static Playlist createPlaylistFromComments(Project project, ArrayList<AudioComment> comments) {
         Playlist playlist = new Playlist();
 
-        // add all comments to playlist (sorting will be handled by playlist and their chapters)
-        for(AudioComment comment : comments){
-            playlist.addComment(comment);
+        for(VirtualFile file : codecastFiles){
+            addCommentsFromFile(playlist, file, project);
         }
 
         DownloadUtil.downloadComments(project, playlist);
         System.out.println(playlist);
+        // build playlist on using all comments
         return playlist;
     }
 
@@ -71,25 +55,29 @@ public class PlaylistLoader {
      * @param file virtual file to look at
      * @return arraylist with comments
      */
-    private static ArrayList<AudioComment> getCommentsFromFile(VirtualFile file, Project project) {
-        ArrayList<AudioComment> comments = new ArrayList<>();
+    private static Playlist addCommentsFromFile(Playlist playlist, VirtualFile file, Project project) {
         PsiFile psi = PsiManager.getInstance(project).findFile(file);
         @NotNull Collection<PsiComment> psiComments = PsiTreeUtil.findChildrenOfType(psi, PsiComment.class);
         for(PsiComment comment : psiComments){
             // check if comment is complete
             if(comment.getText().contains(Config.CODECAST_ANNOTATION) && comment.getText().contains(Config.URL_ANNOTATION)){
-                addCommentFromTextBlock(project, comment, psi, comments);
+                addCommentFromTextBlock(comment, playlist);
+            }else if(comment.getText().contains(Config.CODECAST_INFO_ANNOTATION)){
+                addCodecastInfotoList(comment, playlist);
             }
         }
-        return comments;
+        return playlist;
     }
 
-    private static void addCommentFromTextBlock(Project project, PsiComment comment, PsiFile file, ArrayList<AudioComment> list){
+    private static void addCodecastInfotoList(PsiComment comment, Playlist playlist) {
+        String info = CommentExtractor.getCodecastInfoFromTextBlock(comment);
+        playlist.setInformationText(info);
+    }
 
+    private static void addCommentFromTextBlock(PsiComment comment, Playlist playlist){
         AudioComment audioComment = CommentExtractor.getCommentFromTextBlock(comment);
-
         if(audioComment != null){
-            list.add(audioComment);
+            playlist.addComment(audioComment);
         }
     }
 

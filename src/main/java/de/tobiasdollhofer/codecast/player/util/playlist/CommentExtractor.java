@@ -20,6 +20,23 @@ import java.util.Locale;
 
 public class CommentExtractor {
 
+    /**
+     *
+     * @param psiComment comment with information
+     * @return text representation with information about codecast project
+     */
+    public static String getCodecastInfoFromTextBlock(PsiComment psiComment){
+        return getCodecastInfoFromTextBlock(psiComment.getText());
+    }
+
+    /**
+     *
+     * @param textBlock comment with information
+     * @return text representation with information about codecast project
+     */
+    public static String getCodecastInfoFromTextBlock(String textBlock){
+        return getValueAfterAnnotation(Config.CODECAST_INFO_ANNOTATION, textBlock, true);
+    }
 
     /**
      * Method creates single content from a textblock which codecast-comment completeness was already checked
@@ -74,21 +91,36 @@ public class CommentExtractor {
      * Method extracts value after annotation in a string
      * @param annotation Annotation which value has to be extracted
      * @param text text to search for value of annotation
+     * @param ignoreLinebreak ignore linebreaks while extracting
      * @return string value
      */
-    private static String getValueAfterAnnotation(String annotation, String text){
+    private static String getValueAfterAnnotation(String annotation, String text, boolean ignoreLinebreak){
         String value = "";
 
         if(text.equals("") || text.length() < annotation.length()) return value;
         // cut off whole text before the actual value of the annotation
         String rawValue = text.substring(text.indexOf(annotation) + annotation.length());
 
-        // cut off whole text after linebreak
-        rawValue = rawValue.split("\\r?\\n")[0];
+        if(!ignoreLinebreak){
+            // cut off whole text after linebreak
+            rawValue = rawValue.split("\\r?\\n")[0];
+        }else {
+            rawValue = rawValue.split("\\*/")[0];
+        }
 
         // remove leading whitespaces
         value = rawValue.trim();
         return value;
+    }
+
+    /**
+     * Method extracts value after annotation in a string
+     * @param annotation Annotation which value has to be extracted
+     * @param text text to search for value of annotation
+     * @return string value
+     */
+    private static String getValueAfterAnnotation(String annotation, String text){
+        return getValueAfterAnnotation(annotation, text, false);
     }
 
     /**

@@ -218,7 +218,7 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
      */
     private void resetPlayer() {
         player.pause();
-        ui.enablePlayer(false, true);
+        ui.enablePlayer(false, false);
         this.project.getService(PlaylistService.class).loadPlaylist();
         CsvLogger.log(Context.PLAYER, UIEventType.RESET_PLAYER, "");
     }

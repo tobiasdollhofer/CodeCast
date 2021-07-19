@@ -10,6 +10,8 @@ public class Config {
 
     public final static String CODECAST_ANNOTATION = configBundle.getString("codecast_annotation");
 
+    public final static String CODECAST_INFO_ANNOTATION = configBundle.getString("codecast_info_annotation");
+
     public final static String URL_ANNOTATION = configBundle.getString("url_annotation");
 
 }

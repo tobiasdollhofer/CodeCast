@@ -48,6 +48,7 @@ public class PlayerUI extends Observable{
     private JToggleButton jumpToCode;
     private JButton showCodeButton;
     private JTextPane explanation;
+    private JTextPane codecastInformation;
 
     private final boolean playing = false;
     private Playlist playlist;
@@ -60,6 +61,8 @@ public class PlayerUI extends Observable{
     public PlayerUI(Project project){
         super();
         this.project = project;
+        enablePlayer(false, false);
+        setExplanationText(Strings.LOADING_COMMENTS);
         initToolbarListener();
         initPlayerControls();
     }
@@ -270,6 +273,15 @@ public class PlayerUI extends Observable{
         playlistView = new PlaylistView(playlist, project);
         playlistPane.setViewportView(playlistView);
         playlistPane.updateUI();
+        setInformationText(playlist.getInformationText());
+    }
+
+    private void setInformationText(String informationText) {
+        codecastInformation.setText(informationText);
+        StyledDocument doc = codecastInformation.getStyledDocument();
+        SimpleAttributeSet center = new SimpleAttributeSet();
+        StyleConstants.setAlignment(center, StyleConstants.ALIGN_CENTER);
+        doc.setParagraphAttributes(0, doc.getLength(), center, false);
     }
 
     /**
@@ -337,17 +349,24 @@ public class PlayerUI extends Observable{
         if(!enabled){
             if(noComment){
                 this.currentTitleLabel.setText(Strings.NO_COMMENT_AVAILABLE);
-                this.explanation.setText(Strings.EXPLANATION_NO_COMMENTS);
+                setExplanationText(Strings.EXPLANATION_NO_COMMENTS);
             }else{
                 this.currentTitleLabel.setText(Strings.LOADING_COMMENTS);
-                this.explanation.setText(Strings.EXPLANATION);
+                setExplanationText(Strings.EXPLANATION);
             }
-
             this.playerProgressBar.setValue(0);
             this.progressTime.setText(Strings.PLAYBACK_ZERO);
         }else{
-            this.explanation.setText(Strings.EXPLANATION);
+            setExplanationText(Strings.EXPLANATION);
         }
+    }
+
+    private void setExplanationText(String explanationText) {
+        explanation.setText(explanationText);
+        StyledDocument doc = explanation.getStyledDocument();
+        SimpleAttributeSet center = new SimpleAttributeSet();
+        StyleConstants.setAlignment(center, StyleConstants.ALIGN_CENTER);
+        doc.setParagraphAttributes(0, doc.getLength(), center, false);
     }
 
     /**

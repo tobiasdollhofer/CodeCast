@@ -189,6 +189,14 @@
               <toolTipText resource-bundle="ui_text" key="tooltip_showCodeButton"/>
             </properties>
           </component>
+          <component id="1a2ca" class="javax.swing.JTextPane" binding="codecastInformation">
+            <constraints>
+              <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <editable value="false"/>
+            </properties>
+          </component>
         </children>
       </grid>
       <toolbar id="97b4e" binding="toolbar">

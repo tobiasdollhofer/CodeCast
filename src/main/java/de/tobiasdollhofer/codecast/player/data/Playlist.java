@@ -9,6 +9,8 @@ import java.util.List;
  */
 public class Playlist {
 
+    private String informationText;
+
     private List<Chapter> chapters;
 
     public Playlist() {
@@ -17,6 +19,14 @@ public class Playlist {
 
     public Playlist(List<Chapter> chapters) {
         this.chapters = chapters;
+    }
+
+    public String getInformationText() {
+        return informationText;
+    }
+
+    public void setInformationText(String informationText) {
+        this.informationText = informationText;
     }
 
     public List<Chapter> getChapters() {
@@ -237,4 +247,6 @@ public class Playlist {
     public boolean isEmpty() {
         return getAllComments().size() == 0;
     }
+
+
 }
