@@ -52,7 +52,7 @@ public class CommentPlayer extends Observable {
                 while (playing) {
                     notifyAll(new PlayerEvent(PlayerEventType.PROGRESS_CHANGED, ""));
                     try {
-                        TimeUnit.MILLISECONDS.sleep(100);
+                        TimeUnit.MILLISECONDS.sleep(1000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
