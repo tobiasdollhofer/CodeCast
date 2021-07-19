@@ -280,12 +280,29 @@ public class PlayerUI extends Observable{
         playerProgressBar.setValue(0);
         if(comment != null){
             this.comment = comment;
-            currentTitleLabel.setText(comment.getTitle());
+            currentTitleLabel.setText(comment.getTitleWithoutNumbers());
             playlistView.setCurrent(comment);
-            playlistPane.getViewport().setViewPosition(new Point(0, playlistView.getYOfCurrentCommentView()));
             enablePlayer(true);
+            adjustScrollView();
         }else {
             enablePlayer(false);
+        }
+    }
+
+    /**
+     * adjusts scroll position of playlist that the comment is visible
+     */
+    public void adjustScrollView(){
+        JViewport viewport = playlistPane.getViewport();
+        int viewY = playlistView.getYOfCurrentCommentView();
+
+        // current comment view is below viewport
+        if(viewY + 60 > viewport.getViewPosition().y + viewport.getHeight()){
+            viewport.setViewPosition(new Point(0, viewY - viewport.getHeight() + 60));
+
+        // current comment view is above viewport
+        }else if(viewY < viewport.getViewPosition().y){
+            viewport.setViewPosition(new Point(0, viewY));
         }
     }
 

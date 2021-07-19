@@ -62,17 +62,17 @@ public class JumpToCodeUtil {
                 PsiElement targetElement = children[i+2];
 
                 // check if element is a method
-                if(targetElement instanceof PsiMethod){
+                if(targetElement instanceof PsiModifierList){
 
                     // check if there are annotations before method
-                    PsiAnnotation[] annotations = ((PsiMethod) targetElement).getAnnotations();
+                    PsiAnnotation[] annotations = ((PsiModifierList) targetElement).getAnnotations();
                     if(annotations.length > 0){
 
                         // get all child elements of target including annotations, method signature and so on
                         PsiElement[] targetChildren = targetElement.getChildren();
-                        if(targetChildren.length > 1){
-                            // return first child element after annotation
-                            return targetChildren[0].getNextSibling();
+                        if(targetChildren.length >= 3){
+                            // return first child element after annotation (0 = annotation, 1 = whitespace)
+                            return targetChildren[2];
                         }
                     }
                 }
