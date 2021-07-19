@@ -282,6 +282,7 @@ public class PlayerUI extends Observable{
             this.comment = comment;
             currentTitleLabel.setText(comment.getTitle());
             playlistView.setCurrent(comment);
+            playlistPane.getViewport().setViewPosition(new Point(0, playlistView.getYOfCurrentCommentView()));
             enablePlayer(true);
         }else {
             enablePlayer(false);

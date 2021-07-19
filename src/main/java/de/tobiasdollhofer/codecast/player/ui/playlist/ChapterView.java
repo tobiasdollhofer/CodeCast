@@ -90,7 +90,7 @@ public class ChapterView extends JPanel {
      * @param comment comment to search for
      * @return depending view of the provided comment
      */
-    private CommentView findViewForComment(AudioComment comment){
+    public CommentView findViewForComment(AudioComment comment){
         Component[] components = getComponents();
         for (Component component : components) {
 

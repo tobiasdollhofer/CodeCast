@@ -90,6 +90,19 @@ public class PlaylistView extends JPanel {
         resetCommentViews();
     }
 
+    public int getYOfCurrentCommentView() {
+        int y = 0;
+        ArrayList<ChapterView> chapterViews = getAllChapterViews();
+        for(ChapterView chapterView : chapterViews){
+            CommentView commentView = chapterView.findViewForComment(this.current);
+            if(commentView != null){
+                return y + commentView.getY();
+            }
+            y += chapterView.getHeight();
+        }
+        return 0;
+    }
+
     /**
      * iterates through all chapterviews and searches for current comment to set to state "play"
      */
