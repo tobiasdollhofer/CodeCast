@@ -131,4 +131,8 @@ public class PlaylistView extends JPanel {
             view.resetCommentViews(current);
         }
     }
+
+    public Project getProject() {
+        return project;
+    }
 }

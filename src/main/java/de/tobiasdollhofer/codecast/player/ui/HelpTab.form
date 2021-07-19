@@ -76,6 +76,7 @@
                     <properties>
                       <editable value="false"/>
                       <font name="Segoe UI" size="14" style="0"/>
+                      <foreground color="-8618884"/>
                       <text resource-bundle="ui_text" key="help_reload"/>
                     </properties>
                   </component>

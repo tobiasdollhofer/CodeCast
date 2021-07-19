@@ -1,10 +1,13 @@
 package de.tobiasdollhofer.codecast.player.ui.playlist;
 
+import com.intellij.openapi.project.Project;
 import com.intellij.ui.components.JBLabel;
 import de.tobiasdollhofer.codecast.player.data.AudioComment;
 import de.tobiasdollhofer.codecast.player.data.AudioCommentType;
 import de.tobiasdollhofer.codecast.player.util.DurationFormatter;
 import de.tobiasdollhofer.codecast.player.util.constants.PluginIcons;
+import de.tobiasdollhofer.codecast.player.util.constants.Strings;
+import de.tobiasdollhofer.codecast.player.util.notification.BalloonNotifier;
 
 import javax.swing.*;
 import java.awt.*;
@@ -42,7 +45,6 @@ public class CommentView extends JPanel {
         createPlayPause();
         createLabels();
         addListener(playlistView);
-        setViewInactive();
     }
 
     /**
@@ -63,6 +65,11 @@ public class CommentView extends JPanel {
     private void createLabels() {
         title = new JBLabel(comment.getTitleWithoutNumbers());
         length = new JBLabel(DurationFormatter.formatDuration(comment.getDuration()));
+        if(comment.isDownloaded()){
+           setViewInactive();
+        }else{
+            setViewDisabled();
+        }
         add(title);
         add(Box.createHorizontalGlue());
         add(length);
@@ -86,7 +93,11 @@ public class CommentView extends JPanel {
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                playlistView.clicked(comment);
+                if(comment.isDownloaded()){
+                    playlistView.clicked(comment);
+                }else{
+                    BalloonNotifier.notifyWarning(playlistView.getProject(), Strings.FILE_NOT_AVAILABLE +  comment.getUrl());
+                }
             }
         });
 
@@ -94,9 +105,14 @@ public class CommentView extends JPanel {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
-                playlistView.playPauseClicked();
+                if(comment.isDownloaded()){
+                    playlistView.playPauseClicked();
+                }else{
+                    BalloonNotifier.notifyWarning(playlistView.getProject(), Strings.FILE_NOT_AVAILABLE + comment.getUrl());
+                }
             }
         });
+
     }
 
 
@@ -132,6 +148,15 @@ public class CommentView extends JPanel {
         playPause.setIcon(PluginIcons.play);
         title.setFont(new Font("SegoeUI", Font.BOLD, 16));
         length.setFont(new Font("SegoeUI", Font.BOLD, 16));
+    }
+
+    /**
+     * grey out labels if disabled
+     */
+    private void setViewDisabled(){
+        playPause.setIcon(null);
+        title.setForeground(new Color(124,124,124));
+        length.setForeground(new Color(124,124,124));
     }
 
     /**

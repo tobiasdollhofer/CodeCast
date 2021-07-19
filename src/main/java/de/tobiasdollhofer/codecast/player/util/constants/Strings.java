@@ -31,4 +31,5 @@ public class Strings {
     public final static String FILE_ALREADY_EXIST = uiTextBundle.getString("file_already_exist");
 
     public final static String DOWNLOAD_FAILED_EXCEPTION = uiTextBundle.getString("download_failed_exception");
+
 }

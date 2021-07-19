@@ -64,7 +64,7 @@ public class DownloadUtil {
                         BalloonNotifier.notifyWarning(project, Strings.FILE_ALREADY_EXIST + comment.getFileName());
                     } catch (IOException e) {
                         e.printStackTrace();
-                        project.getService(PlayerManagerService.class).notify(new DownloadEvent(DownloadEventType.CANCELED, ""));
+                        BalloonNotifier.notifyWarning(project, Strings.FILE_NOT_AVAILABLE+ comment.getUrl());
                     }
                 }
                 project.getService(PlayerManagerService.class).notify(new DownloadEvent(DownloadEventType.FINISHED, ""));
