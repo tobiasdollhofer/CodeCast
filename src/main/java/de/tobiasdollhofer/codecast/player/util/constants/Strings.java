@@ -6,7 +6,13 @@ public class Strings {
 
     private final static ResourceBundle uiTextBundle = ResourceBundle.getBundle("ui_text");
 
+    public final static String EXPLANATION_NO_COMMENTS = uiTextBundle.getString("codecast_description_no_comments");
+
+    public final static String EXPLANATION = uiTextBundle.getString("codecast_description");
+
     public final static String NO_COMMENT_AVAILABLE = uiTextBundle.getString("no_comment_available");
+
+    public final static String LOADING_COMMENTS = uiTextBundle.getString("comments_loading");
 
     public final static String PLAYBACK_ZERO = uiTextBundle.getString("playback_zero");
 

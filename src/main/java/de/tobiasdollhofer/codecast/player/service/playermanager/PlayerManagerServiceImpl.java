@@ -28,8 +28,8 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
     private final CommentPlayer player;
     private final PlayerUI ui;
     private boolean playing;
-    private boolean autoPlayback = false;
-    private boolean jumpToCode = false;
+    private boolean autoPlayback = true;
+    private boolean jumpToCode = true;
 
     public PlayerManagerServiceImpl(Project project) {
         this.project = project;
@@ -218,7 +218,7 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
      */
     private void resetPlayer() {
         player.pause();
-        ui.enablePlayer(false);
+        ui.enablePlayer(false, true);
         this.project.getService(PlaylistService.class).loadPlaylist();
         CsvLogger.log(Context.PLAYER, UIEventType.RESET_PLAYER, "");
     }
@@ -397,11 +397,11 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
         playlist = project.getService(PlaylistService.class).getPlaylist();
         if(playlist != null && !playlist.isEmpty()){
             ui.setPlaylist(playlist);
-            ui.enablePlayer(true);
+            ui.enablePlayer(true, false);
             comment = playlist.getFirstComment();
             setComment(comment);
         }else{
-            ui.enablePlayer(false);
+            ui.enablePlayer(false, true);
         }
     }
 
@@ -410,7 +410,7 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
      */
     private void onDownloadCanceled() {
         BalloonNotifier.notifyError(project, Strings.DOWNLOAD_CANCELED);
-        ui.enablePlayer(false);
+        ui.enablePlayer(false, true);
     }
 
     /**

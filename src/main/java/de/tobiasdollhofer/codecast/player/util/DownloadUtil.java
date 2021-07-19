@@ -47,13 +47,18 @@ public class DownloadUtil {
                     codecastRoot.mkdir();
                 }
 
+
                 File codecastProjectRoot = new File(FilePathUtil.getCodeCastProjectRootDirectory(project));
                 if(!codecastProjectRoot.exists()){
                     codecastProjectRoot.mkdir();
                 }
 
                 System.out.println("Downloading...");
-                for(AudioComment comment : comments){
+                int amount = comments.size();
+
+                for(int i = 0; i < comments.size(); i++){
+                    AudioComment comment = comments.get(i);
+                    setTitle(Strings.DOWNLOAD_TASK_TITLE + "(" + i + "/" + amount + ")");
                     try {
                         // Download file to audio folder
                         //Files.copy(new URL(comment.getUrl()).openStream(), Paths.get(FilePathUtil.getCodeCastProjectRootDirectory(project) + comment.getFileName()));

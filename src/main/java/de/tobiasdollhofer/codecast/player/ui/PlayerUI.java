@@ -211,11 +211,11 @@ public class PlayerUI extends Observable{
      * inits toolbar buttons
      */
     private void initToolbarListener() {
-        autoplayButton.setIcon(PluginIcons.autoPlayOff);
+        autoplayButton.setIcon(PluginIcons.autoPlayOn);
         autoplayButton.addActionListener(e -> autoplayButtonClicked());
         reloadButton.addActionListener(e -> reloadPlayer());
         jumpToCode.addActionListener(e -> jumpToCodeButtonClicked());
-        jumpToCode.setIcon(PluginIcons.showCodeOff);
+        jumpToCode.setIcon(PluginIcons.showCodeOn);
     }
 
     /**
@@ -282,10 +282,10 @@ public class PlayerUI extends Observable{
             this.comment = comment;
             currentTitleLabel.setText(comment.getTitleWithoutNumbers());
             playlistView.setCurrent(comment);
-            enablePlayer(true);
+            enablePlayer(true, false);
             adjustScrollView();
         }else {
-            enablePlayer(false);
+            enablePlayer(false, true);
         }
     }
 
@@ -322,7 +322,7 @@ public class PlayerUI extends Observable{
      * enable/disable player buttons
      * @param enabled true/false
      */
-    public void enablePlayer(boolean enabled){
+    public void enablePlayer(boolean enabled, boolean noComment){
         this.playFirst.setEnabled(enabled);
         this.playPrevious.setEnabled(enabled);
         this.playPause.setIcon(PluginIcons.play);
@@ -335,9 +335,18 @@ public class PlayerUI extends Observable{
         this.playlistPane.setEnabled(enabled);
         // add some placeholder if player is disabled
         if(!enabled){
-            this.currentTitleLabel.setText(Strings.NO_COMMENT_AVAILABLE);
+            if(noComment){
+                this.currentTitleLabel.setText(Strings.NO_COMMENT_AVAILABLE);
+                this.explanation.setText(Strings.EXPLANATION_NO_COMMENTS);
+            }else{
+                this.currentTitleLabel.setText(Strings.LOADING_COMMENTS);
+                this.explanation.setText(Strings.EXPLANATION);
+            }
+
             this.playerProgressBar.setValue(0);
             this.progressTime.setText(Strings.PLAYBACK_ZERO);
+        }else{
+            this.explanation.setText(Strings.EXPLANATION);
         }
     }
 

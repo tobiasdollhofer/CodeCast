@@ -22,7 +22,7 @@ public class CommentView extends JPanel {
     private AudioComment comment;
     private boolean active;
     private JBLabel title;
-    private JBLabel length;
+    //private JBLabel length;
     private JBLabel playPause;
 
     /**
@@ -52,9 +52,9 @@ public class CommentView extends JPanel {
      */
     private void setViewLayout() {
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+        setBorder(BorderFactory.createEmptyBorder(10, 4,10,0));
         setPreferredSize(new Dimension(-1, 40));
         setAlignmentX(Component.LEFT_ALIGNMENT);
-        setBorder(BorderFactory.createEmptyBorder(10, 4,10,0));
     }
 
 
@@ -63,8 +63,8 @@ public class CommentView extends JPanel {
      * creates title and length labels
      */
     private void createLabels() {
-        title = new JBLabel(comment.getTitleWithoutNumbers());
-        length = new JBLabel(DurationFormatter.formatDuration(comment.getDuration()));
+        title = new JBLabel(comment.getTitleWithoutNumbers() + " (" + DurationFormatter.formatDuration(comment.getDuration()) + ")");
+        //length = new JBLabel(DurationFormatter.formatDuration(comment.getDuration()));
         if(comment.isDownloaded()){
            setViewInactive();
         }else{
@@ -72,7 +72,7 @@ public class CommentView extends JPanel {
         }
         add(title);
         add(Box.createHorizontalGlue());
-        add(length);
+        //add(length);
     }
 
     /**
@@ -147,7 +147,7 @@ public class CommentView extends JPanel {
     private void setViewActive(){
         playPause.setIcon(PluginIcons.play);
         title.setFont(new Font("SegoeUI", Font.BOLD, 16));
-        length.setFont(new Font("SegoeUI", Font.BOLD, 16));
+        //length.setFont(new Font("SegoeUI", Font.BOLD, 16));
     }
 
     /**
@@ -156,7 +156,7 @@ public class CommentView extends JPanel {
     private void setViewDisabled(){
         playPause.setIcon(null);
         title.setForeground(new Color(124,124,124));
-        length.setForeground(new Color(124,124,124));
+        //length.setForeground(new Color(124,124,124));
     }
 
     /**
@@ -165,10 +165,10 @@ public class CommentView extends JPanel {
     private void setViewInactive(){
         if(comment.getType() == AudioCommentType.INTRO){
             title.setFont(new Font("SegoeUI", Font.ITALIC, 16));
-            length.setFont(new Font("SegoeUI", Font.ITALIC, 16));
+            //length.setFont(new Font("SegoeUI", Font.ITALIC, 16));
         }else{
             title.setFont(new Font("SegoeUI", Font.PLAIN, 16));
-            length.setFont(new Font("SegoeUI", Font.PLAIN, 16));
+            //length.setFont(new Font("SegoeUI", Font.PLAIN, 16));
         }
         playPause.setIcon(null);
     }
