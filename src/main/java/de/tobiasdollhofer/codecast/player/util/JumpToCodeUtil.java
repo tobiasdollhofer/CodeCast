@@ -3,6 +3,7 @@ package de.tobiasdollhofer.codecast.player.util;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
+import com.intellij.psi.util.MethodSignature;
 import com.intellij.util.PsiNavigateUtil;
 import de.tobiasdollhofer.codecast.player.data.AudioComment;
 import de.tobiasdollhofer.codecast.player.util.playlist.CommentExtractor;
@@ -52,13 +53,33 @@ public class JumpToCodeUtil {
     public static PsiElement findElementAfterCommentElement(PsiElement el){
         PsiElement parent = el.getParent();
         PsiElement @NotNull [] children = parent.getChildren();
+
+        // search for element two index positions behind provided element
         for(int i = 0; i < children.length; i++){
-            if(children[i].equals(el)){
-                if(children.length > i+2){
-                    return children[i+2];
+            if(children[i].equals(el) && children.length > i+2){
+
+                // target element after comment
+                PsiElement targetElement = children[i+2];
+
+                // check if element is a method
+                if(targetElement instanceof PsiMethod){
+
+                    // check if there are annotations before method
+                    PsiAnnotation[] annotations = ((PsiMethod) targetElement).getAnnotations();
+                    if(annotations.length > 0){
+
+                        // get all child elements of target including annotations, method signature and so on
+                        PsiElement[] targetChildren = targetElement.getChildren();
+                        if(targetChildren.length > 1){
+                            // return first child element after annotation
+                            return targetChildren[0].getNextSibling();
+                        }
+                    }
                 }
+                return targetElement;
             }
         }
+        // return last element of file in case all other scenarios didn't fit
         return children[children.length - 1];
     }
 }
