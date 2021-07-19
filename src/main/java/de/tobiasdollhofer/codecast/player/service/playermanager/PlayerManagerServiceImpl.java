@@ -328,13 +328,11 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
         this.ui.pausePlayer();
         CsvLogger.log(Context.PLAYER, UIEventType.PLAYBACK_ENDED, comment.getTitle());
         if(this.autoPlayback){
-            AudioComment comment = playlist.getNextComment(this.comment);
-            if(comment != null)
-                setComment(comment);
+            handleAutoPlayback();
         }else{
             this.playing = false;
+            onProgressChanged();
         }
-        onProgressChanged();
     }
 
     /**
@@ -350,6 +348,26 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
      */
     private void onMediaUnavailable() {
         BalloonNotifier.notifyError(this.project, Strings.FILE_NOT_AVAILABLE + FilePathUtil.getFilePathForComment(this.project, comment));
+    }
+
+
+    /**
+     * starts new thread to wait a second before setting next comment for playback
+     */
+    private void handleAutoPlayback() {
+        Thread delay = new Thread(() ->{
+            try {
+                Thread.sleep(1000);
+                AudioComment comment = playlist.getNextComment(this.comment);
+                if(comment != null)
+                    setComment(comment);
+                onProgressChanged();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
+
+        delay.start();
     }
 
     /**
