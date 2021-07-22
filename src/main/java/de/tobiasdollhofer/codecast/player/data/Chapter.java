@@ -18,11 +18,6 @@ public class Chapter {
         this.comments = new ArrayList<>();
     }
 
-    public Chapter(String title, List<AudioComment> comments) {
-        this.title = title;
-        this.comments = comments;
-    }
-
     public String getTitle() {
         return title;
     }

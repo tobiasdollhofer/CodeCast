@@ -3,6 +3,7 @@ package de.tobiasdollhofer.codecast.player.ui.playlist;
 import com.intellij.ui.components.JBLabel;
 import de.tobiasdollhofer.codecast.player.data.AudioComment;
 import de.tobiasdollhofer.codecast.player.data.Chapter;
+import de.tobiasdollhofer.codecast.player.util.constants.Styles;
 
 import javax.swing.*;
 import java.awt.*;
@@ -29,7 +30,7 @@ public class ChapterView extends JPanel {
      */
     private void createTitle(Chapter chapter) {
         JBLabel label = new JBLabel(chapter.getTitleWithoutNumber());
-        label.setFont(new Font("SegoeUI", Font.BOLD, 22));
+        label.setFont(Styles.SEGOE_22_BOLD);
         label.setBorder(BorderFactory.createEmptyBorder(0,30,0,0));
         setBorder(BorderFactory.createEmptyBorder(15,0,10,0));
         add(label);

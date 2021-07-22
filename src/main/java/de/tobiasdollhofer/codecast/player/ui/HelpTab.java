@@ -1,16 +1,8 @@
 package de.tobiasdollhofer.codecast.player.ui;
 
-import com.intellij.openapi.util.ClassLoaderUtil;
-import com.intellij.openapi.util.IconLoader;
 import com.intellij.util.ImageLoader;
-
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 public class HelpTab {

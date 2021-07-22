@@ -2,6 +2,9 @@ package de.tobiasdollhofer.codecast.player.util.constants;
 
 import java.util.ResourceBundle;
 
+/**
+ * some general configurations loaded from config.properties file
+ */
 public class Config {
 
     private final static ResourceBundle configBundle = ResourceBundle.getBundle("config");

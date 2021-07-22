@@ -1,14 +1,11 @@
 package de.tobiasdollhofer.codecast.player.data;
 
 import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiComment;
-import com.intellij.psi.PsiFile;
 import de.tobiasdollhofer.codecast.player.util.FilePathUtil;
 import javafx.util.Duration;
 import org.apache.commons.io.FilenameUtils;
 import org.jaudiotagger.audio.AudioFile;
 import org.jaudiotagger.audio.AudioFileIO;
-
 import java.io.File;
 import java.util.Objects;
 
@@ -92,8 +89,7 @@ public class AudioComment {
     public void calculateDuration(Project project){
         try{
             AudioFile audioFile = AudioFileIO.read(new File(FilePathUtil.getFilePathForComment(project, this)));
-            Duration duration = new Duration(audioFile.getAudioHeader().getTrackLength() * 1000);
-            this.duration = duration;
+            this.duration = new Duration(audioFile.getAudioHeader().getTrackLength() * 1000);
         } catch (Exception e){
             e.printStackTrace();
         }

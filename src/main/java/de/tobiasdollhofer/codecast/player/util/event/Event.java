@@ -1,5 +1,8 @@
 package de.tobiasdollhofer.codecast.player.util.event;
 
+/**
+ * parent event class used for application specific events
+ */
 public abstract class Event {
 
     protected String data;

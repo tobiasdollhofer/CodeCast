@@ -10,19 +10,13 @@ import de.tobiasdollhofer.codecast.player.util.constants.Strings;
 import de.tobiasdollhofer.codecast.player.util.event.Observable;
 import de.tobiasdollhofer.codecast.player.util.event.ui.UIEvent;
 import de.tobiasdollhofer.codecast.player.util.event.ui.UIEventType;
-import de.tobiasdollhofer.codecast.player.util.logging.Context;
-import de.tobiasdollhofer.codecast.player.util.logging.CsvLogger;
-import de.tobiasdollhofer.codecast.player.util.logging.EventType;
-
 import javax.swing.*;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
-
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.ResourceBundle;
 
 import static de.tobiasdollhofer.codecast.player.util.event.ui.UIEventType.*;
 
@@ -50,14 +44,16 @@ public class PlayerUI extends Observable{
     private JTextPane explanation;
     private JTextPane codecastInformation;
 
-    private final boolean playing = false;
-    private Playlist playlist;
-    private AudioComment comment;
-    public String playerTest;
-    private PlaylistView playlistView;
 
+    private final boolean playing = false;
+    private PlaylistView playlistView;
     private final Project project;
 
+
+    /**
+     * initializes user interface
+     * @param project current project
+     */
     public PlayerUI(Project project){
         super();
         this.project = project;
@@ -67,11 +63,17 @@ public class PlayerUI extends Observable{
         initPlayerControls();
     }
 
+    /**
+     * initialize icons and listeners of the player controls
+     */
     private void initPlayerControls() {
         initPlayerControlIcons();
         initPlayerControlListener();
     }
 
+    /**
+     * initialize icons of the player controls
+     */
     private void initPlayerControlIcons() {
         playFirst.setIcon(PluginIcons.playFirst);
         playPrevious.setIcon(PluginIcons.playPrevious);
@@ -83,6 +85,9 @@ public class PlayerUI extends Observable{
         reloadButton.setIcon(PluginIcons.refresh);
     }
 
+    /**
+     * initialize all player control listeners
+     */
     private void initPlayerControlListener() {
         playFirst.addActionListener(e -> playFirstClicked());
         playPrevious.addActionListener(e -> playPreviousClicked());
@@ -94,6 +99,9 @@ public class PlayerUI extends Observable{
         initPlayerProgressBarListener();
     }
 
+    /**
+     * initialize click listener for progress bar
+     */
     private void initPlayerProgressBarListener(){
         playerProgressBar.addMouseListener(new MouseAdapter() {
             @Override
@@ -276,6 +284,10 @@ public class PlayerUI extends Observable{
         setInformationText(playlist.getInformationText());
     }
 
+    /**
+     * sets information text and centers it to the view
+     * @param informationText text to display
+     */
     private void setInformationText(String informationText) {
         codecastInformation.setText(informationText);
         StyledDocument doc = codecastInformation.getStyledDocument();
@@ -291,7 +303,6 @@ public class PlayerUI extends Observable{
     public void setComment(AudioComment comment){
         playerProgressBar.setValue(0);
         if(comment != null){
-            this.comment = comment;
             currentTitleLabel.setText(comment.getTitleWithoutNumbers());
             playlistView.setCurrent(comment);
             enablePlayer(true, false);
@@ -331,7 +342,7 @@ public class PlayerUI extends Observable{
     }
 
     /**
-     * enable/disable player buttons
+     * enable/disable player controls
      * @param enabled true/false
      */
     public void enablePlayer(boolean enabled, boolean noComment){
@@ -361,6 +372,10 @@ public class PlayerUI extends Observable{
         }
     }
 
+    /**
+     * shows text above player
+     * @param explanationText text to display above player
+     */
     private void setExplanationText(String explanationText) {
         explanation.setText(explanationText);
         StyledDocument doc = explanation.getStyledDocument();

@@ -4,7 +4,6 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ProjectRootManager;
 import de.tobiasdollhofer.codecast.player.data.AudioComment;
 import de.tobiasdollhofer.codecast.player.util.exception.NoFileUrlException;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -86,7 +85,7 @@ public class FilePathUtil {
      * @param project current project
      * @param comment comment to check
      * @return if comment file is already stored and up to date
-     * @throws NoFileUrlException
+     * @throws NoFileUrlException NoFileUrlException
      */
     public static boolean checkCommentDownloadedUpToDate(Project project, AudioComment comment) throws NoFileUrlException{
         if(getFilePathForComment(project, comment) != null){

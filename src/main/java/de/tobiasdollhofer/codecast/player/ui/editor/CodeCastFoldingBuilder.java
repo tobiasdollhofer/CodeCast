@@ -21,16 +21,14 @@ import java.util.List;
 
 
 /**
- * Creates automatic folding of codecast comments
+ * Creates automatic folding of codecast comments and replaces comment with /*codecast*\\/
+ * partly from: https://plugins.jetbrains.com/docs/intellij/folding-builder.html
  */
 public class CodeCastFoldingBuilder extends FoldingBuilderEx implements DumbAware {
 
     /**
      * Method creates descriptor for codecast folding (replacement with placeholdertext)
      * @param root element to search in
-     * @param document
-     * @param quick
-     * @return
      */
     @Override
     public FoldingDescriptor @NotNull [] buildFoldRegions(@NotNull PsiElement root, @NotNull Document document, boolean quick) {

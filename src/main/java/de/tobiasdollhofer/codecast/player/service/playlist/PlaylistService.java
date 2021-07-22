@@ -10,6 +10,4 @@ public interface PlaylistService {
     Playlist getPlaylist();
 
     void loadPlaylist();
-
-    void emptyPlaylist();
 }

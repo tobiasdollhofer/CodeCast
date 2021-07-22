@@ -10,7 +10,6 @@ import java.util.List;
 public class Playlist {
 
     private String informationText;
-
     private List<Chapter> chapters;
 
     public Playlist() {

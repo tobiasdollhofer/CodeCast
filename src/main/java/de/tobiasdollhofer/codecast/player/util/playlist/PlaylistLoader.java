@@ -1,6 +1,5 @@
 package de.tobiasdollhofer.codecast.player.util.playlist;
 
-import com.intellij.openapi.fileEditor.impl.LoadTextUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiComment;
@@ -10,20 +9,18 @@ import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
 import de.tobiasdollhofer.codecast.player.data.AudioComment;
-import de.tobiasdollhofer.codecast.player.data.AudioCommentType;
 import de.tobiasdollhofer.codecast.player.data.Playlist;
 import de.tobiasdollhofer.codecast.player.util.DownloadUtil;
 import de.tobiasdollhofer.codecast.player.util.constants.Config;
-import de.tobiasdollhofer.codecast.player.util.constants.Strings;
 import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Locale;
 
+
+/**
+ * Loads and generates playlist using the CommentExtractor
+ */
 public class PlaylistLoader {
-
-
 
     /**
      * Method generates Playlist from project comment annotations
@@ -31,7 +28,6 @@ public class PlaylistLoader {
      * @return Playlist
      */
     public static Playlist loadPlaylistFromComments(Project project) {
-
         // find all java project files
         Collection<VirtualFile> files = FilenameIndex.getAllFilesByExt(project, Config.LANGUAGE, GlobalSearchScope.projectScope(project));
 
@@ -63,17 +59,27 @@ public class PlaylistLoader {
             if(comment.getText().contains(Config.CODECAST_ANNOTATION) && comment.getText().contains(Config.URL_ANNOTATION)){
                 addCommentFromTextBlock(comment, playlist);
             }else if(comment.getText().contains(Config.CODECAST_INFO_ANNOTATION)){
-                addCodecastInfotoList(comment, playlist);
+                addCodecastInfoToList(comment, playlist);
             }
         }
         return playlist;
     }
 
-    private static void addCodecastInfotoList(PsiComment comment, Playlist playlist) {
+    /**
+     *
+     * @param comment psicomment with information
+     * @param playlist playlist where info will be added
+     */
+    private static void addCodecastInfoToList(PsiComment comment, Playlist playlist) {
         String info = CommentExtractor.getCodecastInfoFromTextBlock(comment);
         playlist.setInformationText(info);
     }
 
+    /**
+     *
+     * @param comment psicomment with information
+     * @param playlist playlist where the comment will be added
+     */
     private static void addCommentFromTextBlock(PsiComment comment, Playlist playlist){
         AudioComment audioComment = CommentExtractor.getCommentFromTextBlock(comment);
         if(audioComment != null){

@@ -13,7 +13,6 @@ import de.tobiasdollhofer.codecast.player.util.event.downloader.DownloadEventTyp
 import de.tobiasdollhofer.codecast.player.util.exception.NoFileUrlException;
 import de.tobiasdollhofer.codecast.player.util.notification.BalloonNotifier;
 import org.jetbrains.annotations.NotNull;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -23,6 +22,10 @@ import java.net.URL;
 import java.nio.file.FileAlreadyExistsException;
 import java.util.ArrayList;
 
+
+/**
+ * Util class providing ability to download all audiofiles from playlist and storing it to local user home directory
+ */
 public class DownloadUtil {
 
     private static final int BUFFER_SIZE = 4096;
@@ -36,9 +39,7 @@ public class DownloadUtil {
     public static void downloadComments(Project project, Playlist playlist){
         ArrayList<AudioComment> comments = getCommentsToDownload(project, playlist.getAllComments());
 
-        /**
-         * download files in backgroundtask
-         */
+        // download files in backgroundtask
         ProgressManager.getInstance().run(new Task.Backgroundable(project, Strings.DOWNLOAD_TASK_TITLE) {
             @Override
             public void run(@NotNull ProgressIndicator indicator) {
@@ -61,7 +62,6 @@ public class DownloadUtil {
                     setTitle(Strings.DOWNLOAD_TASK_TITLE + "(" + i + "/" + amount + ")");
                     try {
                         // Download file to audio folder
-                        //Files.copy(new URL(comment.getUrl()).openStream(), Paths.get(FilePathUtil.getCodeCastProjectRootDirectory(project) + comment.getFileName()));
                         downloadFileForComment(project, comment);
                         comment.setDownloaded(true);
                         comment.calculateDuration(project);
@@ -105,11 +105,10 @@ public class DownloadUtil {
      * Downloads a file from a URL
      * @param comment comment to download
      * @param project Project
-     * @throws IOException
+     * @throws IOException exception
      */
     public static void downloadFileForComment(Project project, AudioComment comment)
             throws IOException {
-        String fileURL = comment.getUrl();
         URL url = new URL(comment.getUrl());
         HttpURLConnection httpConn = (HttpURLConnection) url.openConnection();
         int responseCode = httpConn.getResponseCode();

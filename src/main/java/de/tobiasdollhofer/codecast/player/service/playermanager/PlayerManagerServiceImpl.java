@@ -19,6 +19,11 @@ import de.tobiasdollhofer.codecast.player.util.logging.CsvLogger;
 import de.tobiasdollhofer.codecast.player.util.notification.BalloonNotifier;
 import javafx.util.Duration;
 
+/**
+ * Central service to handle events provided by player and ui.
+ * Controls player and ui depending on the provided events
+ * Initialized in the ProjectOpenCloseListener
+ */
 @Service
 public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiable {
 
@@ -125,8 +130,6 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
             default:
                 throw new IllegalStateException("Unexpected value: " + e.getType());
         }
-
-
     }
 
     /**
@@ -314,7 +317,7 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
     }
 
     /**
-     * cchanges player icon in ui
+     * changes player icon in ui
      */
     private void onPlayerStopped() {
         this.playing = false;
@@ -415,7 +418,7 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
 
     /**
      * sets comment as current comment if file is already downloaded
-     * @param comment
+     * @param comment comment to set
      */
     private void setComment(AudioComment comment){
         // store current play state temporarily, because play state will be set to false when player will be paused
@@ -432,21 +435,16 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
         }
     }
 
-
-    public boolean isAutoPlayback() {
-        return autoPlayback;
-    }
-
-    public void setAutoPlayback(boolean autoPlayback) {
-        this.autoPlayback = autoPlayback;
-    }
-
-
+    /**
+     *
+     * @return progess of actual playback in form of xx:xx/xx:xx
+     */
     private String getFormattedDurationProgress(){
         return DurationFormatter.formatDuration(this.player.getDurationProgress())
                 + "/"
                 + DurationFormatter.formatDuration(comment.getDuration());
     }
+
     /**
      * Method sets existing comment which is equal to provided comment
      * used i.e. for jump-to-code where comment is extracted from code but is a new entity
@@ -462,7 +460,6 @@ public class PlayerManagerServiceImpl implements PlayerManagerService, Notifiabl
                 }else{
                     playPauseClicked();
                 }
-
             }
         }
     }

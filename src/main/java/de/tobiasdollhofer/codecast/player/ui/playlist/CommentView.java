@@ -1,14 +1,13 @@
 package de.tobiasdollhofer.codecast.player.ui.playlist;
 
-import com.intellij.openapi.project.Project;
 import com.intellij.ui.components.JBLabel;
 import de.tobiasdollhofer.codecast.player.data.AudioComment;
 import de.tobiasdollhofer.codecast.player.data.AudioCommentType;
 import de.tobiasdollhofer.codecast.player.util.DurationFormatter;
 import de.tobiasdollhofer.codecast.player.util.constants.PluginIcons;
 import de.tobiasdollhofer.codecast.player.util.constants.Strings;
+import de.tobiasdollhofer.codecast.player.util.constants.Styles;
 import de.tobiasdollhofer.codecast.player.util.notification.BalloonNotifier;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -22,7 +21,6 @@ public class CommentView extends JPanel {
     private AudioComment comment;
     private boolean active;
     private JBLabel title;
-    //private JBLabel length;
     private JBLabel playPause;
 
     /**
@@ -57,14 +55,11 @@ public class CommentView extends JPanel {
         setAlignmentX(Component.LEFT_ALIGNMENT);
     }
 
-
-
     /**
-     * creates title and length labels
+     * creates title and length label
      */
     private void createLabels() {
         title = new JBLabel(comment.getTitleWithoutNumbers() + " (" + DurationFormatter.formatDuration(comment.getDuration()) + ")");
-        //length = new JBLabel(DurationFormatter.formatDuration(comment.getDuration()));
         if(comment.isDownloaded()){
            setViewInactive();
         }else{
@@ -72,7 +67,6 @@ public class CommentView extends JPanel {
         }
         add(title);
         add(Box.createHorizontalGlue());
-        //add(length);
     }
 
     /**
@@ -112,7 +106,6 @@ public class CommentView extends JPanel {
                 }
             }
         });
-
     }
 
 
@@ -137,17 +130,12 @@ public class CommentView extends JPanel {
         }
     }
 
-    public boolean isActive() {
-        return active;
-    }
-
     /**
      * lets play-icon appear and sets active font size (bold)
      */
     private void setViewActive(){
         playPause.setIcon(PluginIcons.play);
-        title.setFont(new Font("SegoeUI", Font.BOLD, 16));
-        //length.setFont(new Font("SegoeUI", Font.BOLD, 16));
+        title.setFont(Styles.SEGOE_16_BOLD);
     }
 
     /**
@@ -155,8 +143,7 @@ public class CommentView extends JPanel {
      */
     private void setViewDisabled(){
         playPause.setIcon(null);
-        title.setForeground(new Color(124,124,124));
-        //length.setForeground(new Color(124,124,124));
+        title.setForeground(Styles.GREYED_OUT);
     }
 
     /**
@@ -164,11 +151,9 @@ public class CommentView extends JPanel {
      */
     private void setViewInactive(){
         if(comment.getType() == AudioCommentType.INTRO){
-            title.setFont(new Font("SegoeUI", Font.ITALIC, 16));
-            //length.setFont(new Font("SegoeUI", Font.ITALIC, 16));
+            title.setFont(Styles.SEGOE_16_ITALIC);
         }else{
-            title.setFont(new Font("SegoeUI", Font.PLAIN, 16));
-            //length.setFont(new Font("SegoeUI", Font.PLAIN, 16));
+            title.setFont(Styles.SEGOE_16_PLAIN);
         }
         playPause.setIcon(null);
     }

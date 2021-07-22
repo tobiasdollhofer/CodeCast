@@ -2,6 +2,9 @@ package de.tobiasdollhofer.codecast.player.util.constants;
 
 import java.util.ResourceBundle;
 
+/**
+ * Texts used in UI loaded from ui_text resource bundle (language dependend)
+ */
 public class Strings {
 
     private final static ResourceBundle uiTextBundle = ResourceBundle.getBundle("ui_text");

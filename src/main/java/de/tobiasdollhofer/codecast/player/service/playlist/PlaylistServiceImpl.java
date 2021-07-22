@@ -5,7 +5,9 @@ import com.intellij.openapi.project.Project;
 import de.tobiasdollhofer.codecast.player.data.Playlist;
 import de.tobiasdollhofer.codecast.player.util.playlist.PlaylistLoader;
 
-
+/**
+ * Service to provide Playlist loaded by the PlaylistLoader
+ */
 @Service
 public class PlaylistServiceImpl implements PlaylistService{
 
@@ -31,14 +33,5 @@ public class PlaylistServiceImpl implements PlaylistService{
     @Override
     public void loadPlaylist() {
         playlist = PlaylistLoader.loadPlaylistFromComments(project);
-    }
-
-
-    /**
-     * sets playlist as null
-     */
-    @Override
-    public void emptyPlaylist() {
-        playlist = null;
     }
 }

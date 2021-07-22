@@ -13,11 +13,14 @@ import de.tobiasdollhofer.codecast.player.data.AudioComment;
 import de.tobiasdollhofer.codecast.player.data.AudioCommentType;
 import de.tobiasdollhofer.codecast.player.util.constants.Config;
 import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Locale;
 
+/**
+ * Util class used to extract AudioComment-Object from comment and to extract codecast info String used on the bottom of the player UI
+ * Also used to find a psicomment for an audio comment object
+ */
 public class CommentExtractor {
 
     /**
@@ -143,6 +146,12 @@ public class CommentExtractor {
         return codecastFiles;
     }
 
+    /**
+     * method searches psicomment element in the current project where a specific audio comment belongs to
+     * @param project current project
+     * @param comment AudioComment object for which the psielement is searched for
+     * @return comment element
+     */
     public static PsiComment findElementForComment(Project project, AudioComment comment) {
         // find all java project files
         Collection<VirtualFile> files = FilenameIndex.getAllFilesByExt(project, Config.LANGUAGE, GlobalSearchScope.projectScope(project));
@@ -150,9 +159,15 @@ public class CommentExtractor {
         ArrayList<VirtualFile> codecastFiles = getAllCodecastFiles(files);
 
         return findElementInCodeCastFiles(project, codecastFiles, comment);
-
     }
 
+    /**
+     * method searches psicomment element in all files with codecast annotations where a specific audio comment belongs to
+     * @param project current project
+     * @param codecastFiles list of files containing @codecast annotation
+     * @param comment AudioComment object for which the psielement is searched for
+     * @return comment element
+     */
     private static PsiComment findElementInCodeCastFiles(Project project, ArrayList<VirtualFile> codecastFiles, AudioComment comment) {
         for(VirtualFile file : codecastFiles){
             PsiFile psi = PsiManager.getInstance(project).findFile(file);
@@ -165,7 +180,6 @@ public class CommentExtractor {
             }
         }
         return null;
-
     }
 
 }

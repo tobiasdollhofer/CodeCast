@@ -3,15 +3,15 @@ package de.tobiasdollhofer.codecast.player.util;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
-import com.intellij.psi.util.MethodSignature;
 import com.intellij.util.PsiNavigateUtil;
 import de.tobiasdollhofer.codecast.player.data.AudioComment;
 import de.tobiasdollhofer.codecast.player.util.playlist.CommentExtractor;
-import de.tobiasdollhofer.codecast.player.util.playlist.PlaylistLoader;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Locale;
 
+/**
+ * Util class providing ability to navigate to specific element in editor
+ */
 public class JumpToCodeUtil {
 
     /**
@@ -21,28 +21,12 @@ public class JumpToCodeUtil {
     public static void jumpToCode(Project project, AudioComment comment){
         System.out.println("Jump to comment in code : " + comment);
         // invoke later to prevent "Read access is allowed from event dispatch thread or inside read-action only"-Exception
-        ApplicationManager.getApplication().invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                PsiComment target = CommentExtractor.findElementForComment(project, comment);
-                if(target != null)
-                    PsiNavigateUtil.navigate(findElementAfterCommentElement(target));
-            }
+        ApplicationManager.getApplication().invokeLater(() -> {
+            PsiComment target = CommentExtractor.findElementForComment(project, comment);
+            if(target != null)
+                PsiNavigateUtil.navigate(findElementAfterCommentElement(target));
         });
 
-    }
-
-    /**
-     *
-     * @param el PsiElement for comment
-     * @param comment audio comment to check for
-     * @return if audio comment is stored in this psielement
-     */
-    private static boolean checkElementContainsComment(PsiElement el, AudioComment comment){
-        String text = el.getText().toLowerCase(Locale.ROOT);
-
-        return text.contains(comment.getTitle().toLowerCase(Locale.ROOT)) && text.contains(comment.getUrl().toLowerCase(Locale.ROOT))
-                && text.contains(comment.getChapter().toLowerCase(Locale.ROOT));
     }
 
     /**

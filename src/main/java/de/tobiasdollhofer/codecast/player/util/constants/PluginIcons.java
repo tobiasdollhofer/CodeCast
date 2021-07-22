@@ -1,11 +1,10 @@
 package de.tobiasdollhofer.codecast.player.util.constants;
 
 import com.intellij.openapi.util.IconLoader;
-
 import javax.swing.*;
 
 /**
- * Interface for icon paths
+ * Interface for icon paths in resource directory
  */
 public interface PluginIcons {
 

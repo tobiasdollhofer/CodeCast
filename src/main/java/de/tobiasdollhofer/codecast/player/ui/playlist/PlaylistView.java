@@ -7,7 +7,6 @@ import de.tobiasdollhofer.codecast.player.data.Playlist;
 import de.tobiasdollhofer.codecast.player.service.playermanager.PlayerManagerService;
 import de.tobiasdollhofer.codecast.player.util.event.ui.UIEvent;
 import de.tobiasdollhofer.codecast.player.util.event.ui.UIEventType;
-
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;

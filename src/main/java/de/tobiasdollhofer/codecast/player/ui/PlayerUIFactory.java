@@ -9,12 +9,10 @@ import de.tobiasdollhofer.codecast.player.service.playermanager.PlayerManagerSer
 import de.tobiasdollhofer.codecast.player.util.constants.Strings;
 import org.jetbrains.annotations.NotNull;
 
-
-
 public class PlayerUIFactory implements ToolWindowFactory {
 
     /**
-     * creates ui on project startup
+     * creates ui on project startup with player ui and help tab
      * @param project current project
      * @param toolWindow window where content will be added
      */

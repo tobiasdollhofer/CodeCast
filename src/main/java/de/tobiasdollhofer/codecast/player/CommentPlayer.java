@@ -1,11 +1,7 @@
 package de.tobiasdollhofer.codecast.player;
 
 
-import com.intellij.openapi.project.Project;
 import com.sun.javafx.application.PlatformImpl;
-import de.tobiasdollhofer.codecast.player.data.AudioComment;
-import de.tobiasdollhofer.codecast.player.util.DurationFormatter;
-import de.tobiasdollhofer.codecast.player.util.FilePathUtil;
 import de.tobiasdollhofer.codecast.player.util.event.Observable;
 import de.tobiasdollhofer.codecast.player.util.event.player.PlayerEvent;
 import de.tobiasdollhofer.codecast.player.util.event.player.PlayerEventType;
@@ -13,7 +9,6 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaException;
 import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
-
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -22,18 +17,18 @@ import java.util.concurrent.TimeUnit;
  */
 public class CommentPlayer extends Observable {
 
+
+    private static int UPDATE_TIME = 100;
     private String path;
     private double volume;
 
     private Media media;
     private MediaPlayer mediaPlayer;
     private boolean ready = false;
-    // duplicate to mediaplayer.getStatus() -> used because player needs some time to start and stop asynchronously
     private boolean playing = false;
 
     public CommentPlayer() {
         super();
-
         this.volume = 1;
         // necessary to initialize javafx components
         PlatformImpl.startup(() -> {});
@@ -46,19 +41,17 @@ public class CommentPlayer extends Observable {
         if(this.mediaPlayer != null && ready){
             this.playing = true;
 
-
             // starts new thread for progress updates
             Thread updateProgressThread = new Thread(() -> {
                 while (playing) {
                     notifyAll(new PlayerEvent(PlayerEventType.PROGRESS_CHANGED, ""));
                     try {
-                        TimeUnit.MILLISECONDS.sleep(1000);
+                        TimeUnit.MILLISECONDS.sleep(UPDATE_TIME);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                 }
             });
-
 
             updateProgressThread.start();
             this.mediaPlayer.play();
@@ -127,9 +120,8 @@ public class CommentPlayer extends Observable {
                 }
             });
 
-            /**
-             * notify listener that comment has finished
-             */
+
+            // notify listener that comment has finished
             this.mediaPlayer.setOnEndOfMedia(new Runnable() {
                 @Override
                 public void run() {
